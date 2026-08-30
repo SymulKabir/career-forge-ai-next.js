@@ -71,7 +71,7 @@ const Index = () => {
                     onClick={() =>
                         setMobileMenuOpen((value) => !value)
                     }
-                    className="md:hidden w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center"
+                    className="md:hidden w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center "
                     aria-label="Toggle mobile menu"
                 >
                     ☰
