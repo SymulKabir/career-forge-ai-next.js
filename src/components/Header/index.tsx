@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react"
-import Logo from "@/src/components/Logo"
+import Logo from "@/src/ui/Logo"
 
 const Index = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

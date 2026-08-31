@@ -3,7 +3,7 @@
 import Link from "next/link";
 import './styles.scss'
 import { usePathname } from "next/navigation";
-import Logo from "@/src/components/Logo";
+import Logo from "@/src/ui/Logo";
 
 type NavItem = {
   action: string;

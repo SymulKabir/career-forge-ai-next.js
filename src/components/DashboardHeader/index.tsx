@@ -1,4 +1,4 @@
-import Logo from '@/src/components/Logo'
+import Logo from '@/src/ui/Logo'
 const DashboardHeader = () => {
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
