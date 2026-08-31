@@ -21,7 +21,55 @@ const Index = () => {
     scrollToolbar,
   } = useDrag({ activeTool, setActiveTool });
   const { handleToolClick } = useBtnClick({ activeTool, setActiveTool });
+const handleDownloadVectorPdf = async () => {
+    // Select your resume container DOM element
+    const resumeElement = document.querySelector(".page");
+    if (!resumeElement) return;
 
+    // Package the HTML with inline styles/stylesheets reference
+    const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <meta charset="utf-8">
+                <title>Resume</title>
+                <!-- Include your compiled global CSS or stylesheet links here -->
+                <link rel="stylesheet" href="${window.location.origin}/_next/static/css/app/layout.css">
+                <style>
+                    body { margin: 0; background: #ffffff; }
+                    .page { box-shadow: none !important; margin: 0 auto !important; }
+                </style>
+            </head>
+            <body>
+                ${resumeElement.outerHTML}
+            </body>
+        </html>
+    `;
+
+    try {
+        const response = await fetch('/api/generate-pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ htmlContent }),
+        });
+
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        // Convert the response stream into a downloadable blob link
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'resume.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+    } catch (err) {
+        console.error("Download failed:", err);
+    }
+};
   return (
     <header className="sticky top-[65px] z-40 w-full border-b border-slate-200/70 bg-white/90 backdrop-blur-xl">
       <div
@@ -432,6 +480,7 @@ const Index = () => {
             type="button"
             title="Download Resume"
             aria-label="Download Resume"
+            onClick={handleDownloadVectorPdf}
             className="
               group
               flex

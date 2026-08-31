@@ -10,7 +10,7 @@ import FixResume from "./components/ToolBox/FixResume";
 import CheckAndTailor from "./components/ToolBox/CheckAndTailor";
 import Templates from "./components/ToolBox/Templates";
 import ResumeRearrangeModal from "./components/ResumeRearrangeModal/RearrangeModal";
-import ResumeEditor from "./components/ResumeEditor";
+import ResumeEditor from "./components/ResumeEditor2";
 
 export default function ResumeEditorShell() {
   return (
@@ -44,7 +44,8 @@ export default function ResumeEditorShell() {
                 duration-300
                 ease-in-out
                 z-[2]
-                left-[-${RESUME_CONSTANTS.editorShell.leftSectionWidth}] 
+                left-[-${RESUME_CONSTANTS.editorShell.leftSectionWidth}]
+                left-[-350px]
                 w-[${RESUME_CONSTANTS.editorShell.leftSectionWidth}]
                 `}
         >
