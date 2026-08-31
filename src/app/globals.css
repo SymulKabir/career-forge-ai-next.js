@@ -47,7 +47,7 @@ button:disabled,
   font-family: var(--font-dm-sans);
 }
 
-/* Gradient text */
+/* Gradient text */.absolute
 
 .gradient-text {
   background: linear-gradient(90deg,

@@ -2,7 +2,6 @@
 
 import { RESUME_CONSTANTS } from "./constants/resume-utils";
 import { ResumeEditorProvider } from "./context/resume-editor-context";
-
 import ResumeToolbar from "./components/ResumeToolbar";
 import CloseButton from "./components/ToolBox/CloseButton";
 import DesignAndFont from "./components/ToolBox/DesignAndFont";
@@ -10,9 +9,8 @@ import AiAssistant from "./components/ToolBox/AiAssistant";
 import FixResume from "./components/ToolBox/FixResume";
 import CheckAndTailor from "./components/ToolBox/CheckAndTailor";
 import Templates from "./components/ToolBox/Templates";
-// import ToolBox from "./ToolBox";
 import ResumeRearrangeModal from "./components/ResumeRearrangeModal/RearrangeModal";
-// import ResumeEditor from "./ResumeEditor";
+import ResumeEditor from "./components/ResumeEditor";
 
 export default function ResumeEditorShell() {
   return (
@@ -45,7 +43,7 @@ export default function ResumeEditorShell() {
                 transition-all
                 duration-300
                 ease-in-out
-                z-[2] 
+                z-[2]
                 left-[-${RESUME_CONSTANTS.editorShell.leftSectionWidth}] 
                 w-[${RESUME_CONSTANTS.editorShell.leftSectionWidth}]
                 `}
@@ -63,7 +61,7 @@ export default function ResumeEditorShell() {
 
         <ResumeRearrangeModal />
 
-        {/* <ResumeEditor /> */}
+        <ResumeEditor />
       </div>
     </ResumeEditorProvider>
   );
