@@ -7,14 +7,14 @@ interface EditableTextProps {
   value: string;
   tag?: any;
   className?: string;
-  onChange?: (value: string) => void;
+  handleInputChange?: (value: string) => void;
 }
 
 const Index: React.FC<EditableTextProps> = ({
   value,
   tag = "span",
   className,
-  onChange,
+  handleInputChange,
 }) => {
   const Component = tag as any;
 
@@ -47,8 +47,14 @@ const Index: React.FC<EditableTextProps> = ({
         className={`editable-field ${className || ""}`}
         contentEditable
         suppressContentEditableWarning
-        onBlur={(e: React.FocusEvent<HTMLElement>) =>
-          onChange(e.currentTarget.textContent || "")
+        onChange={(e)=> {
+          console.log("e of onchange----->>>>", e)
+        }}
+        onBlur={(e: React.FocusEvent<HTMLElement>) =>{
+          console.log("e of onblur----->>>>", e)
+          handleInputChange?.(e.currentTarget.textContent || "")
+        }
+          
         }
       >
         {value}

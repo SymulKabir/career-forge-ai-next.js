@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import './style.scss'
 import { RESUME_CONSTANTS } from "../../constants/resume-utils";
 import { RESUME_SETTING } from "./constants/resumeSetting";
-import {DUMMY_STRUCTURED_RESUME} from "./constants/resumeData"
 import MilestoneCard from "./components/MilestoneCard"
+import { useResumeEditor } from "../../context/resume-editor-context";
 
 
 const Index = () => {
-    const [resumeData, setResumeData] = useState({...DUMMY_STRUCTURED_RESUME})
+    const { resumeData,setResumeData } = useResumeEditor()
     const [resumeSetting, setResumeSetting] = useState({...RESUME_SETTING})
     const [currentConfig, setCurrentConfig] = useState({})
   const containerHeight =
@@ -40,9 +40,8 @@ const Index = () => {
                         {
                             resumeData?.sections?.map((data, index) => {
                                 if(data.sectionLayout === "MilestoneCard") {
-                                    return <MilestoneCard key={index} data={data} />
+                                    return <MilestoneCard key={index} data={data} index={index} />
                                 }
-                                // return <SectionBox key={index} currentConfig={currentConfig} setCurrentConfig={setCurrentConfig} data={data} />
                             })
                         }
                     </div>

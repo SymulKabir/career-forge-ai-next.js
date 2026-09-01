@@ -18,9 +18,9 @@ const px = (value?: number | string) => {
   return `${value}px`;
 };
 
-const Index: React.FC<ExperienceProps> = ({ data: initialData }) => {
+const Index: React.FC<ExperienceProps> = ({ data: initialData, index }) => {
   const [sectionData, setSectionData] = useState(initialData);
-  const { setting } = useResumeEditor();
+  const { setting, resumeData,setResumeData } = useResumeEditor(); 
 
   const { font, textStyles, colors } = setting || {};
 
@@ -42,6 +42,12 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData }) => {
   const handleSectionTitleChange = (value: string) => {
     setSectionData((prev: any) => ({ ...prev, sectionTitle: value }));
   };
+
+const handleResumeDataChange = (value: any) => {
+  console.log("value --->>>", value)
+  console.log("sectionData filter--->>", sectionData.section[index])
+  // setResumeData((prev: any) => ({ ...prev, sections: [...prev.sections.map((s: any, i: number) => i === index ? sectionData : s) }));
+}
 
   const handleRoleFieldChange = (
     index: number,
@@ -173,7 +179,7 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData }) => {
           color: ${highlight?.color || "#4b5563"};
           line-height: ${highlight?.lineHeight ?? 1.5};
           margin-bottom: 6px;
-          
+
         }
 
         .section-divider {
@@ -234,8 +240,9 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData }) => {
                     <EditableText
                       tag="span"
                       value={item?.duration || ""}
-                      onChange={(val) =>
-                        handleRoleFieldChange(itemIndex, "duration", val)
+                      handleInputChange={(val) =>
+                        // handleRoleFieldChange(itemIndex, "duration", val)
+                        handleResumeDataChange(val)
                       }
                     />
                   </div>
@@ -255,7 +262,7 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData }) => {
                     <EditableText
                       tag="span"
                       value={item?.location || ""}
-                      onChange={(val) =>
+                      handleInputChange={(val) =>
                         handleRoleFieldChange(itemIndex, "location", val)
                       }
                     />
@@ -280,7 +287,7 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData }) => {
                       <EditableText
                         tag="span"
                         value={item.companyUrl}
-                        onChange={(val) =>
+                        handleInputChange={(val) =>
                           handleRoleFieldChange(itemIndex, "companyUrl", val)
                         }
                       />
@@ -293,8 +300,9 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData }) => {
                   tag="p"
                   className="resume-body-text"
                   value={item?.description || ""}
-                  onChange={(value) =>
-                    handleRoleFieldChange(itemIndex, "description", value)
+                  handleInputChange={(value) =>
+                    // handleRoleFieldChange(itemIndex, "description", value)
+                    handleResumeDataChange(value)
                   }
                 />
 
@@ -309,7 +317,7 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData }) => {
                         <EditableText
                           tag="span"
                           value={highlightText}
-                          onChange={(value) =>
+                          handleInputChange={(value) =>
                             handleHighlightChange(
                               itemIndex,
                               highlightIndex,
