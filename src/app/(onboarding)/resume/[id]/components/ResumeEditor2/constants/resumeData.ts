@@ -2,34 +2,34 @@
 // 1. TypeScript Interfaces
 // ==========================================
 
-export type SectionType = 
-  | "personal_info" 
-  | "summary" 
-  | "experience" 
-  | "education" 
-  | "projects" 
+export type SectionType =
+  | "personal_info"
+  | "summary"
+  | "experience"
+  | "education"
+  | "projects"
   | "skills";
 
 export interface ResumeSectionItem {
   id: string;
-  title?: string;          // e.g., Job Title, Degree Name, Project Name
-  subtitle?: string;       // e.g., Company Name, Institution, Tech stack summary
-  location?: string;       // e.g., City, Country or Remote
-  startDate?: string;      // e.g., Jan 2022
-  endDate?: string;        // e.g., Present / Dec 2024
-  current?: boolean;       // To handle "Present" states easily
-  description?: string;    // Short summary or description
+  title?: string; // e.g., Job Title, Degree Name, Project Name
+  subtitle?: string; // e.g., Company Name, Institution, Tech stack summary
+  location?: string; // e.g., City, Country or Remote
+  startDate?: string; // e.g., Jan 2022
+  endDate?: string; // e.g., Present / Dec 2024
+  current?: boolean; // To handle "Present" states easily
+  description?: string; // Short summary or description
   bulletPoints?: string[]; // Detailed achievements or highlights
-  link?: string;           // External URL or repository link
-  skills?: string[];       // Associated skills for this specific entry
+  link?: string; // External URL or repository link
+  skills?: string[]; // Associated skills for this specific entry
 }
 
 export interface ResumeSection {
   id: string;
-  name: string;            // Display name for the section (e.g., "Work Experience")
-  type: SectionType;       // Identifier to know how to render it
-  isVisible: boolean;      // Toggle to show/hide section in editor
-  order: number;           // Position index for drag-and-drop ordering
+  name: string; // Display name for the section (e.g., "Work Experience")
+  type: SectionType; // Identifier to know how to render it
+  isVisible: boolean; // Toggle to show/hide section in editor
+  order: number; // Position index for drag-and-drop ordering
   items: ResumeSectionItem[]; // Subsections / individual entries (experience list, education list, etc.)
 }
 
@@ -53,8 +53,56 @@ export interface StructuredResumeData {
 // ==========================================
 // 2. Dummy Resume Data Object
 // ==========================================
-
-export const DUMMY_STRUCTURED_RESUME: StructuredResumeData = {
+export const DUMMY_STRUCTURED_RESUME = {
+  personalInfo: {
+    fullName: "Symul Kabir",
+    headline: "Junior CTO & Full Stack Developer",
+    email: "saimonpranta@gmail.com",
+    phone: "+8801881476432",
+    location: "Khilkhet, Dhaka",
+    website: "https://symulkabir.vercel.app",
+  },
+  sections: [
+    {
+      sectionLayout: "MilestoneCard",
+      sectionTitle: "Experience", // Section name included here
+      items: [
+        {
+          role: "Junior CTO & Full Stack Developer",
+          company: "Micple Company Ltd",
+          companyUrl: "https://micple.com/",
+          duration: "07/2023 - Present",
+          location: "Khilkhet, Dhaka",
+          description:
+            "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
+          highlights: [
+            "Lead the development and technical direction of production web applications across frontend, backend, and infrastructure",
+            "Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB",
+            "Design, configure, and maintain Linux-based production servers, including security, monitoring, performance optimization, and troubleshooting",
+            "Manage application deployment pipelines and production releases using Docker, CI/CD practices, cloud infrastructure, and shell scripting",
+            "Develop backend APIs, microservices, and real-time communication systems for production applications",
+            "Mentor junior developers and contribute to architecture decisions, code quality, and development standards",
+          ],
+        },
+        // You can easily add a new role object here!
+        {
+          role: "MERN Stack Developer",
+          company: "Ameliasoft Ltd",
+          companyUrl: "https://ameliasoft.com",
+          duration: "09/2022 - 05/2023",
+          location: "Sector 12, Uttara, Dhaka",
+          description:
+            "Developed full-stack web applications and scalable APIs using the MERN stack.",
+          highlights: [
+            "Developed full-stack web applications using the MERN stack, working across React.js, Express.js, and MongoDB",
+            "Developed and integrated REST APIs using Express.js and MongoDB",
+          ],
+        },
+      ],
+    },
+  ],
+};
+export const DUMMY_STRUCTURED_RESUME2: StructuredResumeData = {
   personalInfo: {
     fullName: "Alex Morgan",
     headline: "Senior Full-Stack Software Engineer",
@@ -75,7 +123,8 @@ export const DUMMY_STRUCTURED_RESUME: StructuredResumeData = {
       items: [
         {
           id: "sum_1",
-          description: "Passionate software engineer with over 6 years of experience building scalable web applications, optimizing backend architectures, and crafting intuitive user interfaces using React, TypeScript, and Node.js.",
+          description:
+            "Passionate software engineer with over 6 years of experience building scalable web applications, optimizing backend architectures, and crafting intuitive user interfaces using React, TypeScript, and Node.js.",
         },
       ],
     },
@@ -129,7 +178,8 @@ export const DUMMY_STRUCTURED_RESUME: StructuredResumeData = {
           location: "Berkeley, CA",
           startDate: "Aug 2015",
           endDate: "May 2019",
-          description: "Graduated with Honors. Focused on Distributed Systems and Human-Computer Interaction.",
+          description:
+            "Graduated with Honors. Focused on Distributed Systems and Human-Computer Interaction.",
         },
       ],
     },
@@ -146,7 +196,8 @@ export const DUMMY_STRUCTURED_RESUME: StructuredResumeData = {
           subtitle: "Open Source Tool",
           startDate: "2025",
           endDate: "Present",
-          description: "An open-source command-line tool that bootstraps production-ready micro-frontends.",
+          description:
+            "An open-source command-line tool that bootstraps production-ready micro-frontends.",
           link: "https://github.com/alexmorgan/devmatrix",
           skills: ["TypeScript", "Node.js", "Commander.js"],
         },
@@ -162,7 +213,13 @@ export const DUMMY_STRUCTURED_RESUME: StructuredResumeData = {
         {
           id: "skill_1",
           title: "Frontend & Languages",
-          skills: ["TypeScript", "JavaScript", "React", "Next.js", "Tailwind CSS"],
+          skills: [
+            "TypeScript",
+            "JavaScript",
+            "React",
+            "Next.js",
+            "Tailwind CSS",
+          ],
         },
         {
           id: "skill_2",

@@ -21,7 +21,106 @@ const Index = () => {
     scrollToolbar,
   } = useDrag({ activeTool, setActiveTool });
   const { handleToolClick } = useBtnClick({ activeTool, setActiveTool });
-const handleDownloadVectorPdf = async () => {
+
+  const handleDownloadVectorPdf = async () => {
+    const resumeElement = document.querySelector(".resume-editor");
+
+    if (!resumeElement) {
+      console.error("Resume element not found");
+      return;
+    }
+
+    let cssText = "";
+
+    for (const styleSheet of Array.from(document.styleSheets)) {
+      try {
+        if (styleSheet.cssRules) {
+          cssText += Array.from(styleSheet.cssRules)
+            .map((rule) => rule.cssText)
+            .join("\n");
+        }
+      } catch (error) {
+        console.warn("Unable to read stylesheet:", styleSheet.href);
+      }
+    }
+
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8" />
+
+        <style>
+          ${cssText}
+
+          *,
+          *::before,
+          *::after {
+            box-sizing: border-box;
+          }
+
+          html,
+          body {
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+          }
+
+          body {
+            width: 940px;
+          }
+
+          .resume-editor {
+            height: auto !important;
+            max-height: none !important;
+          }
+
+          .resume-main-editor-container {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+          }
+
+          .page {
+            margin: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            background: #ffffff !important;
+          }
+
+          .page:first-child {
+            margin-top: 0 !important;
+          }
+        </style>
+      </head>
+
+      <body>
+        ${resumeElement.outerHTML}
+      </body>
+    </html>
+  `;
+
+    const response = await fetch("/api/generate-pdf", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ htmlContent }),
+    });
+
+    if (!response.ok) throw new Error("Network response was not ok");
+
+    // Convert the response stream into a downloadable blob link
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "resume.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadVectorPdf2 = async () => {
     // Select your resume container DOM element
     const resumeElement = document.querySelector(".page");
     if (!resumeElement) return;
@@ -47,29 +146,28 @@ const handleDownloadVectorPdf = async () => {
     `;
 
     try {
-        const response = await fetch('/api/generate-pdf', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ htmlContent }),
-        });
+      const response = await fetch("/api/generate-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ htmlContent }),
+      });
 
-        if (!response.ok) throw new Error("Network response was not ok");
+      if (!response.ok) throw new Error("Network response was not ok");
 
-        // Convert the response stream into a downloadable blob link
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'resume.pdf';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-
+      // Convert the response stream into a downloadable blob link
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "resume.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
     } catch (err) {
-        console.error("Download failed:", err);
+      console.error("Download failed:", err);
     }
-};
+  };
   return (
     <header className="sticky top-[65px] z-40 w-full border-b border-slate-200/70 bg-white/90 backdrop-blur-xl">
       <div

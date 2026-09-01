@@ -6,7 +6,7 @@ export const RESUME_CONSTANTS = {
   toolBarHeight: "45px",
 
   editorShell: {
-    leftSectionWidth: "350px",
+    leftSectionWidth: "900px",
     middleSectionWidth: "900px",
   },
 } as const;

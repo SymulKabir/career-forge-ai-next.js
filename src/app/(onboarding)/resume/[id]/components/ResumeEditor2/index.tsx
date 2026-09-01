@@ -3,7 +3,7 @@ import './style.scss'
 import { RESUME_CONSTANTS } from "../../constants/resume-utils";
 import { RESUME_SETTING } from "./constants/resumeSetting";
 import {DUMMY_STRUCTURED_RESUME} from "./constants/resumeData"
-import SectionBox from "./components/SectionBox"
+import MilestoneCard from "./components/MilestoneCard"
 
 
 const Index = () => {
@@ -13,6 +13,8 @@ const Index = () => {
   const containerHeight =
     RESUME_CONSTANTS.editorShell.leftSectionWidth;
 
+
+    console.log("resumeData ---->>>", resumeData)
     return <section className="resume-editor" 
     style={
         {
@@ -37,7 +39,10 @@ const Index = () => {
                     <div className="resume-body">
                         {
                             resumeData?.sections?.map((data, index) => {
-                                return <SectionBox key={index} currentConfig={currentConfig} setCurrentConfig={setCurrentConfig} data={data} />
+                                if(data.sectionLayout === "MilestoneCard") {
+                                    return <MilestoneCard key={index} data={data} />
+                                }
+                                // return <SectionBox key={index} currentConfig={currentConfig} setCurrentConfig={setCurrentConfig} data={data} />
                             })
                         }
                     </div>
