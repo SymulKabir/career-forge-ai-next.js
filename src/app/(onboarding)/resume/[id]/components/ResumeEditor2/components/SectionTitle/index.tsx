@@ -1,10 +1,11 @@
 import React from "react";
 import EditableText from "../EditableText";
-import { useResumeEditor } from "../../../../context/resume-editor-context";
+import { useResumeContext } from "../../../../context/resume-editor-context";
 import { px } from "../../utils/resumeEditor";
 
-const Index = ({ value = "" }) => {
-  const { setting } = useResumeEditor(); 
+const Index = ({ value = "", name }) => {
+  const { setting } = useResumeContext();
+   
   return (
     <>
       <style>
@@ -32,7 +33,7 @@ const Index = ({ value = "" }) => {
         <EditableText
           tag="h2"
           value={value}
-          //   onChange={handleSectionTitleChange}
+          name={name}  
         />
       </div>
     </>

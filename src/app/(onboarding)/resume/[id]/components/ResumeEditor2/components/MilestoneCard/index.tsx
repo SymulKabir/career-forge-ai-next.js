@@ -2,13 +2,14 @@
 
 import React, { useState } from "react";
 import EditableText from "../EditableText";
-import { useResumeEditor } from "../../../../context/resume-editor-context";
+import { useResumeContext } from "../../../../context/resume-editor-context";
 import SectionTitle from "../SectionTitle";
 import PrimaryTitle from "../PrimaryTitle";
 import SecondaryTitle from "../SecondaryTitle";
 
 interface ExperienceProps {
   data?: any;
+  name?: any
 }
 
 const px = (value?: number | string) => {
@@ -18,15 +19,13 @@ const px = (value?: number | string) => {
   return `${value}px`;
 };
 
-const Index: React.FC<ExperienceProps> = ({ data: initialData, index }) => {
+const Index: React.FC<ExperienceProps> = ({ data: initialData, name }) => {
   const [sectionData, setSectionData] = useState(initialData);
-  const { setting, resumeData,setResumeData } = useResumeEditor(); 
+  const { setting, resumeData, setResumeData } = useResumeContext();
 
   const { font, textStyles, colors } = setting || {};
 
   const sectionTitle = textStyles?.sectionTitle;
-  const primary = textStyles?.primary;
-  const secondary = textStyles?.secondary;
   const body = textStyles?.body;
   const metadata = textStyles?.metadata;
   const highlight = textStyles?.highlight;
@@ -43,11 +42,14 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData, index }) => {
     setSectionData((prev: any) => ({ ...prev, sectionTitle: value }));
   };
 
-const handleResumeDataChange = (value: any) => {
-  console.log("value --->>>", value)
-  console.log("sectionData filter--->>", sectionData.section[index])
-  // setResumeData((prev: any) => ({ ...prev, sections: [...prev.sections.map((s: any, i: number) => i === index ? sectionData : s) }));
-}
+  const handleResumeDataChange = (e: any) => {
+    console.log("e --->>>", e)
+    console.log("e.target --->>>", e.target)
+    console.log("e.target.name --->>>", e.target.name)
+    console.log("e.target.value --->>>", e.target.value)
+    // console.log("sectionData filter--->>", sectionData.section[index])
+    // setResumeData((prev: any) => ({ ...prev, sections: [...prev.sections.map((s: any, i: number) => i === index ? sectionData : s) }));
+  }
 
   const handleRoleFieldChange = (
     index: number,
@@ -192,7 +194,7 @@ const handleResumeDataChange = (value: any) => {
 
       <div className="milestone-container">
         {/* Section Title */}
-        <SectionTitle value={sectionData?.sectionTitle} />
+        <SectionTitle value={sectionData?.sectionTitle} name={`${name}.sectionTitle`} />
 
         {(sectionData?.items || []).map((item: any, itemIndex: number) => (
           <div key={itemIndex}>
@@ -215,11 +217,11 @@ const handleResumeDataChange = (value: any) => {
 
               <div className="experience-content">
                 {/* Role Title (Primary Style applied via .experience-content h3 selector) */}
-                <PrimaryTitle value={item?.role || ""} />
+                <PrimaryTitle name={`${name}.items.${itemIndex}.role`} />
 
                 {/* Company Name (Secondary Style) */}
-                <SecondaryTitle value={item?.company || ""} />
- 
+                <SecondaryTitle name={`${name}.items.${itemIndex}.company`} />
+
 
                 {/* Metadata */}
                 <div className="metadata-row">
@@ -239,11 +241,7 @@ const handleResumeDataChange = (value: any) => {
                     </svg>
                     <EditableText
                       tag="span"
-                      value={item?.duration || ""}
-                      handleInputChange={(val) =>
-                        // handleRoleFieldChange(itemIndex, "duration", val)
-                        handleResumeDataChange(val)
-                      }
+                      name={`${name}.items.${itemIndex}.duration`}
                     />
                   </div>
 
@@ -261,10 +259,7 @@ const handleResumeDataChange = (value: any) => {
                     </svg>
                     <EditableText
                       tag="span"
-                      value={item?.location || ""}
-                      handleInputChange={(val) =>
-                        handleRoleFieldChange(itemIndex, "location", val)
-                      }
+                      name={`${name}.items.${itemIndex}.location`}
                     />
                   </div>
                 </div>
@@ -286,10 +281,8 @@ const handleResumeDataChange = (value: any) => {
                       </svg>
                       <EditableText
                         tag="span"
-                        value={item.companyUrl}
-                        handleInputChange={(val) =>
-                          handleRoleFieldChange(itemIndex, "companyUrl", val)
-                        }
+                        name={`${name}.items.${itemIndex}.companyUrl`}
+
                       />
                     </span>
                   </div>
@@ -299,11 +292,7 @@ const handleResumeDataChange = (value: any) => {
                 <EditableText
                   tag="p"
                   className="resume-body-text"
-                  value={item?.description || ""}
-                  handleInputChange={(value) =>
-                    // handleRoleFieldChange(itemIndex, "description", value)
-                    handleResumeDataChange(value)
-                  }
+                  name={`${name}.items.${itemIndex}.description`}
                 />
 
                 {/* Highlights */}
@@ -316,14 +305,7 @@ const handleResumeDataChange = (value: any) => {
                       >
                         <EditableText
                           tag="span"
-                          value={highlightText}
-                          handleInputChange={(value) =>
-                            handleHighlightChange(
-                              itemIndex,
-                              highlightIndex,
-                              value,
-                            )
-                          }
+                          name={`${name}.items.${itemIndex}.highlights.${highlightIndex}`}
                         />
                       </li>
                     ),

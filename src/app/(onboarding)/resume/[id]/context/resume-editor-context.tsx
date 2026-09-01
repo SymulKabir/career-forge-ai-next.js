@@ -40,11 +40,11 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useResumeEditor() {
+export function useResumeContext() {
   const context = useContext(ResumeEditorContext);
 
   if (!context) {
-    throw new Error("useResumeEditor must be used inside ResumeEditorProvider");
+    throw new Error("useResumeContext must be used inside ResumeEditorProvider");
   }
 
   return context;

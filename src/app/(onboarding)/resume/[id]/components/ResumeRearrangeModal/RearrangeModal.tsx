@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import type { ResumeLayoutItem } from "../../types";
 import ResumeLayoutCard from "./ResumeLayoutCard";
 import { DEFAULT_RESUME_LAYOUT } from "../../constants/resume-utils";
-import { useResumeEditor } from "../../context/resume-editor-context";
+import { useResumeContext } from "../../context/resume-editor-context";
 
 type RearrangeModalProps = {
   layoutItems?: ResumeLayoutItem[];
@@ -16,7 +16,7 @@ const RearrangeModal = ({
   layoutItems = DEFAULT_RESUME_LAYOUT,
   onSave,
 }: RearrangeModalProps) => {
-  const { setActiveTool } = useResumeEditor();
+  const { setActiveTool } = useResumeContext();
 
   /* =========================================================
      GROUP LAYOUT ITEMS BY PAGE

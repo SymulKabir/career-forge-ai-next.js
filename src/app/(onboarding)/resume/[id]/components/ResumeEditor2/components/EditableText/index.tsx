@@ -1,21 +1,20 @@
 import React, { useState } from "react";
-
+import useEditor from "../../hooks/useEditor"
 // ==========================================
 // REUSABLE EDITABLE TEXT COMPONENT
 // ==========================================
 interface EditableTextProps {
-  value: string;
   tag?: any;
+  name?: string;
   className?: string;
-  handleInputChange?: (value: string) => void;
 }
 
 const Index: React.FC<EditableTextProps> = ({
-  value,
   tag = "span",
-  className,
-  handleInputChange,
+  name,
+  className
 }) => {
+  const { getValue, handleInputChange } = useEditor()
   const Component = tag as any;
 
   return (
@@ -45,19 +44,21 @@ const Index: React.FC<EditableTextProps> = ({
       </style>
       <Component
         className={`editable-field ${className || ""}`}
+        name={name}
         contentEditable
         suppressContentEditableWarning
-        onChange={(e)=> {
+        onChange={(e) => {
           console.log("e of onchange----->>>>", e)
         }}
-        onBlur={(e: React.FocusEvent<HTMLElement>) =>{
+        onBlur={(e: React.FocusEvent<HTMLElement>) => {
           console.log("e of onblur----->>>>", e)
-          handleInputChange?.(e.currentTarget.textContent || "")
+          handleInputChange(e)
         }
-          
+
         }
       >
-        {value}
+        {name ? getValue(name) : ""}
+        {/* {value} */}
       </Component>
     </>
   );

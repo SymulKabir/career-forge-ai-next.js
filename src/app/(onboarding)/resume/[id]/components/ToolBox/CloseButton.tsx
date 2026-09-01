@@ -1,10 +1,10 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useResumeEditor } from "../../context/resume-editor-context";
+import { useResumeContext } from "../../context/resume-editor-context";
 
 export default function CloseButton() {
-  const { setActiveTool } = useResumeEditor();
+  const { setActiveTool } = useResumeContext();
 
   return (
     <button

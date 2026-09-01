@@ -1,10 +1,10 @@
 import React from "react";
 import EditableText from "../EditableText";
-import { useResumeEditor } from "../../../../context/resume-editor-context";
+import { useResumeContext } from "../../../../context/resume-editor-context";
 import { px } from "../../utils/resumeEditor";
 
-const Index = ({ value = "" }) => {
-  const { setting } = useResumeEditor();
+const Index = ({  name }) => {
+  const { setting } = useResumeContext();
   console.log("setting --->>", setting)
   return (
     <>
@@ -26,7 +26,7 @@ const Index = ({ value = "" }) => {
       <EditableText
         tag="h3"
         className="primary-title"
-        value={value}
+        name={name}
         // onChange={(value) => handleRoleFieldChange(itemIndex, "role", value)}
       />
     </>

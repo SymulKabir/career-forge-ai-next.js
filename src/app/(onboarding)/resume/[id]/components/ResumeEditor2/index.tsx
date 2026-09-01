@@ -3,11 +3,11 @@ import './style.scss'
 import { RESUME_CONSTANTS } from "../../constants/resume-utils";
 import { RESUME_SETTING } from "./constants/resumeSetting";
 import MilestoneCard from "./components/MilestoneCard"
-import { useResumeEditor } from "../../context/resume-editor-context";
+import { useResumeContext } from "../../context/resume-editor-context";
 
 
 const Index = () => {
-    const { resumeData,setResumeData } = useResumeEditor()
+    const { resumeData,setResumeData } = useResumeContext()
     const [resumeSetting, setResumeSetting] = useState({...RESUME_SETTING})
     const [currentConfig, setCurrentConfig] = useState({})
   const containerHeight =
@@ -40,7 +40,7 @@ const Index = () => {
                         {
                             resumeData?.sections?.map((data, index) => {
                                 if(data.sectionLayout === "MilestoneCard") {
-                                    return <MilestoneCard key={index} data={data} index={index} />
+                                    return <MilestoneCard key={index} data={data} name={`sections.${index}`} />
                                 }
                             })
                         }
