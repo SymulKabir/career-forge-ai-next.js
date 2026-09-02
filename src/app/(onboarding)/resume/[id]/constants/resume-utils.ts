@@ -2,12 +2,11 @@ import type { ResumeLayoutItem, ToolItem } from "../types";
 
 export const RESUME_CONSTANTS = {
   headerHeight: "65px",
-  headerHeight2: "605px",
   toolBarHeight: "45px",
 
   editorShell: {
-    leftSectionWidth: "900px",
-    middleSectionWidth: "900px",
+    leftSectionWidth: "350px",
+    resumeEditorHeight: "900px",
   },
 } as const;
 

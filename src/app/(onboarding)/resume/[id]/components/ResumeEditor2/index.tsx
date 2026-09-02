@@ -11,10 +11,9 @@ const Index = () => {
     const [resumeSetting, setResumeSetting] = useState({...RESUME_SETTING})
     const [currentConfig, setCurrentConfig] = useState({})
   const containerHeight =
-    RESUME_CONSTANTS.editorShell.leftSectionWidth;
+    RESUME_CONSTANTS.editorShell.resumeEditorHeight;
 
 
-    console.log("resumeData ---->>>", resumeData)
     return <section className="resume-editor" 
     style={
         {

@@ -26,6 +26,7 @@ export default function ResumeEditorShell() {
           h-[calc(100vh_-_65px_-_65px)]
           flex
           justify-center
+          
         "
       >
         <section
@@ -45,7 +46,6 @@ export default function ResumeEditorShell() {
                 ease-in-out
                 z-[2]
                 left-[-${RESUME_CONSTANTS.editorShell.leftSectionWidth}]
-                left-[-350px]
                 w-[${RESUME_CONSTANTS.editorShell.leftSectionWidth}]
                 `}
         >

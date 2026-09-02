@@ -5,7 +5,6 @@ import { px } from "../../utils/resumeEditor";
 
 const Index = ({  name }) => {
   const { setting } = useResumeContext();
-  console.log("setting --->>", setting)
   return (
     <>
       <style>
