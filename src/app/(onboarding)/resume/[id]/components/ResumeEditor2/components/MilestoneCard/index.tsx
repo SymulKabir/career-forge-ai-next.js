@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import EditableText from "../EditableText";
+import ListEditor from "../ListEditor";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import SectionTitle from "../SectionTitle";
 import PrimaryTitle from "../PrimaryTitle";
@@ -19,12 +20,9 @@ const px = (value?: number | string) => {
   return `${value}px`;
 };
 
-const Index: React.FC<ExperienceProps> = ({ data: initialData, name }) => {
-  const [sectionData, setSectionData] = useState(initialData);
+const Index: React.FC<ExperienceProps> = ({ data, name }) => {
   const { setting, resumeData, setResumeData } = useResumeContext();
-
   const { font, textStyles, colors } = setting || {};
-
   const sectionTitle = textStyles?.sectionTitle;
   const body = textStyles?.body;
   const metadata = textStyles?.metadata;
@@ -38,49 +36,7 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData, name }) => {
   const logoBackground = colors?.companyLogoBackground || "#edf2f7";
   const gapValue = px(setting?.gap);
 
-  const handleSectionTitleChange = (value: string) => {
-    setSectionData((prev: any) => ({ ...prev, sectionTitle: value }));
-  };
-
-  const handleResumeDataChange = (e: any) => {
-    console.log("e --->>>", e)
-    console.log("e.target --->>>", e.target)
-    console.log("e.target.name --->>>", e.target.name)
-    console.log("e.target.value --->>>", e.target.value)
-    // console.log("sectionData filter--->>", sectionData.section[index])
-    // setResumeData((prev: any) => ({ ...prev, sections: [...prev.sections.map((s: any, i: number) => i === index ? sectionData : s) }));
-  }
-
-  const handleRoleFieldChange = (
-    index: number,
-    field: string,
-    value: string,
-  ) => {
-    setSectionData((prev: any) => {
-      const updatedItems = [...(prev?.items || [])];
-      updatedItems[index] = { ...updatedItems[index], [field]: value };
-      return { ...prev, items: updatedItems };
-    });
-  };
-
-  const handleHighlightChange = (
-    itemIndex: number,
-    highlightIndex: number,
-    value: string,
-  ) => {
-    setSectionData((prev: any) => {
-      const updatedItems = [...(prev?.items || [])];
-      const updatedHighlights = [
-        ...(updatedItems[itemIndex]?.highlights || []),
-      ];
-      updatedHighlights[highlightIndex] = value;
-      updatedItems[itemIndex] = {
-        ...updatedItems[itemIndex],
-        highlights: updatedHighlights,
-      };
-      return { ...prev, items: updatedItems };
-    });
-  };
+  
 
   return (
     <>
@@ -194,9 +150,9 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData, name }) => {
 
       <div className="milestone-container">
         {/* Section Title */}
-        <SectionTitle value={sectionData?.sectionTitle} name={`${name}.sectionTitle`} />
+        <SectionTitle value={data?.sectionTitle} name={`${name}.sectionTitle`} />
 
-        {(sectionData?.items || []).map((item: any, itemIndex: number) => (
+        {(data?.items || []).map((item: any, itemIndex: number) => (
           <div key={itemIndex}>
             <div className="experience-card">
               <div className="company-logo-box">
@@ -303,7 +259,7 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData, name }) => {
                         key={highlightIndex}
                         className="resume-highlight-item"
                       >
-                        <EditableText
+                        <ListEditor
                           tag="span"
                           name={`${name}.items.${itemIndex}.highlights.${highlightIndex}`}
                         />
@@ -314,7 +270,7 @@ const Index: React.FC<ExperienceProps> = ({ data: initialData, name }) => {
               </div>
             </div>
 
-            {itemIndex < (sectionData?.items?.length || 0) - 1 && (
+            {itemIndex < (data?.items?.length || 0) - 1 && (
               <hr className="section-divider" />
             )}
           </div>

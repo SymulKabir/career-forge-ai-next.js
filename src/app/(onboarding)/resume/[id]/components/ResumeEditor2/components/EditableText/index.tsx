@@ -46,20 +46,17 @@ const Index: React.FC<EditableTextProps> = ({
         name={name}
         contentEditable
         suppressContentEditableWarning
-        onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            splitAndCreateItem(e)
-            console.log("Enter pressed");
+        // onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => {
+        //   if (e.key === "Enter") {
+        //     splitAndCreateItem(e)
+        //     console.log("Enter pressed"); 
+        //   }
+        // }}
+        // onBlur={(e: React.FocusEvent<HTMLElement>) => {
+        //   handleInputChange(e)
+        // }
 
-            // Your logic here
-          }
-        }}
-        onBlur={(e: React.FocusEvent<HTMLElement>) => {
-          handleInputChange(e)
-        }
-
-        }
+        // }
       >
         {name ? getValue(name) : ""}
         {/* {value} */}

@@ -46,6 +46,7 @@ export default function ResumeEditorShell() {
                 ease-in-out
                 z-[2]
                 left-[-${RESUME_CONSTANTS.editorShell.leftSectionWidth}]
+                left-[-350px]
                 w-[${RESUME_CONSTANTS.editorShell.leftSectionWidth}]
                 `}
         >

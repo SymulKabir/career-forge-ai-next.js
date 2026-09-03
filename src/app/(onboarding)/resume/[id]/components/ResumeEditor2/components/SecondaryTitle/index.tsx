@@ -10,16 +10,16 @@ const Index = ({ name }) => {
       <style>
         {`
             .secondary-title {
-          font-size: ${px(setting?.textStyles?.secondary?.fontSize)};
-          font-weight: ${setting?.textStyles?.secondary?.fontWeight ?? 500};
-          color: ${setting?.textStyles?.secondary?.color || "#2563eb"};
-          line-height: ${setting?.textStyles?.secondary?.lineHeight ?? 1.4};
-          letter-spacing: ${px(setting?.textStyles?.secondary?.letterSpacing)};
-          text-transform: ${setting?.textStyles?.secondary?.textTransform || "none"};
-          display: inline-block;
-          margin-bottom: 6px;
-          cursor: text;
-        }
+              font-size: ${px(setting?.textStyles?.secondary?.fontSize)};
+              font-weight: ${setting?.textStyles?.secondary?.fontWeight ?? 500};
+              color: ${setting?.textStyles?.secondary?.color || "#2563eb"};
+              line-height: ${setting?.textStyles?.secondary?.lineHeight ?? 1.4};
+              letter-spacing: ${px(setting?.textStyles?.secondary?.letterSpacing)};
+              text-transform: ${setting?.textStyles?.secondary?.textTransform || "none"};
+              display: inline-block;
+              margin-bottom: 6px;
+              cursor: text;
+            }
           `}
       </style>
       <EditableText
