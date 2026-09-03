@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { RESUME_SETTING } from "../components/ResumeEditor2/constants/resumeSetting";
-import { DUMMY_STRUCTURED_RESUME } from "../components/ResumeEditor2/constants/resumeData";
+import { RESUME_SETTING } from "../components/ResumeEditor/constants/resumeSetting";
+import { DUMMY_STRUCTURED_RESUME } from "../components/ResumeEditor/constants/resumeData";
 
 interface ResumeEditorContextValue {
   activeTool: string | null;

@@ -75,14 +75,14 @@ export const DUMMY_STRUCTURED_RESUME = {
           location: "Khilkhet, Dhaka",
           description:
             "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
-          highlights: [
-            "Lead the development and technical direction of production web applications across frontend, backend, and infrastructure",
-            "Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB",
-            "Design, configure, and maintain Linux-based production servers, including security, monitoring, performance optimization, and troubleshooting",
-            "Manage application deployment pipelines and production releases using Docker, CI/CD practices, cloud infrastructure, and shell scripting",
-            "Develop backend APIs, microservices, and real-time communication systems for production applications",
-            "Mentor junior developers and contribute to architecture decisions, code quality, and development standards",
-          ],
+          content: `
+    <ul>
+      <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
+      <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
+      <li>Design, configure, and maintain Linux-based production servers.</li>
+      <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
+    </ul>
+  `
         },
         // You can easily add a new role object here!
         {
@@ -93,10 +93,14 @@ export const DUMMY_STRUCTURED_RESUME = {
           location: "Sector 12, Uttara, Dhaka",
           description:
             "Developed full-stack web applications and scalable APIs using the MERN stack.",
-          highlights: [
-            "Developed full-stack web applications using the MERN stack, working across React.js, Express.js, and MongoDB",
-            "Developed and integrated REST APIs using Express.js and MongoDB",
-          ],
+          content: `
+    <ul>
+      <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
+      <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
+      <li>Design, configure, and maintain Linux-based production servers.</li>
+      <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
+    </ul>
+  `
         },
       ],
     },

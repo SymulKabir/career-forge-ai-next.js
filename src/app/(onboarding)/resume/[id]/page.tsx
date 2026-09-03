@@ -10,7 +10,7 @@ import FixResume from "./components/ToolBox/FixResume";
 import CheckAndTailor from "./components/ToolBox/CheckAndTailor";
 import Templates from "./components/ToolBox/Templates";
 import ResumeRearrangeModal from "./components/ResumeRearrangeModal/RearrangeModal";
-import ResumeEditor from "./components/ResumeEditor2";
+import ResumeEditor from "./components/ResumeEditor";
 
 export default function ResumeEditorShell() {
   return (

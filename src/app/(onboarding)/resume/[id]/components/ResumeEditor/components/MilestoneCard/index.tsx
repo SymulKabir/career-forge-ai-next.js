@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import EditableText from "../EditableText";
-import ListEditor from "../ListEditor";
+import TextEditor from "../TextEditor";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import SectionTitle from "../SectionTitle";
 import PrimaryTitle from "../PrimaryTitle";
@@ -21,7 +21,7 @@ const px = (value?: number | string) => {
 };
 
 const Index: React.FC<ExperienceProps> = ({ data, name }) => {
-  const { setting, resumeData, setResumeData } = useResumeContext();
+  const { setting } = useResumeContext();
   const { font, textStyles, colors } = setting || {};
   const sectionTitle = textStyles?.sectionTitle;
   const body = textStyles?.body;
@@ -36,7 +36,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
   const logoBackground = colors?.companyLogoBackground || "#edf2f7";
   const gapValue = px(setting?.gap);
 
-  
+
 
   return (
     <>
@@ -148,13 +148,13 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
         }
       `}</style>
 
-      <div className="milestone-container">
+      <div className="milestone-container section-wrapper">
         {/* Section Title */}
         <SectionTitle value={data?.sectionTitle} name={`${name}.sectionTitle`} />
 
         {(data?.items || []).map((item: any, itemIndex: number) => (
           <div key={itemIndex}>
-            <div className="experience-card">
+            <div className="experience-card section-wrapper">
               <div className="company-logo-box">
                 <svg
                   width="22"
@@ -244,29 +244,15 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
                   </div>
                 )}
 
-                {/* Description (Body) */}
-                <EditableText
-                  tag="p"
-                  className="resume-body-text"
+                {/* Description (Body) */} 
+                 <TextEditor 
                   name={`${name}.items.${itemIndex}.description`}
-                />
-
-                {/* Highlights */}
-                <ul className="highlights-list">
-                  {(item?.highlights || []).map(
-                    (highlightText: string, highlightIndex: number) => (
-                      <li
-                        key={highlightIndex}
-                        className="resume-highlight-item"
-                      >
-                        <ListEditor
-                          tag="span"
-                          name={`${name}.items.${itemIndex}.highlights.${highlightIndex}`}
-                        />
-                      </li>
-                    ),
-                  )}
-                </ul>
+                  mode="description"
+                /> 
+                <TextEditor 
+                  name={`${name}.items.${itemIndex}.content`}
+                  mode="list"
+                /> 
               </div>
             </div>
 
