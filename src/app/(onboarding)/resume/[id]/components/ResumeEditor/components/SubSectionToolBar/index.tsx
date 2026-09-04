@@ -11,9 +11,11 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
+import useEditor from "../../hooks/useEditor";
+import { useResumeContext } from "../../../../context/resume-editor-context";
 
 interface ResumeToolbarProps {
-  variant?: "subsection" | "section"; // Controls whether it's for an inner entry or a main section
+  variant?: "subsection" | "section";
   onAddEntry?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
@@ -29,6 +31,7 @@ interface ResumeToolbarProps {
     isPresent: boolean;
   };
   onDateChange?: (dates: any) => void;
+  propertyPath?: string; // Path like "sections.0.items.0"
 }
 
 export default function ResumeToolbar({
@@ -38,18 +41,8 @@ export default function ResumeToolbar({
   onMoveDown,
   onToggleFormatting,
   onDelete,
-  visibilitySettings = variant === "section"
-    ? { uppercaseTitles: true } // Cleaned up to show only the relevant main-section toggle(s)
-    : {
-        title: true,
-        companyName: true,
-        description: true,
-        bullets: true,
-        location: true,
-        datePeriod: true,
-        link: true,
-        companyLogo: false,
-      },
+  propertyPath,
+  visibilitySettings,
   onToggleVisibility = () => {},
   dateRange = {
     fromMonth: "Jul",
@@ -64,7 +57,22 @@ export default function ResumeToolbar({
     "settings" | "date" | null
   >(null);
   const [dateTab, setDateTab] = useState<"from" | "to">("from");
+  const [sectionData, setSectionData] = useState<any>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Destructure update function or state setter from useEditor hook if available
+  const { getValue, handleInputChange } = useEditor();
+  const {resumeData} = useResumeContext()
+
+  console.log("resumeData form 9999__>>", resumeData)
+  useEffect(() => {
+    console.log("Hello form use effect")
+    if (propertyPath) {
+      const currentValue = getValue(propertyPath)
+      console.log("currentValue -->", currentValue)
+      setSectionData(currentValue);
+    }
+  }, [propertyPath, getValue, resumeData]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -78,6 +86,36 @@ export default function ResumeToolbar({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+ 
+
+  // Build settings map dynamically from sectionData fields if available, otherwise fallback
+  const resolvedSettings = React.useMemo(() => {
+    if (sectionData && typeof sectionData === "object") {
+      const settingsMap: Record<string, boolean> = {};
+      Object.keys(sectionData).forEach((key) => {
+        // Only map properties that follow the { content, isVisible } structure
+        if (
+          sectionData[key] &&
+          typeof sectionData[key] === "object" &&
+          "isVisible" in sectionData[key]
+        ) {
+          settingsMap[key] = sectionData[key].isVisible;
+        }
+      });
+      return settingsMap;
+    }
+    return (
+      visibilitySettings || {
+        title: true,
+        subtitle: true,
+        link: true,
+        duration: true,
+        location: true,
+        description: true,
+        bullets: true,
+      }
+    );
+  }, [sectionData, visibilitySettings]);
 
   const months = [
     "Jan",
@@ -211,7 +249,7 @@ export default function ResumeToolbar({
             </div>
 
             <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-              {Object.entries(visibilitySettings).map(([key, isVisible]) => {
+              {Object.entries(resolvedSettings).map(([key, isVisible]) => {
                 const labelFormatted = key
                   .replace(/([A-Z])/g, " $1")
                   .replace(/^./, (str) => str.toUpperCase());
@@ -225,7 +263,10 @@ export default function ResumeToolbar({
                       {labelFormatted}
                     </span>
                     <button
-                      onClick={() => onToggleVisibility(key)}
+                      name={`${propertyPath}.${key}.isVisible`}
+                      datatype="boolean"
+                      value={!isVisible.toString()}
+                      onClick={handleInputChange}
                       className={`w-10 h-6 flex items-center rounded-full transition-colors p-1 ${
                         isVisible
                           ? "bg-gradient-to-r from-indigo-600 to-violet-600 shadow-sm shadow-indigo-500/20"
@@ -272,39 +313,6 @@ export default function ResumeToolbar({
               </button>
             </div>
 
-            {/* Present Toggle if on 'To' tab */}
-            {dateTab === "to" && (
-              <div className="flex items-center justify-between mb-4 p-3 bg-slate-50 border border-slate-200/60 rounded-xl text-sm">
-                <div>
-                  <span className="font-semibold text-xs text-slate-800 block">
-                    Current Position
-                  </span>
-                  <span className="text-[10px] text-slate-500">
-                    Mark role as ongoing
-                  </span>
-                </div>
-                <button
-                  onClick={() =>
-                    onDateChange({
-                      ...dateRange,
-                      isPresent: !dateRange.isPresent,
-                    })
-                  }
-                  className={`w-10 h-6 flex items-center rounded-full transition-colors p-1 ${
-                    dateRange.isPresent
-                      ? "bg-indigo-600 shadow-sm shadow-indigo-500/20"
-                      : "bg-slate-200 border border-slate-300"
-                  }`}
-                >
-                  <div
-                    className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform ${
-                      dateRange.isPresent ? "translate-x-4" : "translate-x-0"
-                    }`}
-                  />
-                </button>
-              </div>
-            )}
-
             {/* Years Grid */}
             <div className="mb-4">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
@@ -339,39 +347,37 @@ export default function ResumeToolbar({
             </div>
 
             {/* Months Grid */}
-            {(dateTab === "from" || !dateRange.isPresent) && (
-              <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
-                  Month
-                </span>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {months.map((m) => {
-                    const isSelected =
-                      (dateTab === "from"
-                        ? dateRange.fromMonth
-                        : dateRange.toMonth) === m;
-                    return (
-                      <button
-                        key={m}
-                        onClick={() =>
-                          onDateChange({
-                            ...dateRange,
-                            [dateTab === "from" ? "fromMonth" : "toMonth"]: m,
-                          })
-                        }
-                        className={`py-2 text-xs font-semibold rounded-xl border transition-all ${
-                          isSelected
-                            ? "bg-indigo-50 border-indigo-500 text-indigo-700 shadow-sm"
-                            : "bg-slate-50/50 border-slate-200 hover:bg-slate-100 text-slate-700"
-                        }`}
-                      >
-                        {m}
-                      </button>
-                    );
-                  })}
-                </div>
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
+                Month
+              </span>
+              <div className="grid grid-cols-4 gap-1.5">
+                {months.map((m) => {
+                  const isSelected =
+                    (dateTab === "from"
+                      ? dateRange.fromMonth
+                      : dateRange.toMonth) === m;
+                  return (
+                    <button
+                      key={m}
+                      onClick={() =>
+                        onDateChange({
+                          ...dateRange,
+                          [dateTab === "from" ? "fromMonth" : "toMonth"]: m,
+                        })
+                      }
+                      className={`py-2 text-xs font-semibold rounded-xl border transition-all ${
+                        isSelected
+                          ? "bg-indigo-50 border-indigo-500 text-indigo-700 shadow-sm"
+                          : "bg-slate-50/50 border-slate-200 hover:bg-slate-100 text-slate-700"
+                      }`}
+                    >
+                      {m}
+                    </button>
+                  );
+                })}
               </div>
-            )}
+            </div>
           </div>
         )}
       </div>

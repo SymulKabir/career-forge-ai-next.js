@@ -154,8 +154,8 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
         />
         {/* Section Title */}
         <SectionTitle
-          value={data?.sectionTitle}
-          name={`${name}.sectionTitle`}
+          value={data?.sectionTitle?.content}
+          name={`${name}.sectionTitle.content`}
         />
 
         {(data?.items || []).map((item: any, itemIndex: number) => (
@@ -165,6 +165,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
           >
             <SubSectionToolBar
               variant="subsection"
+              propertyPath={`${name}.items.${itemIndex}`}
               // visibilitySettings={mainSectionSettings} // e.g. { uppercaseTitles: true, dividerLine: true }
               // onToggleVisibility={(key) => handleMainToggle(key)}
               // onMoveUp={handleMoveSectionUp}
@@ -189,10 +190,10 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
 
             <div className="experience-content">
               {/* Role Title (Primary Style applied via .experience-content h3 selector) */}
-              <PrimaryTitle name={`${name}.items.${itemIndex}.role`} />
+              <PrimaryTitle name={`${name}.items.${itemIndex}.title.content`} />
 
               {/* Company Name (Secondary Style) */}
-              <SecondaryTitle name={`${name}.items.${itemIndex}.company`} />
+              <SecondaryTitle name={`${name}.items.${itemIndex}.subtitle.content`} />
 
               {/* Metadata */}
               <div className="metadata-row">
@@ -212,7 +213,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
                   </svg>
                   <EditableText
                     tag="span"
-                    name={`${name}.items.${itemIndex}.duration`}
+                    name={`${name}.items.${itemIndex}.duration.content.from`}
                   />
                 </div>
 
@@ -230,13 +231,13 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
                   </svg>
                   <EditableText
                     tag="span"
-                    name={`${name}.items.${itemIndex}.location`}
+                    name={`${name}.items.${itemIndex}.location.content`}
                   />
                 </div>
               </div>
 
               {/* Website Link */}
-              {item?.companyUrl && (
+              {item?.link && (
                 <div>
                   <span className="resume-link-text">
                     <svg
@@ -252,7 +253,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
                     </svg>
                     <EditableText
                       tag="span"
-                      name={`${name}.items.${itemIndex}.companyUrl`}
+                      name={`${name}.items.${itemIndex}.link.content`}
                     />
                   </span>
                 </div>
@@ -260,11 +261,11 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
 
               {/* Description (Body) */}
               <TextEditor
-                name={`${name}.items.${itemIndex}.description`}
+                name={`${name}.items.${itemIndex}.description.content`}
                 mode="description"
               />
               <TextEditor
-                name={`${name}.items.${itemIndex}.content`}
+                name={`${name}.items.${itemIndex}.bullets.content`}
                 mode="list"
               />
             </div>
