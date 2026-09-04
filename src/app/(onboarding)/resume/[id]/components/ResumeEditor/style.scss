@@ -9,7 +9,7 @@
 
     .page {
       &:first-child {
-        margin-top: 50px;
+        margin: 50px 0px;
       }
 
       background-color: #fff;
@@ -48,13 +48,28 @@
           }
         }
       }
+      .section-container{
+        box-sizing: border-box;
+          width: 100%;
+          margin: 0 auto;
+      }
+
       .section-gap {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         gap: var(--section-gap);
+      }
+      .section-styles{
+        height: max-content;
       }
       .sub-section-padding {
         padding: 5px 0px;
+      }
+      .sub-section-divider {
         border-bottom: 1px dashed #e4e4e4;
+        &:last-child{
+          border-bottom: none;
+        }
       }
     }
   }

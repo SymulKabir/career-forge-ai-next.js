@@ -16,42 +16,12 @@ import { useResumeContext } from "../../../../context/resume-editor-context";
 
 interface ResumeToolbarProps {
   variant?: "subsection" | "section";
-  onAddEntry?: () => void;
-  onMoveUp?: () => void;
-  onMoveDown?: () => void;
-  onToggleFormatting?: () => void;
-  onDelete?: () => void;
-  visibilitySettings?: Record<string, boolean>;
-  onToggleVisibility?: (key: string) => void;
-  dateRange?: {
-    fromMonth: string;
-    fromYear: number;
-    toMonth: string;
-    toYear: number;
-    isPresent: boolean;
-  };
-  onDateChange?: (dates: any) => void;
   propertyPath?: string; // Path like "sections.0.items.0"
 }
 
 export default function ResumeToolbar({
   variant = "subsection",
-  onAddEntry,
-  onMoveUp,
-  onMoveDown,
-  onToggleFormatting,
-  onDelete,
-  propertyPath,
-  visibilitySettings,
-  onToggleVisibility = () => {},
-  dateRange = {
-    fromMonth: "Jul",
-    fromYear: 2023,
-    toMonth: "Jun",
-    toYear: 2026,
-    isPresent: false,
-  },
-  onDateChange = () => {},
+  propertyPath
 }: ResumeToolbarProps) {
   const [activeDropdown, setActiveDropdown] = useState<
     "settings" | "date" | null
@@ -64,16 +34,14 @@ export default function ResumeToolbar({
   const { getValue, handleInputChange } = useEditor();
   const {resumeData} = useResumeContext()
 
-  console.log("resumeData form 9999__>>", resumeData)
   useEffect(() => {
-    console.log("Hello form use effect")
     if (propertyPath) {
       const currentValue = getValue(propertyPath)
       console.log("currentValue -->", currentValue)
-      setSectionData(currentValue);
+      setSectionData({...currentValue});
     }
-  }, [propertyPath, getValue, resumeData]);
-
+  }, [propertyPath, resumeData]);
+console.log("resumeData --9>", resumeData)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -86,36 +54,7 @@ export default function ResumeToolbar({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
- 
 
-  // Build settings map dynamically from sectionData fields if available, otherwise fallback
-  const resolvedSettings = React.useMemo(() => {
-    if (sectionData && typeof sectionData === "object") {
-      const settingsMap: Record<string, boolean> = {};
-      Object.keys(sectionData).forEach((key) => {
-        // Only map properties that follow the { content, isVisible } structure
-        if (
-          sectionData[key] &&
-          typeof sectionData[key] === "object" &&
-          "isVisible" in sectionData[key]
-        ) {
-          settingsMap[key] = sectionData[key].isVisible;
-        }
-      });
-      return settingsMap;
-    }
-    return (
-      visibilitySettings || {
-        title: true,
-        subtitle: true,
-        link: true,
-        duration: true,
-        location: true,
-        description: true,
-        bullets: true,
-      }
-    );
-  }, [sectionData, visibilitySettings]);
 
   const months = [
     "Jan",
@@ -135,6 +74,8 @@ export default function ResumeToolbar({
     2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031,
   ];
 
+  // console.log("resolvedSettings -->", resolvedSettings)
+
   return (
     <div className="section-tools w-full hidden justify-center absolute left-0 bottom-[calc(100%+10px)] z-40">
       <div className="relative inline-block font-sans" ref={dropdownRef}>
@@ -144,7 +85,7 @@ export default function ResumeToolbar({
           {variant === "subsection" && (
             <>
               <button
-                onClick={onAddEntry}
+                // onClick={onAddEntry}
                 className="group flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold shadow-md shadow-indigo-500/20 transition-all transform active:scale-95 flex-shrink-0"
                 title="Add New Entry"
               >
@@ -158,14 +99,14 @@ export default function ResumeToolbar({
           {/* Position Reordering Group */}
           <div className="flex items-center bg-slate-100/80 p-0.5 rounded-xl border border-slate-200/60">
             <button
-              onClick={onMoveUp}
+              // onClick={onMoveUp}
               className="p-1.5 hover:bg-white hover:text-indigo-600 rounded-lg text-slate-600 transition-all shadow-sm"
               title={`Move ${variant === "section" ? "Section" : "Entry"} Up`}
             >
               <ArrowUp className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={onMoveDown}
+              // onClick={onMoveDown}
               className="p-1.5 hover:bg-white hover:text-indigo-600 rounded-lg text-slate-600 transition-all shadow-sm"
               title={`Move ${variant === "section" ? "Section" : "Entry"} Down`}
             >
@@ -174,7 +115,7 @@ export default function ResumeToolbar({
           </div>
 
           {/* Formatting Toggle */}
-          {onToggleFormatting && (
+          {/* {onToggleFormatting && (
             <button
               onClick={onToggleFormatting}
               className="p-2 hover:bg-slate-100 rounded-xl text-slate-600 hover:text-indigo-600 transition-all"
@@ -182,7 +123,7 @@ export default function ResumeToolbar({
             >
               <SlidersHorizontal className="w-4 h-4" />
             </button>
-          )}
+          )} */}
 
           {/* Date Selector Trigger (Subsection only) */}
           {variant === "subsection" && (
@@ -223,7 +164,7 @@ export default function ResumeToolbar({
 
           {/* Destructive Action: Delete */}
           <button
-            onClick={onDelete}
+            // onClick={onDelete}
             className="p-2 hover:bg-rose-50 hover:text-rose-600 rounded-xl text-slate-400 transition-all"
             title={`Remove ${variant === "section" ? "Section" : "Entry"}`}
           >
@@ -249,14 +190,15 @@ export default function ResumeToolbar({
             </div>
 
             <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-              {Object.entries(resolvedSettings).map(([key, isVisible]) => {
+              {Object.entries(sectionData).map(([key, obj], index) => {
+                const isVisible = obj?.isVisible || false
+
                 const labelFormatted = key
                   .replace(/([A-Z])/g, " $1")
                   .replace(/^./, (str) => str.toUpperCase());
-
                 return (
                   <div
-                    key={key}
+                    key={index}
                     className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors"
                   >
                     <span className="text-xs font-medium text-slate-700">
@@ -265,8 +207,11 @@ export default function ResumeToolbar({
                     <button
                       name={`${propertyPath}.${key}.isVisible`}
                       datatype="boolean"
-                      value={!isVisible.toString()}
-                      onClick={handleInputChange}
+                      value={isVisible ? "false" : "true"}
+                      onClick={(e) => {
+                        console.log("current isVisible isVisible--->>>", isVisible)
+                        handleInputChange(e)
+                      }}
                       className={`w-10 h-6 flex items-center rounded-full transition-colors p-1 ${
                         isVisible
                           ? "bg-gradient-to-r from-indigo-600 to-violet-600 shadow-sm shadow-indigo-500/20"

@@ -26,7 +26,6 @@ const Index = () => {
     // Supports both standard input/textarea (.value) and contenteditable divs (.textContent)
     let value: any = "";
     if (type === "boolean") {
-      console.log("hello form if");
       const currentValue = e.currentTarget.value;
       value = currentValue === "true" ? true : false;
       console.log("value -->", value);
@@ -38,7 +37,7 @@ const Index = () => {
           ? e.currentTarget.value
           : e.currentTarget.textContent;
     }
-
+console.log("value -->>>", value)
     if (!name) return;
 
     const keys = name.split(".");
@@ -49,10 +48,7 @@ const Index = () => {
       pathKeys: string[],
       newValue: any,
     ): any => {
-      console.log({
-        pathKeys,
-        newValue,
-      });
+    
       if (pathKeys.length === 0) return newValue;
 
       const [head, ...tail] = pathKeys;
@@ -62,12 +58,8 @@ const Index = () => {
       copy[head] = updateNestedState(copy[head], tail, newValue);
       return copy;
     };
-    console.log("value before enter fucntion --->>", value);
-    console.log("value type of --->>", typeof value);
-    // Update your state
     setResumeData((prevData) => updateNestedState(prevData, keys, value));
   };
-  console.log("resumeData -->>>", resumeData)
   return { getValue, handleInputChange };
 };
 

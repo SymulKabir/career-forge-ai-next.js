@@ -1,5 +1,5 @@
 import React from "react";
-import EditableText from "../EditableText";
+import InputField from "../InputField";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import { px } from "../../utils/resumeEditor";
 
@@ -28,7 +28,7 @@ const Index = ({ value = "", name }) => {
             `}
       </style>
       <div className="section-header-wrapper">
-        <EditableText tag="h2" value={value} name={name} />
+        <InputField tag="h2" value={value} name={name} />
       </div>
     </>
   );

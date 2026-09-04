@@ -4,7 +4,7 @@ export const RESUME_SETTING = {
     y: 50,
   },
 
-  sectionGap: 10,
+  sectionGap: 20,
 
   grid: "single",
 

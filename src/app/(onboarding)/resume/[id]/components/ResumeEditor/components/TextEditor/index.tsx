@@ -43,7 +43,6 @@ const Index: React.FC<EditableTextProps> = ({
     insertOrderedList: false,
   });
 
-  const MAX_CHARS = 2000;
   const { getValue, handleInputChange } = useEditor();
 
   // Check current selection formatting states using queryCommandState
@@ -201,8 +200,8 @@ const Index: React.FC<EditableTextProps> = ({
           {/* Editable Content Area */}
           <div
             ref={editorRef}
-            name={name}
-            type="htmlEditor"
+            name={`${name}`}
+            datatype="htmlEditor"
             className={`editor-content h-max min-h-[5px] text-[15px] leading-[1.6] text-[#2d3748] outline-none overflow-y-auto ${className || ''}`}
             contentEditable
             onInput={handleInput}

@@ -1,13 +1,14 @@
 "use client";
 
 import React from "react";
-import EditableText from "../EditableText";
+import InputField from "../InputField";
 import TextEditor from "../TextEditor";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import SectionTitle from "../SectionTitle";
 import PrimaryTitle from "../PrimaryTitle";
 import SecondaryTitle from "../SecondaryTitle";
 import SubSectionToolBar from "../SubSectionToolBar";
+import useEditor from "../../hooks/useEditor";
 
 interface ExperienceProps {
   data?: any;
@@ -23,6 +24,7 @@ const px = (value?: number | string) => {
 
 const Index: React.FC<ExperienceProps> = ({ data, name }) => {
   const { setting } = useResumeContext();
+  const { getValue } = useEditor();
   const { font, textStyles, colors } = setting || {};
   const sectionTitle = textStyles?.sectionTitle;
   const body = textStyles?.body;
@@ -32,21 +34,15 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
 
   const fontFamily = font?.family || "Inter, sans-serif";
   const resumeBorder = colors?.border || "#1a202c";
-  const resumeDivider = colors?.divider || "#cbd5e1";
   const resumeBackground = colors?.background || "#ffffff";
   const logoBackground = colors?.companyLogoBackground || "#edf2f7";
   const gapValue = px(setting?.gap);
+
 
   return (
     <>
       <style>{`
         .milestone-container {
-          box-sizing: border-box;
-          width: 100%;
-          margin: 0 auto;
-          font-family: ${fontFamily};
-          background: ${resumeBackground};
-         
             .section-header-wrapper {
               padding-bottom: 3px;
               margin-bottom: 5px;
@@ -141,16 +137,11 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
          
       `}</style>
 
-      <div className="milestone-container active-focus">
-        {/* <SubSectionToolBar/> */}
+      <div
+        className="milestone-container"
+      >
         <SubSectionToolBar
           variant="section"
-          // variant="subsection"
-          // visibilitySettings={mainSectionSettings} // e.g. { uppercaseTitles: true, dividerLine: true }
-          // onToggleVisibility={(key) => handleMainToggle(key)}
-          // onMoveUp={handleMoveSectionUp}
-          // onMoveDown={handleMoveSectionDown}
-          // onDelete={handleDeleteSection}
         />
         {/* Section Title */}
         <SectionTitle
@@ -161,16 +152,13 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
         {(data?.items || []).map((item: any, itemIndex: number) => (
           <div
             key={itemIndex}
-            className="subsection-card sub-section-padding active-focus"
+            tabIndex={itemIndex}
+            className="subsection-card sub-section-padding sub-section-divider active-focus"
           >
+
             <SubSectionToolBar
               variant="subsection"
               propertyPath={`${name}.items.${itemIndex}`}
-              // visibilitySettings={mainSectionSettings} // e.g. { uppercaseTitles: true, dividerLine: true }
-              // onToggleVisibility={(key) => handleMainToggle(key)}
-              // onMoveUp={handleMoveSectionUp}
-              // onMoveDown={handleMoveSectionDown}
-              // onDelete={handleDeleteSection}
             />
             <div className="company-logo-box">
               <svg
@@ -189,15 +177,13 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
             </div>
 
             <div className="experience-content">
-              {/* Role Title (Primary Style applied via .experience-content h3 selector) */}
-              <PrimaryTitle name={`${name}.items.${itemIndex}.title.content`} />
+              {getValue(`${name}.items.${itemIndex}.title.isVisible`) && <PrimaryTitle name={`${name}.items.${itemIndex}.title.content`} />}
 
-              {/* Company Name (Secondary Style) */}
-              <SecondaryTitle name={`${name}.items.${itemIndex}.subtitle.content`} />
+              {getValue(`${name}.items.${itemIndex}.subtitle.isVisible`) && <SecondaryTitle name={`${name}.items.${itemIndex}.subtitle.content`} />}
 
               {/* Metadata */}
-              <div className="metadata-row">
-                <div className="resume-metadata-item">
+              {(getValue(`${name}.items.${itemIndex}.duration.isVisible`) || getValue(`${name}.items.${itemIndex}.location.isVisible`)) && <div className="metadata-row">
+                {getValue(`${name}.items.${itemIndex}.duration.isVisible`) && <div className="resume-metadata-item">
                   <svg
                     width="14"
                     height="14"
@@ -211,13 +197,13 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
                     <line x1="8" y1="2" x2="8" y2="6" />
                     <line x1="3" y1="10" x2="21" y2="10" />
                   </svg>
-                  <EditableText
+                  <InputField
                     tag="span"
                     name={`${name}.items.${itemIndex}.duration.content.from`}
                   />
-                </div>
+                </div>}
 
-                <div className="resume-metadata-item">
+                {getValue(`${name}.items.${itemIndex}.location.isVisible`) && <div className="resume-metadata-item">
                   <svg
                     width="14"
                     height="14"
@@ -229,15 +215,15 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
-                  <EditableText
+                  <InputField
                     tag="span"
                     name={`${name}.items.${itemIndex}.location.content`}
                   />
-                </div>
-              </div>
+                </div>}
+              </div>}
 
               {/* Website Link */}
-              {item?.link && (
+              {getValue(`${name}.items.${itemIndex}.link.isVisible`) && (
                 <div>
                   <span className="resume-link-text">
                     <svg
@@ -251,7 +237,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
                       <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
                       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                     </svg>
-                    <EditableText
+                    <InputField
                       tag="span"
                       name={`${name}.items.${itemIndex}.link.content`}
                     />
@@ -259,15 +245,14 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
                 </div>
               )}
 
-              {/* Description (Body) */}
-              <TextEditor
+              {getValue(`${name}.items.${itemIndex}.description.isVisible`) && <TextEditor
                 name={`${name}.items.${itemIndex}.description.content`}
                 mode="description"
-              />
-              <TextEditor
+              />}
+              {getValue(`${name}.items.${itemIndex}.bullets.isVisible`) && <TextEditor
                 name={`${name}.items.${itemIndex}.bullets.content`}
                 mode="list"
-              />
+              />}
             </div>
           </div>
         ))}

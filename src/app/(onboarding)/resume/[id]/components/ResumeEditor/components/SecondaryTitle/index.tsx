@@ -1,5 +1,5 @@
 import React from "react";
-import EditableText from "../EditableText";
+import InputField from "../InputField";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import { px } from "../../utils/resumeEditor";
 
@@ -22,7 +22,7 @@ const Index = ({ name }) => {
             }
           `}
       </style>
-      <EditableText
+      <InputField
         tag="h3"
         className="secondary-title"
         name={name}
