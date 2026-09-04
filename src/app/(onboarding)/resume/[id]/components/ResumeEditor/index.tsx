@@ -18,6 +18,7 @@ const Index = () => {
         style={
             {
                 "--container-height": `${containerHeight}`,
+                "--section-gap": `${resumeSetting.sectionGap}px`,
             } as React.CSSProperties
         }
     >
@@ -32,10 +33,10 @@ const Index = () => {
                 }}
             >
                 <div className="page-inner-container">
-                    <header className="resume-header section-wrapper">
+                    <header className="resume-header active-focus">
 
                     </header>
-                    <div className="resume-body">
+                    <div className="resume-body section-gap">
                         {
                             resumeData?.sections?.map((data, index) => {
                                 if (data.sectionLayout === "MilestoneCard") {

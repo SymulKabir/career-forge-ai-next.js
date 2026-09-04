@@ -1,51 +1,61 @@
 .resume-editor {
-    height: var(--container-height);
-    max-height: var(--container-height);
+  height: var(--container-height);
+  max-height: var(--container-height);
 
-    .resume-main-editor-container {
-        overflow-y: scroll;
-        height: inherit;
-        max-height: inherit;
+  .resume-main-editor-container {
+    overflow-y: scroll;
+    height: inherit;
+    max-height: inherit;
 
-        .page {
-            &:first-child {
-                margin-top: 50px;
-            }
+    .page {
+      &:first-child {
+        margin-top: 50px;
+      }
 
-            background-color: #FFF;
-            border: 1px solid #DCDBE0;
-            transition: background-color 0.3s ease;
-            width: 940px;
-            height: 2780px;
+      background-color: #fff;
+      border: 1px solid #dcdbe0;
+      transition: background-color 0.3s ease;
+      width: 940px;
+      height: 2780px;
+      &:has(.active-focus:focus-within) {
+        background-color: #dcdbe0 !important;
+      }
 
-            // Page background dims when any section inside has focus
-            &:has(.section-wrapper:focus-within) {
-                background-color: #DCDBE0 !important;
-            }
+      .active-focus {
+        background-color: transparent;
+        border-radius: 5px;
+        transition:
+          background-color 0.2s ease,
+          box-shadow 0.2s ease;
+        outline: none;
+        position: relative;
 
-            .section-wrapper {
-                background-color: transparent;
-                border-radius: 8px;
-                padding: 12px;
-                transition: background-color 0.2s ease, box-shadow 0.2s ease;
-                outline: none;
-
-                // 1. When a wrapper has focus-within, BUT it also contains another focused section wrapper inside it,
-                // force the parent wrapper to stay transparent (preventing multiple white layers).
-                &:has(.section-wrapper:focus-within) {
-                    background-color: transparent !important;
-                    box-shadow: none !important;
-                    outline: none !important;
-                }
-
-                // 2. The innermost focused section wrapper (the leaf node) gets the white card effect.
-                &:focus-within {
-                    background-color: #FFFFFF;
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-                    outline: 2px solid #c5c5c8;
-
-                }
-            }
+        &:has(.active-focus:focus-within) {
+          background-color: transparent !important;
+          box-shadow: none !important;
+          outline: none !important;
+          & > .section-tools {
+            display: none;
+          }
         }
+
+        // 2. The innermost focused section wrapper (the leaf node) gets the white card effect.
+        &:focus-within {
+          background-color: #ffffff;
+          outline: 5px solid #ffffff;
+          & > .section-tools {
+            display: flex;
+          }
+        }
+      }
+      .section-gap {
+        display: flex;
+        gap: var(--section-gap);
+      }
+      .sub-section-padding {
+        padding: 5px 0px;
+        border-bottom: 1px dashed #e4e4e4;
+      }
     }
+  }
 }

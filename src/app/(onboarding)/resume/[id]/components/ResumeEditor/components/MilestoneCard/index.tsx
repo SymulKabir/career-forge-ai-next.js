@@ -7,10 +7,11 @@ import { useResumeContext } from "../../../../context/resume-editor-context";
 import SectionTitle from "../SectionTitle";
 import PrimaryTitle from "../PrimaryTitle";
 import SecondaryTitle from "../SecondaryTitle";
+import SubSectionToolBar from "../SubSectionToolBar";
 
 interface ExperienceProps {
   data?: any;
-  name?: any
+  name?: any;
 }
 
 const px = (value?: number | string) => {
@@ -36,8 +37,6 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
   const logoBackground = colors?.companyLogoBackground || "#edf2f7";
   const gapValue = px(setting?.gap);
 
-
-
   return (
     <>
       <style>{`
@@ -48,217 +47,227 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
           font-family: ${fontFamily};
           background: ${resumeBackground};
          
-        }
-        .section-header-wrapper {
-          padding-bottom: 6px;
-          margin-bottom: 20px;
-          border-bottom: 2px solid ${resumeBorder};
-           h2{
-           font-size: ${px(sectionTitle?.fontSize)};
-          font-weight: ${sectionTitle?.fontWeight ?? 700};
-          color: ${sectionTitle?.color || "#1a202c"};
-          line-height: ${sectionTitle?.lineHeight ?? 1.2};
-          letter-spacing: ${px(sectionTitle?.letterSpacing)};
-          text-transform: ${sectionTitle?.textTransform || "none"};
-          margin: 0;
-          padding: 0;
-          display: inline-block;
-          width: 100%;
-          }
-        }
-        .experience-card {
-          display: flex;
-          position: relative;
-          margin-bottom: 24px;
-          width: 100%;
-          box-sizing: border-box;
-          gap: ${gapValue};
-        }
-        .company-logo-box {
-          flex-shrink: 0;
-          width: 44px;
-          height: 44px;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: ${logoBackground};
-          color: ${metadata?.color || "#6b7280"};
-        }
-        .experience-content {
-          flex-grow: 1;
-          min-width: 0;
-        }
-        .metadata-row {
-          display: flex;
-          flex-wrap: wrap;
-          margin-bottom: 8px;
-          gap: ${gapValue};
-        } 
- 
+            .section-header-wrapper {
+              padding-bottom: 3px;
+              margin-bottom: 5px;
+              border-bottom: 2px solid ${resumeBorder};
+              h2{
+              font-size: ${px(sectionTitle?.fontSize)};
+              font-weight: ${sectionTitle?.fontWeight ?? 700};
+              color: ${sectionTitle?.color || "#1a202c"};
+              line-height: ${sectionTitle?.lineHeight ?? 1.2};
+              letter-spacing: ${px(sectionTitle?.letterSpacing)};
+              text-transform: ${sectionTitle?.textTransform || "none"};
+              margin: 0;
+              padding: 0;
+              display: inline-block;
+              width: 100%;
+              }
+            }
+            .subsection-card {
+              display: flex;
+              gap: 7px !important;
+              position: relative; 
+              width: 100%;
+              box-sizing: border-box;
+              gap: ${gapValue};
+            }
+            .company-logo-box {
+              flex-shrink: 0;
+              width: 35px;
+              height: 35px;
+              border-radius: 8px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: ${logoBackground};
+              color: ${metadata?.color || "#6b7280"};
+            }
+            .experience-content {
+              flex-grow: 1;
+              min-width: 0;
+            }
+            .metadata-row {
+              display: flex; 
+              flex-wrap: wrap; 
+              gap: 20px;
+            } 
+    
 
-        .resume-metadata-item {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          font-size: ${px(metadata?.fontSize)};
-          font-weight: ${metadata?.fontWeight ?? 400};
-          color: ${metadata?.color || "#6b7280"};
-          line-height: ${metadata?.lineHeight ?? 1.4};
+            .resume-metadata-item {
+              display: flex;
+              align-items: center;
+              gap: 6px;
+              font-size: ${px(metadata?.fontSize)};
+              font-weight: ${metadata?.fontWeight ?? 400};
+              color: ${metadata?.color || "#6b7280"};
+              line-height: ${metadata?.lineHeight ?? 1.4};
+            }
+
+            .resume-link-text {
+              font-size: ${px(link?.fontSize)};
+              font-weight: ${link?.fontWeight ?? 500};
+              color: ${link?.color || "#2563eb"};
+              display: inline-flex;
+              align-items: center;
+              gap: 4px;
+              cursor: text;
+            }
+
+            .resume-body-text {
+              font-size: ${px(body?.fontSize)};
+              font-weight: ${body?.fontWeight ?? 400};
+              color: ${body?.color || "#4b5563"};
+              line-height: ${body?.lineHeight ?? 1.5};
+              letter-spacing: ${px(body?.letterSpacing)};
+              margin: 0 0 12px 0;
+            }
+
+            .highlights-list {
+              margin: 0;
+              padding-left: 18px;
+            }
+
+            .resume-highlight-item {
+              font-size: ${px(highlight?.fontSize)};
+              font-weight: ${highlight?.fontWeight ?? 400};
+              color: ${highlight?.color || "#4b5563"};
+              line-height: ${highlight?.lineHeight ?? 1.5};
+              margin-bottom: 6px;
+
+            }
         }
 
-        .resume-link-text {
-          font-size: ${px(link?.fontSize)};
-          font-weight: ${link?.fontWeight ?? 500};
-          color: ${link?.color || "#2563eb"};
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          cursor: text;
-        }
-
-        .resume-body-text {
-          font-size: ${px(body?.fontSize)};
-          font-weight: ${body?.fontWeight ?? 400};
-          color: ${body?.color || "#4b5563"};
-          line-height: ${body?.lineHeight ?? 1.5};
-          letter-spacing: ${px(body?.letterSpacing)};
-          margin: 0 0 12px 0;
-        }
-
-        .highlights-list {
-          margin: 0;
-          padding-left: 18px;
-        }
-
-        .resume-highlight-item {
-          font-size: ${px(highlight?.fontSize)};
-          font-weight: ${highlight?.fontWeight ?? 400};
-          color: ${highlight?.color || "#4b5563"};
-          line-height: ${highlight?.lineHeight ?? 1.5};
-          margin-bottom: 6px;
-
-        }
-
-        .section-divider {
-          border: none;
-          margin-top: 16px;
-          margin-bottom: 24px;
-          border-bottom: 1px dashed ${resumeDivider};
-        }
+         
       `}</style>
 
-      <div className="milestone-container section-wrapper">
+      <div className="milestone-container active-focus">
+        {/* <SubSectionToolBar/> */}
+        <SubSectionToolBar
+          variant="section"
+          // variant="subsection"
+          // visibilitySettings={mainSectionSettings} // e.g. { uppercaseTitles: true, dividerLine: true }
+          // onToggleVisibility={(key) => handleMainToggle(key)}
+          // onMoveUp={handleMoveSectionUp}
+          // onMoveDown={handleMoveSectionDown}
+          // onDelete={handleDeleteSection}
+        />
         {/* Section Title */}
-        <SectionTitle value={data?.sectionTitle} name={`${name}.sectionTitle`} />
+        <SectionTitle
+          value={data?.sectionTitle}
+          name={`${name}.sectionTitle`}
+        />
 
         {(data?.items || []).map((item: any, itemIndex: number) => (
-          <div key={itemIndex}>
-            <div className="experience-card section-wrapper">
-              <div className="company-logo-box">
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                </svg>
-              </div>
-
-              <div className="experience-content">
-                {/* Role Title (Primary Style applied via .experience-content h3 selector) */}
-                <PrimaryTitle name={`${name}.items.${itemIndex}.role`} />
-
-                {/* Company Name (Secondary Style) */}
-                <SecondaryTitle name={`${name}.items.${itemIndex}.company`} />
-
-
-                {/* Metadata */}
-                <div className="metadata-row">
-                  <div className="resume-metadata-item">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <rect x="3" y="4" width="18" height="18" rx="2" />
-                      <line x1="16" y1="2" x2="16" y2="6" />
-                      <line x1="8" y1="2" x2="8" y2="6" />
-                      <line x1="3" y1="10" x2="21" y2="10" />
-                    </svg>
-                    <EditableText
-                      tag="span"
-                      name={`${name}.items.${itemIndex}.duration`}
-                    />
-                  </div>
-
-                  <div className="resume-metadata-item">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                      <circle cx="12" cy="10" r="3" />
-                    </svg>
-                    <EditableText
-                      tag="span"
-                      name={`${name}.items.${itemIndex}.location`}
-                    />
-                  </div>
-                </div>
-
-                {/* Website Link */}
-                {item?.companyUrl && (
-                  <div style={{ marginBottom: "10px" }}>
-                    <span className="resume-link-text">
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                      </svg>
-                      <EditableText
-                        tag="span"
-                        name={`${name}.items.${itemIndex}.companyUrl`}
-
-                      />
-                    </span>
-                  </div>
-                )}
-
-                {/* Description (Body) */} 
-                 <TextEditor 
-                  name={`${name}.items.${itemIndex}.description`}
-                  mode="description"
-                /> 
-                <TextEditor 
-                  name={`${name}.items.${itemIndex}.content`}
-                  mode="list"
-                /> 
-              </div>
+          <div
+            key={itemIndex}
+            className="subsection-card sub-section-padding active-focus"
+          >
+            <SubSectionToolBar
+              variant="subsection"
+              // visibilitySettings={mainSectionSettings} // e.g. { uppercaseTitles: true, dividerLine: true }
+              // onToggleVisibility={(key) => handleMainToggle(key)}
+              // onMoveUp={handleMoveSectionUp}
+              // onMoveDown={handleMoveSectionDown}
+              // onDelete={handleDeleteSection}
+            />
+            <div className="company-logo-box">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              </svg>
             </div>
 
-            {itemIndex < (data?.items?.length || 0) - 1 && (
-              <hr className="section-divider" />
-            )}
+            <div className="experience-content">
+              {/* Role Title (Primary Style applied via .experience-content h3 selector) */}
+              <PrimaryTitle name={`${name}.items.${itemIndex}.role`} />
+
+              {/* Company Name (Secondary Style) */}
+              <SecondaryTitle name={`${name}.items.${itemIndex}.company`} />
+
+              {/* Metadata */}
+              <div className="metadata-row">
+                <div className="resume-metadata-item">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  <EditableText
+                    tag="span"
+                    name={`${name}.items.${itemIndex}.duration`}
+                  />
+                </div>
+
+                <div className="resume-metadata-item">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  <EditableText
+                    tag="span"
+                    name={`${name}.items.${itemIndex}.location`}
+                  />
+                </div>
+              </div>
+
+              {/* Website Link */}
+              {item?.companyUrl && (
+                <div>
+                  <span className="resume-link-text">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                    </svg>
+                    <EditableText
+                      tag="span"
+                      name={`${name}.items.${itemIndex}.companyUrl`}
+                    />
+                  </span>
+                </div>
+              )}
+
+              {/* Description (Body) */}
+              <TextEditor
+                name={`${name}.items.${itemIndex}.description`}
+                mode="description"
+              />
+              <TextEditor
+                name={`${name}.items.${itemIndex}.content`}
+                mode="list"
+              />
+            </div>
           </div>
         ))}
       </div>
