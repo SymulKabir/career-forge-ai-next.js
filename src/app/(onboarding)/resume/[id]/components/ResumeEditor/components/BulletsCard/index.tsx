@@ -13,6 +13,8 @@ import useEditor from "../../hooks/useEditor";
 interface ExperienceProps {
   data?: any;
   name?: any;
+  sectionRefs?: any;
+  originalIndex: number;
 }
 
 const px = (value?: number | string) => {
@@ -22,7 +24,7 @@ const px = (value?: number | string) => {
   return `${value}px`;
 };
 
-const Index: React.FC<ExperienceProps> = ({ data, name }) => {
+const Index: React.FC<ExperienceProps> = ({ data, name, sectionRefs, originalIndex }) => {
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
   const { font, textStyles, colors } = setting || {};
@@ -37,7 +39,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
   const resumeBackground = colors?.background || "#ffffff";
   const logoBackground = colors?.companyLogoBackground || "#edf2f7";
   const gapValue = px(setting?.gap);
-
+console.log("name form Card-->>", name)
 
   return (
     <>
@@ -139,26 +141,22 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
 
       <div
         className="milestone-container"
+        // ref={(el) => (sectionRefs.current[originalIndex] = el)}
       >
         <SubSectionToolBar
           variant="section"
-        />
-        {/* Section Title */}
-        <SectionTitle
-          value={data?.sectionTitle?.content}
-          name={`${name}.sectionTitle.content`}
-        />
+        /> 
 
         {(data?.items || []).map((item: any, itemIndex: number) => (
           <div
             key={itemIndex}
-            tabIndex={itemIndex}
+            tabIndex={item.positionIndex}
             className="subsection-card sub-section-padding sub-section-divider active-focus"
           >
 
             <SubSectionToolBar
               variant="subsection"
-              propertyPath={`${name}.items.${itemIndex}`}
+              propertyPath={`${name}.items.${item.positionIndex}`}
             />
             <div className="company-logo-box">
               <svg
@@ -177,13 +175,13 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
             </div>
 
             <div className="experience-content">
-              {getValue(`${name}.items.${itemIndex}.title.isVisible`) && <PrimaryTitle name={`${name}.items.${itemIndex}.title.content`} />}
+              {getValue(`${name}.items.${item.positionIndex}.title.isVisible`) && <PrimaryTitle name={`${name}.items.${item.positionIndex}.title.content`} />}
 
-              {getValue(`${name}.items.${itemIndex}.subtitle.isVisible`) && <SecondaryTitle name={`${name}.items.${itemIndex}.subtitle.content`} />}
+              {getValue(`${name}.items.${item.positionIndex}.subtitle.isVisible`) && <SecondaryTitle name={`${name}.items.${item.positionIndex}.subtitle.content`} />}
 
               {/* Metadata */}
-              {(getValue(`${name}.items.${itemIndex}.duration.isVisible`) || getValue(`${name}.items.${itemIndex}.location.isVisible`)) && <div className="metadata-row">
-                {getValue(`${name}.items.${itemIndex}.duration.isVisible`) && <div className="resume-metadata-item">
+              {(getValue(`${name}.items.${item.positionIndex}.duration.isVisible`) || getValue(`${name}.items.${item.positionIndex}.location.isVisible`)) && <div className="metadata-row">
+                {getValue(`${name}.items.${item.positionIndex}.duration.isVisible`) && <div className="resume-metadata-item">
                   <svg
                     width="14"
                     height="14"
@@ -199,11 +197,11 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
                   </svg>
                   <InputField
                     tag="span"
-                    name={`${name}.items.${itemIndex}.duration.content.from`}
+                    name={`${name}.items.${item.positionIndex}.duration.content.from`}
                   />
                 </div>}
 
-                {getValue(`${name}.items.${itemIndex}.location.isVisible`) && <div className="resume-metadata-item">
+                {getValue(`${name}.items.${item.positionIndex}.location.isVisible`) && <div className="resume-metadata-item">
                   <svg
                     width="14"
                     height="14"
@@ -217,13 +215,13 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
                   </svg>
                   <InputField
                     tag="span"
-                    name={`${name}.items.${itemIndex}.location.content`}
+                    name={`${name}.items.${item.positionIndex}.location.content`}
                   />
                 </div>}
               </div>}
 
               {/* Website Link */}
-              {getValue(`${name}.items.${itemIndex}.link.isVisible`) && (
+              {getValue(`${name}.items.${item.positionIndex}.link.isVisible`) && (
                 <div>
                   <span className="resume-link-text">
                     <svg
@@ -239,18 +237,18 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
                     </svg>
                     <InputField
                       tag="span"
-                      name={`${name}.items.${itemIndex}.link.content`}
+                      name={`${name}.items.${item.positionIndex}.link.content`}
                     />
                   </span>
                 </div>
               )}
 
-              {getValue(`${name}.items.${itemIndex}.description.isVisible`) && <TextEditor
-                name={`${name}.items.${itemIndex}.description.content`}
+              {getValue(`${name}.items.${item.positionIndex}.description.isVisible`) && <TextEditor
+                name={`${name}.items.${item.positionIndex}.description.content`}
                 mode="description"
               />}
-              {getValue(`${name}.items.${itemIndex}.bullets.isVisible`) && <TextEditor
-                name={`${name}.items.${itemIndex}.bullets.content`}
+              {getValue(`${name}.items.${item.positionIndex}.bullets.isVisible`) && <TextEditor
+                name={`${name}.items.${item.positionIndex}.bullets.content`}
                 mode="list"
               />}
             </div>

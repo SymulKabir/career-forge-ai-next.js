@@ -3,9 +3,8 @@ import InputField from "../InputField";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import { px } from "../../utils/resumeEditor";
 
-const Index = ({ value = "", name }) => {
+const Index = ({  name }) => {
   const { setting } = useResumeContext();
-
   return (
     <>
       <style>
@@ -28,7 +27,7 @@ const Index = ({ value = "", name }) => {
             `}
       </style>
       <div className="section-header-wrapper">
-        <InputField tag="h2" value={value} name={name} />
+        <InputField tag="h2"  name={name} />
       </div>
     </>
   );

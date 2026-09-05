@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { RESUME_SETTING } from "../components/ResumeEditor/constants/resumeSetting";
 import { DUMMY_STRUCTURED_RESUME } from "../components/ResumeEditor/constants/resumeData";
+import { addPositionIndex } from "../components/ResumeEditor/utils";
 
 interface ResumeEditorContextValue {
   activeTool: string | null;
@@ -22,7 +23,7 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
   const [setting, setSetting] = useState<typeof RESUME_SETTING>({
     ...RESUME_SETTING,
   });
-  const [resumeData, setResumeData] = useState({ ...DUMMY_STRUCTURED_RESUME });
+  const [resumeData, setResumeData] = useState({ ...addPositionIndex(DUMMY_STRUCTURED_RESUME) });
 
   return (
     <ResumeEditorContext.Provider

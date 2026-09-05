@@ -13,6 +13,8 @@ import useEditor from "../../hooks/useEditor";
 interface ExperienceProps {
   data?: any;
   name?: any;
+  sectionRefs?: any;
+  originalIndex: number;
 }
 
 const px = (value?: number | string) => {
@@ -22,7 +24,12 @@ const px = (value?: number | string) => {
   return `${value}px`;
 };
 
-const Index: React.FC<ExperienceProps> = ({ data, name }) => {
+const Index: React.FC<ExperienceProps> = ({
+  data,
+  name,
+  sectionRefs,
+  originalIndex,
+}) => {
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
   const { font, textStyles, colors } = setting || {};
@@ -37,7 +44,6 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
   const resumeBackground = colors?.background || "#ffffff";
   const logoBackground = colors?.companyLogoBackground || "#edf2f7";
   const gapValue = px(setting?.gap);
-
 
   return (
     <>
@@ -114,39 +120,30 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
          
       `}</style>
 
-      {/* <div
+      <div
         className="milestone-container "
-      > */}
-      <>
-        <SubSectionToolBar
-          variant="section"
-        />
-        {/* Section Title */}
-        <SectionTitle
-          value={data?.sectionTitle?.content}
-          name={`${name}.sectionTitle.content`}
-        />
+        // ref={(el) => (sectionRefs.current[originalIndex] = el)}
+      > 
 
         {(data?.items || []).map((item: any, itemIndex: number) => (
           <div
             key={itemIndex}
-            tabIndex={itemIndex}
+            tabIndex={item.positionIndex}
             className="subsection-card sub-section-padding active-focus"
           >
-
             <SubSectionToolBar
               variant="subsection"
-              propertyPath={`${name}.items.${itemIndex}`}
+              propertyPath={`${name}.items.${item.positionIndex}`}
             />
-            {getValue(`${name}.items.${itemIndex}.description.isVisible`) && <TextEditor
-              name={`${name}.items.${itemIndex}.description.content`}
-              mode="description"
-            />}
+            {getValue(`${name}.items.${item.positionIndex}.description.isVisible`) && (
+              <TextEditor
+                name={`${name}.items.${item.positionIndex}.description.content`}
+                mode="description"
+              />
+            )}
           </div>
         ))}
-      {/* </div > */}
-      </>
-
+      </div>
     </>
   );
 };

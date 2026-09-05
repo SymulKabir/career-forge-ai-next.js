@@ -45,21 +45,9 @@ const Index: React.FC<EditableTextProps> = ({
         className={`editable-field ${className || ""}`}
         name={name}
         contentEditable
-        suppressContentEditableWarning
-        // onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => {
-        //   if (e.key === "Enter") {
-        //     splitAndCreateItem(e)
-        //     console.log("Enter pressed"); 
-        //   }
-        // }}
-        // onBlur={(e: React.FocusEvent<HTMLElement>) => {
-        //   handleInputChange(e)
-        // }
-
-        // }
+        suppressContentEditableWarning 
       >
-        {name ? getValue(name) : ""}
-        {/* {value} */}
+        {name ? getValue(name) : ""} 
       </Component>
     </>
   );

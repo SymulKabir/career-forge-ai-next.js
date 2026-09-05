@@ -37,11 +37,9 @@ export default function ResumeToolbar({
   useEffect(() => {
     if (propertyPath) {
       const currentValue = getValue(propertyPath)
-      console.log("currentValue -->", currentValue)
       setSectionData({...currentValue});
     }
   }, [propertyPath, resumeData]);
-console.log("resumeData --9>", resumeData)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -74,7 +72,6 @@ console.log("resumeData --9>", resumeData)
     2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031,
   ];
 
-  // console.log("resolvedSettings -->", resolvedSettings)
 
   return (
     <div className="section-tools w-full hidden justify-center absolute left-0 bottom-[calc(100%+10px)] z-40">
@@ -209,7 +206,6 @@ console.log("resumeData --9>", resumeData)
                       datatype="boolean"
                       value={isVisible ? "false" : "true"}
                       onClick={(e) => {
-                        console.log("current isVisible isVisible--->>>", isVisible)
                         handleInputChange(e)
                       }}
                       className={`w-10 h-6 flex items-center rounded-full transition-colors p-1 ${
