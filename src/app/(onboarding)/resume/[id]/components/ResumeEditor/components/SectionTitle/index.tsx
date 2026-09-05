@@ -9,7 +9,7 @@ const Index = ({  name }) => {
     <>
       <style>
         {`
-            .section-header-wrapper { 
+            .section-header-card { 
             border-bottom: 2px solid ${setting.colors?.border};
             h2{
                 font-size: ${px(setting.textStyles?.sectionTitle)};
@@ -26,7 +26,7 @@ const Index = ({  name }) => {
               }
             `}
       </style>
-      <div className="section-header-wrapper">
+      <div className="section-header-card">
         <InputField tag="h2"  name={name} />
       </div>
     </>

@@ -1,13 +1,11 @@
 export const RESUME_SETTING = {
+  resumePageHeight: 2700,
   margin: {
     x: 30,
     y: 50,
   },
-
   sectionGap: 20,
-
   grid: "single",
-
   font: {
     family: "Inter, sans-serif",
   },

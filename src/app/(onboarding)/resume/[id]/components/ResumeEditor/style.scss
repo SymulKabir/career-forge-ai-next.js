@@ -15,7 +15,8 @@
       background-color: #fff;
       border: 1px solid #dcdbe0;
       transition: background-color 0.3s ease;
-      // width: 940px;
+      width: 940px;
+      height: var(--page-height);
       // height: 2780px;
       &:has(.active-focus:focus-within) {
         background-color: #dcdbe0 !important;
