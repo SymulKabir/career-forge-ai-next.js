@@ -12,9 +12,7 @@ import useEditor from "../../hooks/useEditor";
 
 interface ExperienceProps {
   data?: any;
-  name?: any;
-  sectionRefs?: any;
-  originalIndex: number;
+  name?: any; 
 }
 
 const px = (value?: number | string) => {
@@ -26,9 +24,7 @@ const px = (value?: number | string) => {
 
 const Index: React.FC<ExperienceProps> = ({
   data,
-  name,
-  sectionRefs,
-  originalIndex,
+  name,  
 }) => {
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
@@ -121,8 +117,7 @@ const Index: React.FC<ExperienceProps> = ({
       `}</style>
 
       <div
-        className="milestone-container "
-        // ref={(el) => (sectionRefs.current[originalIndex] = el)}
+        className="milestone-container " 
       > 
 
         {(data?.items || []).map((item: any, itemIndex: number) => (

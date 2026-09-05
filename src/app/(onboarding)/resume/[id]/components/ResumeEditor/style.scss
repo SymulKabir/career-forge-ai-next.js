@@ -4,8 +4,31 @@
 
   .resume-main-editor-container {
     overflow-y: scroll;
-    height: inherit;
-    max-height: inherit;
+    height: 100%;
+    max-height: 100%;
+
+    &.not-visible {
+      position: fixed;
+      left: -10000%;
+      top: -1000%;
+      opacity: 0;
+
+
+      .page {
+        height: max-content !important;
+      }
+    }
+
+    &.debugging {
+      position: fixed;
+      left: 0px !important;
+      top: 0px !important;
+      opacity: 1 !important;
+
+      .page {
+        height: max-content !important;
+      }
+    }
 
     .page {
       &:first-child {
@@ -17,10 +40,35 @@
       transition: background-color 0.3s ease;
       width: 940px;
       height: var(--page-height);
-      // height: 2780px;
+      position: relative;
+
+      &:not(:first-child)::after {
+        content: var(--page-number);
+
+        position: absolute;
+        left: 50%;
+        top: -32px;
+        transform: translateX(-50%);
+
+        width: max-content;
+        height: max-content;
+
+        font-size: 18px;
+        line-height: 18px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+
+        color: #9ca3af;
+
+        z-index: 9999;
+        pointer-events: none;
+      }
+
       &:has(.active-focus:focus-within) {
         background-color: #dcdbe0 !important;
       }
+
+
 
       .active-focus {
         background-color: transparent;
@@ -35,7 +83,8 @@
           background-color: transparent !important;
           box-shadow: none !important;
           outline: none !important;
-          & > .section-tools {
+
+          &>.section-tools {
             display: none;
           }
         }
@@ -44,15 +93,17 @@
         &:focus-within {
           background-color: #ffffff;
           outline: 5px solid #ffffff;
-          & > .section-tools {
+
+          &>.section-tools {
             display: flex;
           }
         }
       }
-      .section-container{
+
+      .section-container {
         box-sizing: border-box;
-          width: 100%;
-          margin: 0 auto;
+        width: 100%;
+        margin: 0 auto;
       }
 
       .section-gap {
@@ -60,15 +111,19 @@
         grid-template-columns: repeat(2, 1fr);
         gap: var(--section-gap);
       }
-      .section-styles{
+
+      .section-styles {
         height: max-content;
       }
+
       .sub-section-padding {
         padding: 5px 0px;
       }
+
       .sub-section-divider {
         border-bottom: 1px dashed #e4e4e4;
-        &:last-child{
+
+        &:last-child {
           border-bottom: none;
         }
       }

@@ -12,9 +12,7 @@ import useEditor from "../../hooks/useEditor";
 
 interface ExperienceProps {
   data?: any;
-  name?: any;
-  sectionRefs?: any;
-  originalIndex: number;
+  name?: any; 
 }
 
 const px = (value?: number | string) => {
@@ -24,7 +22,7 @@ const px = (value?: number | string) => {
   return `${value}px`;
 };
 
-const Index: React.FC<ExperienceProps> = ({ data, name, sectionRefs, originalIndex }) => {
+const Index: React.FC<ExperienceProps> = ({ data, name }) => {
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
   const { font, textStyles, colors } = setting || {};
@@ -140,8 +138,7 @@ console.log("name form Card-->>", name)
       `}</style>
 
       <div
-        className="milestone-container"
-        // ref={(el) => (sectionRefs.current[originalIndex] = el)}
+        className="milestone-container" 
       >
         <SubSectionToolBar
           variant="section"

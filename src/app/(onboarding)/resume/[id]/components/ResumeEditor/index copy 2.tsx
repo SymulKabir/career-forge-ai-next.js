@@ -41,7 +41,7 @@ const paginateResumeSections = ({
   console.log("cunt 1->", {
     currentHeight,
     sectionHeight,
-    total: currentHeight + sectionHeight,
+    total: currentHeight + sectionHeight ,
     pageHight,
   })
   if (currentHeight + sectionHeight > pageHight) {
@@ -54,13 +54,13 @@ const paginateResumeSections = ({
     subSections?.forEach((element, index) => {
       const currentSubsectionHeight =
         element.getBoundingClientRect().height || 0;
-      console.log("cunt 1->", {
-        currentHeight,
-        totalSubSectionHeight,
-        currentSubsectionHeight,
-        total: currentHeight + totalSubSectionHeight + currentSubsectionHeight,
-        pageHight
-      })
+  console.log("cunt 1->", {
+    currentHeight,
+    totalSubSectionHeight,
+    currentSubsectionHeight,
+    total: currentHeight + totalSubSectionHeight + currentSubsectionHeight,
+    pageHight
+  })
       if (
         Number(
           currentHeight +
@@ -99,7 +99,8 @@ const paginateResumeSections = ({
         items: [...validSubsections],
       };
       pages[currentPageIndex].push({
-        ...currentSection
+        section: validSection,
+        originalIndex,
       });
 
     }
@@ -129,7 +130,8 @@ const paginateResumeSections = ({
   }
 
   pages[currentPageIndex].push({
-    ...currentSection
+    section: currentSection,
+    originalIndex,
   });
   currentHeight += sectionHeight;
 
@@ -138,12 +140,18 @@ const paginateResumeSections = ({
     currentHeight,
   };
 };
+
 const Index = () => {
   const { resumeData } = useResumeContext();
 
   const [resumeSetting] = useState({
     ...RESUME_SETTING,
   });
+
+  const [currentConfig] = useState<any>({});
+
+  const containerHeight =
+    RESUME_CONSTANTS.editorShell.resumeEditorHeight;
 
   const sectionRefs = useRef<{
     [key: number]: HTMLDivElement | null;
@@ -184,75 +192,38 @@ const Index = () => {
 
     console.log("pages --->>>", pages);
   }, [resumeData, resumeSetting]);
+
   return (
     <section
       className="resume-editor"
       style={
         {
-          "--container-height": `calc(100vh - ${RESUME_CONSTANTS.headerHeight}px - ${RESUME_CONSTANTS.toolBarHeight}px)`,
+          "--container-height": `${containerHeight}`,
           "--section-gap": `${resumeSetting.sectionGap}px`,
           "--page-height": `${resumeSetting.resumePageHeight}px`,
         } as React.CSSProperties
       }
-    > 
-      <div className="resume-main-editor-container not-visible debugging">
-        {[[...resumeData.sections]].map((pageSections, pageIndex) => {
-          return <PageMaker key={pageIndex} pageSections={pageSections} pageIndex={pageIndex} sectionRefs={sectionRefs} className="not-visible" />
-        })}
-      </div> 
+    >
+      {/* Hidden measurement container */}
+      <div
+        style={{
+          position: "absolute",
+          visibility: "hidden",
+          pointerEvents: "none",
+          width: "940px",
+        }}
+      >
+        {resumeData?.sections?.map(
+          (section: any, originalIndex: number) => {
+            const name = `sections.${originalIndex}`;
 
-     <div className="resume-main-editor-container">
-        {paginatedPages.map((pageSections, pageIndex) => {
-          console.log("pageSections --->>", pageSections)
-          return <PageMaker key={pageIndex} pageSections={pageSections} pageIndex={pageIndex} />
-        })}
-      </div>
-    </section>
-  );
-};
-
-
-const PageMaker = ({ pageSections, pageIndex, sectionRefs, className }: any) => {
-  const [resumeSetting] = useState({
-    ...RESUME_SETTING,
-  });
-  console.log("pageSections -->>", pageSections)
-  return <div
-    key={pageIndex}
-    className={`page ${className}`}
-    style={{
-      paddingLeft: `${resumeSetting.margin.x}px`,
-      paddingRight: `${resumeSetting.margin.x}px`,
-      paddingTop: `${resumeSetting.margin.y}px`,
-      paddingBottom: `${resumeSetting.margin.y}px`,
-      background: "#FFFFFF",
-      marginBottom: "40px",
-
-      "--page-number": `"Page ${pageIndex + 1}"`,
-    } as React.CSSProperties}
-  >
-    <div className="page-inner-container">
-      {pageIndex === 0 && (
-        <header className="resume-header active-focus" />
-      )}
-
-      <div className="resume-body">
-        {pageSections.map(
-          (section: any, index: number) => {
-            console.log("sections ---->>>>", section)
-            // return <></>
-            const name = `sections.${section.positionIndex}`;
             return (
               <div
-                key={pageIndex + index}
-                ref={
-                  sectionRefs
-                    ? (el) => {
-                      sectionRefs.current[section.positionIndex] = el;
-                    }
-                    : undefined
+                key={originalIndex}
+                ref={(el) =>
+                  (sectionRefs.current[originalIndex] = el)
                 }
-                className="section-container section-styles active-focus"
+                className="section-container section-styles"
               >
                 <SubSectionToolBar variant="section" />
 
@@ -260,29 +231,99 @@ const PageMaker = ({ pageSections, pageIndex, sectionRefs, className }: any) => 
                   name={`${name}.sectionTitle.content`}
                 />
 
-                {section.sectionLayout ===
-                  "BulletsCard" && (
-                    <BulletsCard
-                      data={section}
-                      name={name}
-                    />
-                  )}
+                {section.sectionLayout === "BulletsCard" && (
+                  <BulletsCard
+                    data={section}
+                    name={`sections.${originalIndex}`}
+                    sectionRefs={sectionRefs}
+                    originalIndex={originalIndex}
+                  />
+                )}
 
-                {section.sectionLayout ===
-                  "DescriptionCard" && (
-                    <DescriptionCard
-                      data={section}
-                      name={name}
-                    />
-                  )}
+                {section.sectionLayout === "DescriptionCard" && (
+                  <DescriptionCard
+                    data={section}
+                    name={`sections.${originalIndex}`}
+                    sectionRefs={sectionRefs}
+                    originalIndex={originalIndex}
+                  />
+                )}
               </div>
             );
           },
         )}
       </div>
-    </div>
-  </div>
-}
 
+      <div className="resume-main-editor-container">
+        {paginatedPages.map((pageSections, pageIndex) => {
+          return (
+            <div
+              key={pageIndex}
+              className="page"
+              style={{
+                paddingLeft: `${resumeSetting.margin.x}px`,
+                paddingRight: `${resumeSetting.margin.x}px`,
+                paddingTop: `${resumeSetting.margin.y}px`,
+                paddingBottom: `${resumeSetting.margin.y}px`,
+                background: currentConfig?.selectedSectionOrder
+                  ? "#e4e4e4"
+                  : "#FFFFFF",
+                marginBottom: "40px",
+
+                "--page-number": `"Page ${pageIndex + 1}"`,
+              } as React.CSSProperties}
+            >
+              <div className="page-inner-container">
+                {pageIndex === 0 && (
+                  <header className="resume-header active-focus" />
+                )}
+
+                <div className="resume-body">
+                  {pageSections.map(
+                    ({ section, originalIndex }, index) => {
+                      const name = `sections.${originalIndex}`;
+                      return (
+                        <div
+                          key={pageIndex + index}
+                          className="section-container section-styles active-focus"
+                        >
+                          <SubSectionToolBar variant="section" />
+
+                          <SectionTitle
+                            name={`${name}.sectionTitle.content`}
+                          />
+
+                          {section.sectionLayout ===
+                            "BulletsCard" && (
+                              <BulletsCard
+                                data={section}
+                                name={name}
+                                sectionRefs={sectionRefs}
+                                originalIndex={originalIndex}
+                              />
+                            )}
+
+                          {section.sectionLayout ===
+                            "DescriptionCard" && (
+                              <DescriptionCard
+                                data={section}
+                                name={name}
+                                sectionRefs={sectionRefs}
+                                originalIndex={originalIndex}
+                              />
+                            )}
+                        </div>
+                      );
+                    },
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+};
 
 export default Index;
