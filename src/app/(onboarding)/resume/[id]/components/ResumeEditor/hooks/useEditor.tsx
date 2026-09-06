@@ -22,13 +22,12 @@ const Index = () => {
   const handleInputChange = async (e: any) => {
     const name = e.currentTarget.getAttribute("name") || e.target?.name;
     const type = e.currentTarget.getAttribute("datatype") || e.target?.datatype;
-    console.log("type --->>>", type);
+    console.log("type --====->>>", type);
     // Supports both standard input/textarea (.value) and contenteditable divs (.textContent)
     let value: any = "";
     if (type === "boolean") {
       const currentValue = e.currentTarget.value;
-      value = currentValue === "true" ? true : false;
-      console.log("value -->", value);
+      value = currentValue === "true" ? true : false; 
     } else if (type === "htmlEditor") {
       value = e.target.innerHTML;
     } else {
@@ -37,7 +36,7 @@ const Index = () => {
           ? e.currentTarget.value
           : e.currentTarget.textContent;
     }
-console.log("value -->>>", value)
+    console.log("value -->>>", value);
     if (!name) return;
 
     const keys = name.split(".");
@@ -48,7 +47,6 @@ console.log("value -->>>", value)
       pathKeys: string[],
       newValue: any,
     ): any => {
-    
       if (pathKeys.length === 0) return newValue;
 
       const [head, ...tail] = pathKeys;
@@ -60,6 +58,8 @@ console.log("value -->>>", value)
     };
     setResumeData((prevData) => updateNestedState(prevData, keys, value));
   };
+ 
+
   return { getValue, handleInputChange };
 };
 

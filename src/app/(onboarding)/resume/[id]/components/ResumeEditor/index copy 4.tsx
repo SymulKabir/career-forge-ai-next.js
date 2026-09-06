@@ -37,15 +37,14 @@ const paginateResumeSections = ({
       currentHeight,
     };
   }
-  const sectionHeight = el.getBoundingClientRect().height || 150;
-  const subSections = el.querySelectorAll(".subsection-card");
 
-  const renderedSectionHight = Array.from(subSections ?? [])
-    .slice(0, initSubSectionIndex)
-    .reduce((total, subsection) => {
-      return total + subsection.getBoundingClientRect().height;
-    }, 0);
-  const unrenderedSectionHight = sectionHeight -  renderedSectionHight
+  const sectionHeight = el.getBoundingClientRect().height || 150;
+
+  console.log("===== START =====");
+  console.log("pageHight ->", pageHight);
+  console.log("currentPageIndex ->", currentPageIndex);
+  console.log("currentHeight ->", currentHeight);
+  console.log("sectionHeight ->", sectionHeight);
 
   // Make sure current page exists
   if (!pages[currentPageIndex]) {
@@ -58,14 +57,15 @@ const paginateResumeSections = ({
    * Entire section fits on current page
    * =====================================================
    */
-  if (currentHeight + unrenderedSectionHight <= pageHight) {
+  if (currentHeight + sectionHeight <= pageHight) {
+    console.log("new section in same page --->>>")
     pages[currentPageIndex].push({
       ...section,
     });
 
     return {
       currentPageIndex,
-      currentHeight: currentHeight + unrenderedSectionHight,
+      currentHeight: currentHeight + sectionHeight,
     };
   }
 
@@ -77,11 +77,15 @@ const paginateResumeSections = ({
    * =====================================================
    */
 
-  // const subSections = el.querySelectorAll(".subsection-card");
+  const subSections = el.querySelectorAll(".subsection-card");
 
   let totalSubSectionHeight = 0;
   let validItemIndex = 0;
- 
+
+  console.log("Data before loop ===>>>", {
+    initSubSectionIndex,
+    subSectionCount: subSections.length,
+  });
   for (let index = initSubSectionIndex; index < subSections.length; index++) {
     const element = subSections[index];
 
@@ -89,17 +93,26 @@ const paginateResumeSections = ({
 
     const nextHeight =
       currentHeight + totalSubSectionHeight + currentSubsectionHeight;
- 
+    console.log("subsection", {
+      index,
+      currentHeight,
+      totalSubSectionHeight,
+      currentSubsectionHeight,
+      nextHeight,
+      pageHight,
+    });
 
     if (nextHeight <= pageHight) {
+      console.log("hello 1")
       totalSubSectionHeight += currentSubsectionHeight;
       validItemIndex++;
-    } else { 
+    } else {
+      console.log("hello 2")
 
       break;
     }
   }
-
+      console.log("hello 3")
 
   const subsections = section.items || [];
 
@@ -107,23 +120,70 @@ const paginateResumeSections = ({
 
   const nextPageSubsections = subsections.slice(validItemIndex);
 
+  /*
+   * =====================================================
+   * CASE 2A:
+   * Some subsections fit on current page
+   * =====================================================
+   */
   if (validSubsections.length > 0) {
+      console.log("hello 4")
+
     pages[currentPageIndex].push({
       ...section,
       items: validSubsections,
     });
-  }
-  if (nextPageSubsections.length > 0) {
+
+    /*
+     * Start new page
+     */
     currentPageIndex++;
-    // pageHight = 0;
     pages[currentPageIndex] = [];
 
     currentHeight = 0;
+  }
+
+  /*
+   * =====================================================
+   * CASE 2B:
+   * Nothing fits on current page
+   *
+   * Move the whole section to a new page.
+   * =====================================================
+   */
+  if (
+    validSubsections.length === 0 &&
+    nextPageSubsections.length === subsections.length
+  ) {
+    console.log("update page number --->>>")
+    currentPageIndex++;
+
+    pages[currentPageIndex] = [];
+
+    currentHeight = 0;
+
+    pages[currentPageIndex].push({
+      ...section,
+    });
+
+    return {
+      currentPageIndex,
+      currentHeight: sectionHeight,
+    };
+  }
+
+  /*
+   * =====================================================
+   * CASE 2C:
+   * Remaining subsections need another page
+   * =====================================================
+   */
+  if (nextPageSubsections.length > 0) {
     const nextSection = {
       ...section,
       items: nextPageSubsections,
     };
-    // if (currentPageIndex < 5) {
+    console.log("Recursive call happend");
     return paginateResumeSections({
       pageHight,
       section: nextSection,
@@ -134,9 +194,6 @@ const paginateResumeSections = ({
       initSubSectionIndex: validItemIndex,
       sectionRefs,
     });
-    // }
-  } else {
-    currentHeight = totalSubSectionHeight;
   }
 
   return {
@@ -169,8 +226,10 @@ const Index = () => {
       resumeSetting.resumePageHeight - resumeSetting.margin.y * 2;
 
     const paginate = () => {
+      console.log("========== PAGINATION START ==========");
 
       for (const [originalIndex, section] of resumeData.sections.entries()) {
+        console.log(`START SECTION ${originalIndex}`);
 
         const result = paginateResumeSections({
           pageHight,
@@ -185,8 +244,12 @@ const Index = () => {
         currentPageIndex = result.currentPageIndex;
         currentHeight = result.currentHeight;
 
-     
+        console.log(`END SECTION ${originalIndex}`, result);
       }
+
+      console.log("========== PAGINATION END ==========");
+
+      console.log("pages --->>>", pages);
 
       setPaginatedPages([...pages]);
     };
@@ -212,7 +275,7 @@ const Index = () => {
               pageSections={pageSections}
               pageIndex={pageIndex}
               sectionRefs={sectionRefs}
-              className="not-visible" 
+              className="not-visible"
             />
           );
         })}

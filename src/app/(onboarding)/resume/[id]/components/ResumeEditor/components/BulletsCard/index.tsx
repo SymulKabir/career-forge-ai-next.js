@@ -22,7 +22,7 @@ const px = (value?: number | string) => {
   return `${value}px`;
 };
 
-const Index: React.FC<ExperienceProps> = ({ data, name }) => {
+const Index: React.FC<ExperienceProps> = ({ data, name,  }) => {
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
   const { font, textStyles, colors } = setting || {};
@@ -36,8 +36,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name }) => {
   const resumeBorder = colors?.border || "#1a202c";
   const resumeBackground = colors?.background || "#ffffff";
   const logoBackground = colors?.companyLogoBackground || "#edf2f7";
-  const gapValue = px(setting?.gap);
-console.log("name form Card-->>", name)
+  const gapValue = px(setting?.gap); 
 
   return (
     <>

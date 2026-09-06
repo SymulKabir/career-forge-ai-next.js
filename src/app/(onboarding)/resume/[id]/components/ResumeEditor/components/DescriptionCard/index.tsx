@@ -24,7 +24,7 @@ const px = (value?: number | string) => {
 
 const Index: React.FC<ExperienceProps> = ({
   data,
-  name,  
+  name
 }) => {
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
