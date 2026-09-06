@@ -13,6 +13,7 @@ import useEditor from "../../hooks/useEditor";
 interface ExperienceProps {
   data?: any;
   name?: any; 
+  syncWithProp?: any; 
 }
 
 const px = (value?: number | string) => {
@@ -22,7 +23,7 @@ const px = (value?: number | string) => {
   return `${value}px`;
 };
 
-const Index: React.FC<ExperienceProps> = ({ data, name,  }) => {
+const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
   const { font, textStyles, colors } = setting || {};
@@ -242,10 +243,12 @@ const Index: React.FC<ExperienceProps> = ({ data, name,  }) => {
               {getValue(`${name}.items.${item.positionIndex}.description.isVisible`) && <TextEditor
                 name={`${name}.items.${item.positionIndex}.description.content`}
                 mode="description"
+                syncWithProp={syncWithProp}
               />}
               {getValue(`${name}.items.${item.positionIndex}.bullets.isVisible`) && <TextEditor
                 name={`${name}.items.${item.positionIndex}.bullets.content`}
                 mode="list"
+                syncWithProp={syncWithProp}
               />}
             </div>
           </div>

@@ -16,22 +16,20 @@ import {
   ListOrdered,
 } from "lucide-react";
 import useEditor from "../../hooks/useEditor";
+import { useResumeContext } from "../../../../context/resume-editor-context";
 
 interface EditableTextProps {
   name?: string;
   className?: string;
   mode?: "free" | "description" | "list";
-  syncWithProp?: boolean; // Controls if it should force update when external data changes
 }
 
 const Index: React.FC<EditableTextProps> = ({
   name,
   className,
   mode = "free",
-  syncWithProp = false, // Defaults to false to protect cursor position during active typing
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
-  const [charCount, setCharCount] = useState<number>(0);
   const [activeFormats, setActiveFormats] = useState<Record<string, boolean>>({
     bold: false,
     italic: false,
@@ -44,29 +42,16 @@ const Index: React.FC<EditableTextProps> = ({
     insertUnorderedList: false,
     insertOrderedList: false,
   });
+  const { resumeData } = useResumeContext()
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   const { getValue, handleInputChange } = useEditor();
 
-  // Control default value assignment & conditional re-rendering update
   useEffect(() => {
-    if (editorRef.current && name) {
-      const externalValue = getValue(name) || "";
-      
-      if (syncWithProp) {
-        // If sync is true, update DOM whenever external value changes
-        if (editorRef.current.innerHTML !== externalValue) {
-          editorRef.current.innerHTML = externalValue;
-        }
-      } else {
-        // Otherwise, only set it initially if empty (protects cursor position completely)
-        if (editorRef.current.innerHTML === "") {
-          editorRef.current.innerHTML = externalValue;
-        }
-      }
+    if (caretPositionRef.current !== null) {
+      restoreCaretPosition(caretPositionRef.current);
     }
-  }, [name, getValue, syncWithProp]);
-
-  // Check current selection formatting states using queryCommandState
+  }, [resumeData])
   const updateActiveStates = useCallback(() => {
     try {
       setActiveFormats({
@@ -81,12 +66,69 @@ const Index: React.FC<EditableTextProps> = ({
         insertUnorderedList: document.queryCommandState("insertUnorderedList"),
         insertOrderedList: document.queryCommandState("insertOrderedList"),
       });
-    } catch (e) {
-      // Ignore if document selection is out of focus
-    }
+    } catch (e) { }
   }, []);
 
-  // Execute rich text formatting commands with exclusive list toggling logic
+  // কার্সার পজিশন নিখুঁতভাবে সেভ করার ফাংশন
+  const saveCaretPosition = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0 || !editorRef.current) return null;
+    const range = selection.getRangeAt(0);
+    const preSelectionRange = range.cloneRange();
+    preSelectionRange.selectNodeContents(editorRef.current);
+    preSelectionRange.setEnd(range.endContainer, range.endOffset);
+    return preSelectionRange.toString().length;
+  };
+
+  // কার্সার পজিশন আগের জায়গায় ফিরিয়ে নেওয়ার ফাংশন
+  const restoreCaretPosition = (charIndex: number) => {
+    if (!editorRef.current) return;
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.setStart(editorRef.current, 0);
+    range.collapse(true);
+
+    let charCount = 0;
+    let nodeStack: Node[] = [editorRef.current];
+    let node: Node | undefined;
+    let found = false;
+
+    while (!found && (node = nodeStack.pop())) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const nextCharCount = charCount + (node.textContent?.length || 0);
+        if (charIndex >= charCount && charIndex <= nextCharCount) {
+          range.setStart(node, charIndex - charCount);
+          range.collapse(true);
+          found = true;
+        }
+        charCount = nextCharCount;
+      } else {
+        let i = node.childNodes.length;
+        while (i--) {
+          nodeStack.push(node.childNodes[i]);
+        }
+      }
+    }
+
+    if (selection) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  };
+
+  const caretPositionRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (editorRef.current && name) {
+      const initialVal = getValue(name) || "";
+      if (editorRef.current.innerHTML !== initialVal) {
+        if (!editorRef.current.contains(document.activeElement)) {
+          editorRef.current.innerHTML = initialVal;
+        }
+      }
+    }
+  }, [name, getValue]);
+
   const executeCommand = (command: string, value: string = "") => {
     if (command === "insertUnorderedList" && activeFormats.insertOrderedList) {
       document.execCommand("insertOrderedList", false, value);
@@ -98,28 +140,19 @@ const Index: React.FC<EditableTextProps> = ({
     }
 
     document.execCommand(command, false, value);
-
-    if (editorRef.current) {
-      setCharCount(editorRef.current.innerText.length);
-    }
     updateActiveStates();
   };
 
   const handleInput = () => {
-    if (editorRef.current) {
-      setCharCount(editorRef.current.innerText.length);
-    }
     updateActiveStates();
   };
 
-  // Save data on blur (focus out)
   const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
     if (editorRef.current && name && handleInputChange) {
       handleInputChange(e as unknown as React.FormEvent<HTMLDivElement>);
     }
   };
 
-  // Listen to selection changes to update button active highlights dynamically
   useEffect(() => {
     const handleSelectionChange = () => {
       if (
@@ -136,16 +169,13 @@ const Index: React.FC<EditableTextProps> = ({
     };
   }, [updateActiveStates]);
 
-  // Helper class function to return active or inactive styling for buttons
   const getButtonStyle = (isActive: boolean) => {
-    return `w-7 h-7 border-none rounded-md cursor-pointer flex items-center justify-center transition-all active:scale-95 ${
-      isActive
-        ? "bg-indigo-50 text-indigo-600 shadow-xs ring-1 ring-indigo-200 font-semibold"
-        : "bg-transparent text-slate-600 hover:bg-white hover:text-indigo-600 hover:shadow-xs"
-    }`;
+    return `w-7 h-7 border-none rounded-md cursor-pointer flex items-center justify-center transition-all active:scale-95 ${isActive
+      ? "bg-indigo-50 text-indigo-600 shadow-xs ring-1 ring-indigo-200 font-semibold"
+      : "bg-transparent text-slate-600 hover:bg-white hover:text-indigo-600 hover:shadow-xs"
+      }`;
   };
 
-  // Smart configuration mapping for toolbar groups based on editing mode
   const toolbarGroups = [
     {
       id: "history",
@@ -221,45 +251,47 @@ const Index: React.FC<EditableTextProps> = ({
     group.allowedModes.includes(mode),
   );
 
-
-
-
   const handleEditorChange = (e: React.FormEvent<HTMLDivElement>) => {
     const currentTarget = e.currentTarget;
     const name = currentTarget.dataset.name;
     const value = currentTarget.innerHTML;
-    handleInput();
+    caretPositionRef.current = saveCaretPosition();
+    const nativeEvent = e.nativeEvent as InputEvent;
 
-    if (!name || !handleInputChange) {
-      return;
+    if (nativeEvent.inputType === "insertParagraph" || nativeEvent.inputType === "insertLineBreak") {
+      console.log("Enter pressed via onInput!");
+      console.log("value ->", value)
+      // caretPositionRef.current += 1
     }
-
+    console.log("caretPositionRef.current -->", caretPositionRef.current)
+    handleInput();
     const syntheticTargetEvent = {
-        target: {
-          name: name,
-          value: value,
-          innerHTML: value,
-          getAttribute: (attr: string) => currentTarget.getAttribute(attr),
-        },
-        currentTarget: {
-          name: name,
-          value: value,
-          innerHTML: value,
-          dataset: { name },
-          getAttribute: (attr: string) => currentTarget.getAttribute(attr),
-        },
-      };
+      target: {
+        name: name,
+        value: value,
+        innerHTML: value,
+        getAttribute: (attr: string) => currentTarget.getAttribute(attr),
+      },
+      currentTarget: {
+        name: name,
+        value: value,
+        innerHTML: value,
+        dataset: { name },
+        getAttribute: (attr: string) => currentTarget.getAttribute(attr),
+      },
+    };
 
-      handleInputChange(
-        syntheticTargetEvent as unknown as React.FormEvent<HTMLDivElement>,
-      );
+    handleInputChange(
+      syntheticTargetEvent as unknown as React.FormEvent<HTMLDivElement>,
+    );
+
   };
+
 
   return (
     <>
       <div className="flex justify-center font-sans">
         <div className="w-full flex flex-col relative group">
-          {/* Top Toolbar */}
           <div className="hidden group-focus-within:flex print:hidden bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-xl items-center gap-1.5 p-1.5 absolute w-max max-w-full left-1/2 -translate-x-1/2 bottom-[calc(100%+12px)] z-50 shadow-xl shadow-slate-200/50 overflow-x-auto whitespace-nowrap scrollbar-none transition-all duration-200 animate-in fade-in slide-in-from-bottom-2">
             {activeGroups.map((group, groupIdx) => (
               <React.Fragment key={group.id}>
@@ -290,29 +322,25 @@ const Index: React.FC<EditableTextProps> = ({
             ))}
           </div>
 
-          {/* Editable Content Area */}
           <div
             ref={editorRef}
-            name={`${name}`}
             data-name={name}
             datatype="htmlEditor"
-            className={`editor-content h-max min-h-[5px] text-[15px] leading-[1.6] text-[#2d3748] outline-none overflow-y-auto ${className || ""}`}
+            className={`editor-content h-max min-h-[5px] text-[15px] leading-[1.6] text-[#2d3748] outline-none overflow-y-auto ${className || ""
+              }`}
             contentEditable
             onInput={handleEditorChange}
             onBlur={handleBlur}
-            onKeyUp={() => {
-              updateActiveStates();
-            }}
-            onMouseUp={() => {
-              updateActiveStates();
-            }}
+            onKeyUp={updateActiveStates}
+            onMouseUp={updateActiveStates}
             suppressContentEditableWarning
-            /* dangerouslySetInnerHTML has been permanently removed so React doesn't overwrite your typing */
+            dangerouslySetInnerHTML={{
+              __html: name ? getValue(name) || "" : "",
+            }}
           />
         </div>
       </div>
 
-      {/* Embedded Component Styles */}
       <style jsx>{`
         .editor-content :global(ul) {
           list-style-type: disc !important;

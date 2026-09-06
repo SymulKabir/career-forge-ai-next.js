@@ -204,7 +204,7 @@ const Index = () => {
         } as React.CSSProperties
       }
     >
-      <div className="resume-main-editor-container not-visible debugging">
+      <div className="resume-main-editor-container not-visible">
         {[[...resumeData.sections]].map((pageSections, pageIndex) => {
           return (
             <PageMaker
@@ -213,6 +213,7 @@ const Index = () => {
               pageIndex={pageIndex}
               sectionRefs={sectionRefs}
               className="not-visible" 
+              syncWithProp={true}
             />
           );
         })}
@@ -238,6 +239,7 @@ const PageMaker = ({
   pageIndex,
   sectionRefs,
   className,
+  syncWithProp,
 }: any) => {
   const [resumeSetting] = useState({
     ...RESUME_SETTING,
@@ -283,11 +285,11 @@ const PageMaker = ({
                 <SectionTitle name={`${name}.sectionTitle.content`} />
 
                 {section.sectionLayout === "BulletsCard" && (
-                  <BulletsCard data={section} name={name} />
+                  <BulletsCard data={section} name={name} syncWithProp={syncWithProp} />
                 )}
 
                 {section.sectionLayout === "DescriptionCard" && (
-                  <DescriptionCard data={section} name={name} />
+                  <DescriptionCard data={section} name={name} syncWithProp={syncWithProp} />
                 )}
               </div>
             );

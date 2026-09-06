@@ -22,7 +22,6 @@ const Index = () => {
   const handleInputChange = async (e: any) => {
     const name = e.currentTarget.getAttribute("name") || e.target?.name;
     const type = e.currentTarget.getAttribute("datatype") || e.target?.datatype;
-    console.log("type --====->>>", type);
     // Supports both standard input/textarea (.value) and contenteditable divs (.textContent)
     let value: any = "";
     if (type === "boolean") {
@@ -36,7 +35,6 @@ const Index = () => {
           ? e.currentTarget.value
           : e.currentTarget.textContent;
     }
-    console.log("value -->>>", value);
     if (!name) return;
 
     const keys = name.split(".");
