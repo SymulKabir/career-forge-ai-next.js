@@ -1,7 +1,6 @@
 import React, { useLayoutEffect, useState, useRef } from "react";
 import "./style.scss";
 import { RESUME_CONSTANTS } from "../../constants/resume-utils";
-import { RESUME_SETTING } from "./constants/resumeSetting";
 import BulletsCard from "./components/BulletsCard";
 import DescriptionCard from "./components/DescriptionCard";
 import { useResumeContext } from "../../context/resume-editor-context";
@@ -145,11 +144,7 @@ const paginateResumeSections = ({
   };
 };
 const Index = () => {
-  const { resumeData } = useResumeContext();
-
-  const [resumeSetting] = useState({
-    ...RESUME_SETTING,
-  });
+  const { resumeData, setting } = useResumeContext();
 
   const sectionRefs = useRef<{
     [key: number]: HTMLDivElement | null;
@@ -166,7 +161,7 @@ const Index = () => {
     let currentHeight = 0;
 
     const pageHight =
-      resumeSetting.resumePageHeight - resumeSetting.margin.y * 2;
+      setting.resumePageHeight - setting.margin.y * 2;
 
     const paginate = () => {
 
@@ -192,15 +187,16 @@ const Index = () => {
     };
 
     requestAnimationFrame(paginate);
-  }, [resumeData, resumeSetting]);
+  }, [resumeData, setting]);
   return (
     <section
       className="resume-editor"
       style={
         {
           "--container-height": `calc(100vh - ${RESUME_CONSTANTS.headerHeight}px - ${RESUME_CONSTANTS.toolBarHeight}px)`,
-          "--section-gap": `${resumeSetting.sectionGap}px`,
-          "--page-height": `${resumeSetting.resumePageHeight}px`,
+          "--section-gap": `${setting.sectionGap}px`,
+          "--page-height": `${setting.resumePageHeight}px`,
+          "--font-family": setting.font.family,
         } as React.CSSProperties
       }
     >
@@ -241,22 +237,20 @@ const PageMaker = ({
   className,
   syncWithProp,
 }: any) => {
-  const [resumeSetting] = useState({
-    ...RESUME_SETTING,
-  });
+  const { setting } = useResumeContext();
+ 
   return (
     <div
       key={pageIndex}
       className={`page ${className}`}
       style={
         {
-          paddingLeft: `${resumeSetting.margin.x}px`,
-          paddingRight: `${resumeSetting.margin.x}px`,
-          paddingTop: `${resumeSetting.margin.y}px`,
-          paddingBottom: `${resumeSetting.margin.y}px`,
+          paddingLeft: `${setting.margin.x}px`,
+          paddingRight: `${setting.margin.x}px`,
+          paddingTop: `${setting.margin.y}px`,
+          paddingBottom: `${setting.margin.y}px`,
           background: "#FFFFFF",
           marginBottom: "40px",
-
           "--page-number": `"Page ${pageIndex + 1}"`,
         } as React.CSSProperties
       }

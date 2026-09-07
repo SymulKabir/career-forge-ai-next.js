@@ -1,62 +1,408 @@
 "use client";
 
 import { useState } from "react";
+import { useResumeContext } from "../../context/resume-editor-context";
+import { useResume } from "../../hooks/index";
+
+/* =========================================================
+   TYPES
+========================================================= */
+
+type SettingChange = (payload: {
+  propertyPath: string;
+  value: any;
+}) => void;
+
+type RangeFieldProps = {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step?: number;
+  suffix?: string;
+  displayValue?: string;
+  onChange: (value: number) => void;
+  className?: string;
+};
+
+type SelectOption = {
+  label: string;
+  value: string | number;
+};
+
+type SelectFieldProps = {
+  label: string;
+  value: string | number;
+  options: SelectOption[];
+  onChange: (value: string) => void;
+  className?: string;
+};
+
+type ColorFieldProps = {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  className?: string;
+};
+
+type ToggleProps = {
+  checked: boolean;
+  onChange: (value: boolean) => void;
+};
+
+type TypographyConfig = {
+  enabled?: boolean;
+  fontSize?: number;
+  fontWeight?: number;
+  fontColor?: string;
+  lineHeight?: number;
+  letterSpacing?: number;
+  textTransform?: string;
+  gap?: number;
+  sectionGap?: number;
+};
+
+type TypographyGroupProps = {
+  title: string;
+  description: string;
+  path: string;
+  config?: TypographyConfig;
+  handleSettingChange: SettingChange;
+  fontSizeMax?: number;
+  fontWeightMin?: number;
+  fontWeightMax?: number;
+};
+
+/* =========================================================
+   TOGGLE
+========================================================= */
+
+function Toggle({ checked, onChange }: ToggleProps) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!checked)}
+      aria-pressed={checked}
+      className={`relative h-5 w-9 shrink-0 rounded-full transition-colors ${
+        checked ? "bg-violet-600" : "bg-slate-300"
+      }`}
+    >
+      <span
+        className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-all ${
+          checked ? "left-[18px]" : "left-0.5"
+        }`}
+      />
+    </button>
+  );
+}
+
+/* =========================================================
+   RANGE FIELD
+========================================================= */
+
+function RangeField({
+  label,
+  value,
+  min,
+  max,
+  step = 1,
+  suffix = "",
+  displayValue,
+  onChange,
+  className = "",
+}: RangeFieldProps) {
+  return (
+    <div className={`min-w-0 ${className}`}>
+      <div className="mb-1 flex items-center justify-between gap-2">
+        <span className="truncate text-[11px] font-medium text-slate-600">
+          {label}
+        </span>
+
+        <span className="shrink-0 text-[10px] font-semibold text-slate-800">
+          {displayValue ?? `${value}${suffix}`}
+        </span>
+      </div>
+
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="h-1.5 w-full cursor-pointer accent-violet-600"
+      />
+    </div>
+  );
+}
+
+/* =========================================================
+   SELECT FIELD
+========================================================= */
+
+function SelectField({
+  label,
+  value,
+  options,
+  onChange,
+  className = "",
+}: SelectFieldProps) {
+  return (
+    <div className={`min-w-0 ${className}`}>
+      <label className="mb-1 block truncate text-[11px] font-medium text-slate-600">
+        {label}
+      </label>
+
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-xs text-slate-700 outline-none transition focus:border-violet-400 focus:ring-1 focus:ring-violet-100"
+      >
+        {options.map((option) => (
+          <option key={`${option.label}-${option.value}`} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+/* =========================================================
+   COLOR FIELD
+========================================================= */
+
+function ColorField({
+  label,
+  value,
+  onChange,
+  className = "",
+}: ColorFieldProps) {
+  const safeValue = value || "#000000";
+
+  return (
+    <div className={`min-w-0 ${className}`}>
+      <label className="mb-1 block text-[11px] font-medium text-slate-600">
+        {label}
+      </label>
+
+      <div className="flex h-8 items-center gap-1.5">
+        <input
+          type="color"
+          value={safeValue}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-8 w-9 shrink-0 cursor-pointer rounded-md border border-slate-200 bg-white p-0.5"
+        />
+
+        <input
+          type="text"
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-8 min-w-0 flex-1 rounded-md border border-slate-200 bg-white px-2 text-xs uppercase text-slate-700 outline-none focus:border-violet-400"
+        />
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   TYPOGRAPHY GROUP
+========================================================= */
+
+function TypographyGroup({
+  title,
+  description,
+  path,
+  config,
+  handleSettingChange,
+  fontSizeMax = 24,
+  fontWeightMin = 400,
+  fontWeightMax = 800,
+}: TypographyGroupProps) {
+  const safeConfig: Required<TypographyConfig> = {
+    enabled: config?.enabled ?? false,
+    fontSize: config?.fontSize ?? 16,
+    fontWeight: config?.fontWeight ?? 400,
+    fontColor: config?.fontColor ?? "#000000",
+    lineHeight: config?.lineHeight ?? 1,
+    letterSpacing: config?.letterSpacing ?? 0,
+    textTransform: config?.textTransform ?? "none",
+    gap: config?.gap ?? 0,
+    sectionGap: config?.sectionGap ?? 0,
+  };
+
+  const change = (field: string, value: any) => {
+    handleSettingChange({
+      propertyPath: `${path}.${field}`,
+      value,
+    });
+  };
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-slate-50/60 p-2.5">
+      {/* GROUP HEADER */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <h4 className="truncate text-xs font-semibold text-slate-800">
+              {title}
+            </h4>
+
+            {safeConfig.enabled && (
+              <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-violet-700">
+                On
+              </span>
+            )}
+          </div>
+
+          <p className="mt-0.5 truncate text-[10px] text-slate-400">
+            {description}
+          </p>
+        </div>
+
+        <Toggle
+          checked={safeConfig.enabled}
+          onChange={(value) => change("enabled", value)}
+        />
+      </div>
+
+      {/* GROUP CONTROLS */}
+      {safeConfig.enabled && (
+        <div className="mt-2.5 grid grid-cols-2 gap-x-3 gap-y-2.5">
+          <RangeField
+            label="Font Size"
+            value={safeConfig.fontSize}
+            min={10}
+            max={fontSizeMax}
+            suffix="px"
+            onChange={(value) => change("fontSize", value)}
+          />
+
+          <SelectField
+            label="Weight"
+            value={safeConfig.fontWeight}
+            options={[
+              { label: "Light", value: 300 },
+              { label: "Regular", value: 400 },
+              { label: "Medium", value: 500 },
+              { label: "Semi Bold", value: 600 },
+              { label: "Bold", value: 700 },
+              { label: "Extra Bold", value: 800 },
+            ].filter(
+              (option) =>
+                Number(option.value) >= fontWeightMin &&
+                Number(option.value) <= fontWeightMax
+            )}
+            onChange={(value) => change("fontWeight", Number(value))}
+          />
+
+          <ColorField
+            label="Color"
+            value={safeConfig.fontColor}
+            onChange={(value) => change("fontColor", value)}
+            className="col-span-2"
+          />
+
+          <RangeField
+            label="Line Height"
+            value={safeConfig.lineHeight}
+            min={0.8}
+            max={2}
+            step={0.1}
+            displayValue={safeConfig.lineHeight.toFixed(1)}
+            onChange={(value) => change("lineHeight", value)}
+          />
+
+          <RangeField
+            label="Letter Spacing"
+            value={safeConfig.letterSpacing}
+            min={-2}
+            max={5}
+            step={0.5}
+            displayValue={`${safeConfig.letterSpacing}px`}
+            onChange={(value) => change("letterSpacing", value)}
+          />
+
+          <SelectField
+            label="Transform"
+            value={safeConfig.textTransform}
+            options={[
+              { label: "None", value: "none" },
+              { label: "Uppercase", value: "uppercase" },
+              { label: "Lowercase", value: "lowercase" },
+              { label: "Capitalize", value: "capitalize" },
+            ]}
+            onChange={(value) => change("textTransform", value)}
+          />
+
+          <RangeField
+            label="Gap"
+            value={safeConfig.gap}
+            min={0}
+            max={24}
+            suffix="px"
+            onChange={(value) => change("gap", value)}
+          />
+
+          <RangeField
+            label="Section Gap"
+            value={safeConfig.sectionGap}
+            min={0}
+            max={40}
+            suffix="px"
+            onChange={(value) => change("sectionGap", value)}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* =========================================================
+   MAIN DESIGN & FONT PANEL
+========================================================= */
 
 export default function DesignFontPanel() {
-  /* =========================================================
-     DESIGN STATE
-  ========================================================= */
-
+  /* QUICK STYLE */
   const [quickStyle, setQuickStyle] = useState("Minimal");
+
+  /* PAGE MARGINS */
   const [pageMargins, setPageMargins] = useState(1);
+
+  /* SECTION SPACING */
   const [sectionSpacing, setSectionSpacing] = useState(2);
+
+  /* RADIUS */
   const [radius, setRadius] = useState("Soft");
 
-  /* =========================================================
-     COLOR STATE
-  ========================================================= */
+  /* RESUME CONTEXT */
+  const { setting, setSetting } = useResumeContext();
+  const { handleSettingChange } = useResume();
 
+  /* COLORS */
   const [color, setColor] = useState("#7C3AED");
   const [customColor, setCustomColor] = useState("#7C3AED");
 
-  /* =========================================================
-     FONT STATE
-  ========================================================= */
-
-  const [fontFamily, setFontFamily] = useState("Rubik");
+  /* FONT */
   const [fontSize, setFontSize] = useState("Small");
   const [lineHeight, setLineHeight] = useState(1);
   const [letterSpacing, setLetterSpacing] = useState(0);
 
-  /* =========================================================
-     COLUMN STATE
-  ========================================================= */
-
+  /* COLUMNS */
   const [columns, setColumns] = useState(1);
   const [columnGap, setColumnGap] = useState(24);
 
-  /* =========================================================
-     BACKGROUND STATE
-  ========================================================= */
-
+  /* BACKGROUND */
   const [background, setBackground] = useState("None");
 
-  /* =========================================================
-     SIGNATURE STATE
-  ========================================================= */
+  /* SIGNATURE */
+  const [signatureAlignment, setSignatureAlignment] = useState("Center");
 
-  const [signatureAlignment, setSignatureAlignment] =
-    useState("Center");
-
-  /* =========================================================
-     BRANDING STATE
-  ========================================================= */
-
-  const [brandingEnabled, setBrandingEnabled] =
-    useState(true);
+  /* BRANDING */
+  const [brandingEnabled, setBrandingEnabled] = useState(true);
 
   /* =========================================================
-     RESET
+     RESET DESIGN
   ========================================================= */
 
   const resetDesign = () => {
@@ -68,7 +414,6 @@ export default function DesignFontPanel() {
     setColor("#7C3AED");
     setCustomColor("#7C3AED");
 
-    setFontFamily("Rubik");
     setFontSize("Small");
     setLineHeight(1);
     setLetterSpacing(0);
@@ -83,980 +428,729 @@ export default function DesignFontPanel() {
     setBrandingEnabled(true);
   };
 
+  /* =========================================================
+     OPTIONS
+  ========================================================= */
+
+  const colors = [
+    "#7C3AED",
+    "#2563EB",
+    "#0891B2",
+    "#059669",
+    "#DC2626",
+    "#EA580C",
+    "#0F172A",
+  ];
+
+  const quickStyles = [
+    {
+      name: "Minimal",
+      description: "Clean & simple",
+      preview: "bg-white",
+    },
+    {
+      name: "Professional",
+      description: "Classic & polished",
+      preview: "bg-slate-50",
+    },
+    {
+      name: "Creative",
+      description: "Bold & modern",
+      preview: "bg-violet-50",
+    },
+  ];
+
+  const radiusOptions = ["Sharp", "Soft", "Round", "Pill"];
+
+  /* =========================================================
+     RENDER
+  ========================================================= */
+
   return (
     <div
       id="designFontPanel"
-      className="space-y-4 pb-6"
+      className="space-y-2 pb-3"
     >
-      {/* ========================================================= */}
-      {/* 1. DESIGN & FONT */}
-      {/* ========================================================= */}
+      {/* =====================================================
+          DESIGN & FONT
+      ===================================================== */}
 
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-        {/* Header */}
+      <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        {/* HEADER */}
 
-        <div className="border-b border-slate-100 p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <h3 className="text-xs font-extrabold tracking-tight text-slate-800">
+        <div className="flex items-center justify-between border-b border-slate-100 px-3 py-2.5">
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-900">
                 Design & Font
               </h3>
 
-              <p className="mt-1 text-[10px] leading-4 text-slate-400">
-                Fine-tune spacing, typography and visual
-                balance.
-              </p>
+              <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-violet-700">
+                PRO
+              </span>
             </div>
 
-            <span className="rounded-lg bg-violet-50 px-2 py-1 text-[9px] font-bold text-violet-600">
-              PRO
-            </span>
+            <p className="mt-0.5 text-[10px] text-slate-400">
+              Customize your resume appearance
+            </p>
           </div>
         </div>
 
-        {/* =======================================================
-            DESIGN PRESETS
-        ======================================================== */}
+        {/* ===================================================
+            QUICK STYLE
+        =================================================== */}
 
-        <div className="p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+        <div className="border-b border-slate-100 p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-800">
               Quick Style
             </span>
 
-            <button
-              type="button"
-              onClick={() => setQuickStyle("Minimal")}
-              className="text-[9px] font-bold text-violet-600 hover:text-violet-700"
-            >
-              Reset
-            </button>
+            <span className="text-[10px] text-slate-400">
+              {quickStyle}
+            </span>
           </div>
 
           <div className="grid grid-cols-3 gap-2">
-            {/* Minimal */}
-
-            <button
-              type="button"
-              onClick={() => setQuickStyle("Minimal")}
-              className={`group rounded-xl p-2 text-left ${
-                quickStyle === "Minimal"
-                  ? "border-2 border-violet-500 bg-violet-50"
-                  : "border border-slate-200 bg-white hover:border-violet-300"
-              }`}
-            >
-              <div className="mb-2 h-12 rounded-lg border border-slate-200 bg-white p-2">
-                <div className="h-1.5 w-12 rounded bg-slate-800" />
-
-                <div className="mt-2 h-1 w-full rounded bg-slate-200" />
-
-                <div className="mt-1 h-1 w-4/5 rounded bg-slate-200" />
-
-                <div className="mt-2 h-1 w-8 rounded bg-violet-500" />
-              </div>
-
-              <span
-                className={`block text-[9px] font-extrabold ${
-                  quickStyle === "Minimal"
-                    ? "text-violet-600"
-                    : "text-slate-600"
+            {quickStyles.map((style) => (
+              <button
+                key={style.name}
+                type="button"
+                onClick={() => setQuickStyle(style.name)}
+                className={`rounded-lg border p-1.5 text-left transition ${
+                  quickStyle === style.name
+                    ? "border-violet-400 bg-violet-50 ring-1 ring-violet-100"
+                    : "border-slate-200 bg-white hover:border-slate-300"
                 }`}
               >
-                Minimal
-              </span>
-            </button>
-
-            {/* Professional */}
-
-            <button
-              type="button"
-              onClick={() => setQuickStyle("Professional")}
-              className={`group rounded-xl p-2 text-left ${
-                quickStyle === "Professional"
-                  ? "border-2 border-violet-500 bg-violet-50"
-                  : "border border-slate-200 bg-white hover:border-violet-300"
-              }`}
-            >
-              <div className="mb-2 h-12 rounded-lg border border-slate-200 bg-white p-2">
-                <div className="flex gap-1">
-                  <div className="h-2 w-8 rounded bg-slate-800" />
-
-                  <div className="h-2 w-12 rounded bg-violet-500" />
+                <div
+                  className={`mb-1.5 h-9 rounded border border-slate-200 ${style.preview}`}
+                >
+                  <div className="space-y-1 p-1.5">
+                    <div className="h-1 w-1/2 rounded bg-slate-400" />
+                    <div className="h-0.5 w-3/4 rounded bg-slate-200" />
+                    <div className="h-0.5 w-full rounded bg-slate-200" />
+                    <div className="h-0.5 w-2/3 rounded bg-slate-200" />
+                  </div>
                 </div>
 
-                <div className="mt-2 h-1 w-full rounded bg-slate-200" />
+                <p className="truncate text-[10px] font-semibold text-slate-700">
+                  {style.name}
+                </p>
 
-                <div className="mt-1 h-1 w-3/4 rounded bg-slate-200" />
-
-                <div className="mt-2 h-1 w-full rounded bg-slate-300" />
-              </div>
-
-              <span
-                className={`block text-[9px] font-extrabold ${
-                  quickStyle === "Professional"
-                    ? "text-violet-600"
-                    : "text-slate-600"
-                }`}
-              >
-                Professional
-              </span>
-            </button>
-
-            {/* Creative */}
-
-            <button
-              type="button"
-              onClick={() => setQuickStyle("Creative")}
-              className={`group rounded-xl p-2 text-left ${
-                quickStyle === "Creative"
-                  ? "border-2 border-violet-500 bg-violet-50"
-                  : "border border-slate-200 bg-white hover:border-violet-300"
-              }`}
-            >
-              <div className="relative mb-2 h-12 overflow-hidden rounded-lg border border-slate-200 bg-white p-2">
-                <div className="absolute left-0 top-0 h-full w-4 bg-violet-600" />
-
-                <div className="ml-5 h-2 w-12 rounded bg-slate-800" />
-
-                <div className="ml-5 mt-2 h-1 w-16 rounded bg-slate-200" />
-
-                <div className="ml-5 mt-1 h-1 w-12 rounded bg-slate-200" />
-              </div>
-
-              <span
-                className={`block text-[9px] font-extrabold ${
-                  quickStyle === "Creative"
-                    ? "text-violet-600"
-                    : "text-slate-600"
-                }`}
-              >
-                Creative
-              </span>
-            </button>
+                <p className="truncate text-[8px] text-slate-400">
+                  {style.description}
+                </p>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* =======================================================
+        {/* ===================================================
             PAGE MARGINS
-        ======================================================== */}
+        =================================================== */}
 
-        <div className="border-t border-slate-100 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-[10px] font-bold text-slate-700">
-                Page Margins
-              </div>
+        <div className="border-b border-slate-100 p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-800">
+              Page Margins
+            </span>
 
-              <div className="mt-0.5 text-[9px] text-slate-400">
-                Control page whitespace
-              </div>
-            </div>
-
-            <span className="min-w-[30px] rounded-lg bg-slate-100 px-2 py-1 text-center text-[9px] font-bold text-slate-600">
-              {pageMargins}
+            <span className="text-[10px] text-slate-400">
+              {setting.margin.y} / {setting.margin.x}
             </span>
           </div>
 
-          <div className="mt-3 flex items-center gap-3">
-            <span className="text-[9px] text-slate-400">
-              Compact
-            </span>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded-lg bg-slate-50 p-2.5">
+              <RangeField
+                label="Top / Bottom"
+                value={setting.margin.y}
+                min={0}
+                max={3}
+                step={0.1}
+                displayValue={`${setting.margin.y}"`}
+                onChange={(value) =>
+                  handleSettingChange({
+                    propertyPath: "margin.y",
+                    value,
+                  })
+                }
+              />
+            </div>
 
-            <input
-              type="range"
-              min="0"
-              max="5"
-              value={pageMargins}
-              step="1"
-              onChange={(event) =>
-                setPageMargins(Number(event.target.value))
-              }
-              className="w-full accent-violet-600"
-            />
-
-            <span className="text-[9px] text-slate-400">
-              Wide
-            </span>
+            <div className="rounded-lg bg-slate-50 p-2.5">
+              <RangeField
+                label="Left / Right"
+                value={setting.margin.x}
+                min={0}
+                max={3}
+                step={0.1}
+                displayValue={`${setting.margin.x}"`}
+                onChange={(value) =>
+                  handleSettingChange({
+                    propertyPath: "margin.x",
+                    value,
+                  })
+                }
+              />
+            </div>
           </div>
         </div>
 
-        {/* =======================================================
+        {/* ===================================================
+            SECTION TYPOGRAPHY
+        =================================================== */}
+
+        <div className="border-b border-slate-100">
+          <div className="px-3 pb-2 pt-3">
+            <h4 className="text-xs font-bold text-slate-800">
+              Section Typography
+            </h4>
+
+            <p className="mt-0.5 text-[10px] text-slate-400">
+              Fine-tune every section independently
+            </p>
+          </div>
+
+          <div className="space-y-2 px-3 pb-3">
+            {/* SECTION TITLE */}
+
+            <TypographyGroup
+              title="Section Title"
+              description="Main section headings"
+              path="sections.sectionTitle"
+              config={setting?.sections?.sectionTitle}
+              handleSettingChange={handleSettingChange}
+              fontSizeMax={32}
+            />
+
+            {/* SUBSECTION TITLE */}
+
+            <TypographyGroup
+              title="Subsection Title"
+              description="Secondary section headings"
+              path="sections.subsectionTitle"
+              config={setting?.sections?.subsectionTitle}
+              handleSettingChange={handleSettingChange}
+              fontSizeMax={24}
+            />
+
+            {/* ORGANIZATION TITLE */}
+
+            <TypographyGroup
+              title="Organization Title"
+              description="Company, school or organization"
+              path="sections.organizationTitle"
+              config={setting?.sections?.organizationTitle}
+              handleSettingChange={handleSettingChange}
+              fontSizeMax={24}
+            />
+
+            {/* METADATA */}
+
+            <TypographyGroup
+              title="Metadata"
+              description="Dates, locations and supporting details"
+              path="sections.metadata"
+              config={setting?.sections?.metadata}
+              handleSettingChange={handleSettingChange}
+              fontSizeMax={20}
+              fontWeightMin={300}
+              fontWeightMax={700}
+            />
+          </div>
+        </div>
+
+        {/* ===================================================
             SECTION SPACING
-        ======================================================== */}
+        =================================================== */}
 
-        <div className="border-t border-slate-100 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-[10px] font-bold text-slate-700">
-                Section Spacing
-              </div>
-
-              <div className="mt-0.5 text-[9px] text-slate-400">
-                Space between resume sections
-              </div>
-            </div>
-
-            <span className="min-w-[30px] rounded-lg bg-violet-50 px-2 py-1 text-center text-[9px] font-bold text-violet-600">
-              {sectionSpacing}
-            </span>
-          </div>
-
-          <div className="mt-3 flex items-center gap-3">
-            <span className="text-[9px] text-slate-400">
-              Tight
-            </span>
-
-            <input
-              type="range"
-              min="0"
-              max="6"
-              value={sectionSpacing}
-              step="1"
-              onChange={(event) =>
-                setSectionSpacing(
-                  Number(event.target.value),
-                )
-              }
-              className="w-full accent-violet-600"
-            />
-
-            <span className="text-[9px] text-slate-400">
-              Relaxed
-            </span>
-          </div>
+        <div className="border-b border-slate-100 p-3">
+          <RangeField
+            label="Section Spacing"
+            value={setting.sectionGap}
+            min={0}
+            max={80}
+            step={5}
+            suffix="px"
+            onChange={(value) =>
+              handleSettingChange({
+                propertyPath: "sectionGap",
+                value,
+              })
+            }
+          />
         </div>
 
-        {/* =======================================================
-            RADIUS
-        ======================================================== */}
+        {/* ===================================================
+            CORNER STYLE
+        =================================================== */}
 
-        <div className="border-t border-slate-100 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-[10px] font-bold text-slate-700">
-                Corner Style
-              </div>
-
-              <div className="mt-0.5 text-[9px] text-slate-400">
-                Control visual softness
-              </div>
-            </div>
-
-            <span className="rounded-lg bg-slate-100 px-2 py-1 text-[9px] font-bold text-slate-500">
-              {radius}
-            </span>
+        <div className="p-3">
+          <div className="mb-2 text-xs font-semibold text-slate-800">
+            Corner Style
           </div>
 
-          <div className="mt-3 grid grid-cols-4 gap-2">
-            {["Sharp", "Soft", "Round", "Pill"].map(
-              (item) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => setRadius(item)}
-                  className={`rounded-lg px-2 py-2 text-[9px] font-bold ${
-                    radius === item
-                      ? "border-2 border-violet-500 bg-violet-50 text-violet-600"
-                      : "border border-slate-200 text-slate-500 hover:border-violet-300"
-                  }`}
-                >
-                  {item}
-                </button>
-              ),
-            )}
+          <div className="grid grid-cols-4 gap-1.5">
+            {radiusOptions.map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setRadius(option)}
+                className={`h-8 rounded-md border text-[10px] font-medium transition ${
+                  radius === option
+                    ? "border-violet-400 bg-violet-50 text-violet-700"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+                }`}
+              >
+                {option}
+              </button>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ========================================================= */}
-      {/* 2. COLORS */}
-      {/* ========================================================= */}
+      {/* =====================================================
+          COLORS
+      ===================================================== */}
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="mb-4 flex items-start justify-between">
+      <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="mb-2.5 flex items-center justify-between">
           <div>
-            <h3 className="text-xs font-extrabold text-slate-800">
+            <h3 className="text-sm font-bold text-slate-900">
               Colors
             </h3>
 
-            <p className="mt-1 text-[10px] text-slate-400">
-              Build a consistent visual identity.
+            <p className="text-[10px] text-slate-400">
+              Choose your accent color
             </p>
           </div>
 
           <span
-            className="h-5 w-5 rounded-full ring-4 ring-violet-50"
+            className="h-5 w-5 rounded-full border border-white shadow-sm ring-1 ring-slate-200"
             style={{ backgroundColor: color }}
           />
         </div>
 
-        {/* Preset Colors */}
-
-        <div className="grid grid-cols-7 gap-2">
-          {[
-            ["#7c3aed", "Violet"],
-            ["#2563eb", "Blue"],
-            ["#0891b2", "Cyan"],
-            ["#059669", "Emerald"],
-            ["#dc2626", "Red"],
-            ["#ea580c", "Orange"],
-            ["#0f172a", "Slate"],
-          ].map(([value, title]) => (
+        <div className="grid grid-cols-7 gap-1.5">
+          {colors.map((item) => (
             <button
-              key={value}
+              key={item}
               type="button"
-              title={title}
+              aria-label={`Select ${item}`}
               onClick={() => {
-                setColor(value);
-                setCustomColor(value);
+                setColor(item);
+                setCustomColor(item);
               }}
-              className={`h-8 w-8 rounded-full transition hover:scale-110 ${
-                color.toLowerCase() ===
-                value.toLowerCase()
-                  ? "ring-2 ring-violet-500 ring-offset-2"
-                  : ""
+              className={`flex h-8 items-center justify-center rounded-md border transition ${
+                color === item
+                  ? "border-slate-900 ring-1 ring-slate-900"
+                  : "border-transparent"
               }`}
-              style={{ backgroundColor: value }}
-            />
+            >
+              <span
+                className="h-5 w-5 rounded-full shadow-sm"
+                style={{ backgroundColor: item }}
+              />
+            </button>
           ))}
         </div>
 
-        {/* Custom */}
-
-        <div className="mt-4 flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <div className="mt-2.5 flex items-center gap-2 rounded-lg bg-slate-50 p-2">
           <input
-            id="customColor"
             type="color"
             value={customColor}
-            onChange={(event) => {
-              const value = event.target.value.toUpperCase();
-
-              setCustomColor(value);
-              setColor(value);
+            onChange={(e) => {
+              setCustomColor(e.target.value);
+              setColor(e.target.value);
             }}
-            className="h-9 w-9 cursor-pointer overflow-hidden rounded-lg border-0 bg-transparent"
+            className="h-8 w-9 shrink-0 cursor-pointer rounded-md border border-slate-200 bg-white p-0.5"
           />
 
-          <div className="flex-1">
-            <div className="text-[10px] font-bold text-slate-700">
-              Use custom color
-            </div>
-
-            <div className="mt-0.5 text-[9px] text-slate-400">
-              Create your own brand color
-            </div>
-          </div>
-
-          <span className="rounded-lg bg-white px-2 py-1 font-mono text-[9px] font-bold text-slate-500 shadow-sm">
-            {customColor.toUpperCase()}
-          </span>
+          <input
+            type="text"
+            value={customColor}
+            onChange={(e) => {
+              setCustomColor(e.target.value);
+              setColor(e.target.value);
+            }}
+            className="h-8 min-w-0 flex-1 rounded-md border border-slate-200 bg-white px-2 text-xs uppercase outline-none focus:border-violet-400"
+          />
         </div>
-      </div>
+      </section>
 
-      {/* ========================================================= */}
-      {/* 3. FONT STYLE */}
-      {/* ========================================================= */}
+      {/* =====================================================
+          FONT STYLE
+      ===================================================== */}
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="mb-4">
-          <h3 className="text-xs font-extrabold text-slate-800">
+      <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="mb-2.5">
+          <h3 className="text-sm font-bold text-slate-900">
             Font Style
           </h3>
 
-          <p className="mt-1 text-[10px] text-slate-400">
-            Create a readable and professional hierarchy.
+          <p className="text-[10px] text-slate-400">
+            Control your resume typography
           </p>
         </div>
 
-        {/* Font Family */}
+        <SelectField
+          label="Font Family"
+          value={setting.font.family}
+          options={[
+            { label: "Rubik", value: "Rubik" },
+            { label: "Inter", value: "Inter" },
+            { label: "DM Sans", value: "DM Sans" },
+            { label: "Roboto", value: "Roboto" },
+            { label: "Poppins", value: "Poppins" },
+            { label: "Montserrat", value: "Montserrat" },
+            { label: "Roboto Slab", value: "Roboto Slab" },
+            { label: "Merriweather", value: "Merriweather" },
+            { label: "Georgia", value: "Georgia" },
+          ]}
+          onChange={(value) =>
+            setSetting({
+              ...setting,
+              font: {
+                ...setting.font,
+                family: value,
+              },
+            })
+          }
+        />
 
-        <label className="block">
-          <span className="mb-2 block text-[9px] font-bold uppercase tracking-wider text-slate-400">
-            Font Family
-          </span>
+        {/* FONT PREVIEW */}
 
-          <select
-            value={fontFamily}
-            onChange={(event) =>
-              setFontFamily(event.target.value)
-            }
-            className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-50"
+        <div className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+          <div className="mb-1 text-[9px] font-semibold uppercase tracking-wider text-slate-400">
+            Preview
+          </div>
+
+          <p
+            className="text-sm font-medium text-slate-800"
+            style={{
+              fontFamily: setting.font.family,
+              lineHeight,
+              letterSpacing: `${letterSpacing}px`,
+            }}
           >
-            <option value="Rubik">Rubik</option>
-            <option value="Inter">Inter</option>
-            <option value="DM Sans">DM Sans</option>
-            <option value="Roboto">Roboto</option>
-            <option value="Poppins">Poppins</option>
-            <option value="Montserrat">Montserrat</option>
-            <option value="Roboto Slab">
-              Roboto Slab
-            </option>
-            <option value="Merriweather">
-              Merriweather
-            </option>
-            <option value="Georgia">Georgia</option>
-          </select>
-        </label>
+            Alex Morgan — Product Designer
+          </p>
 
-        {/* Font Preview */}
-
-        <div
-          className="mt-3 rounded-xl bg-slate-50 p-3"
-          style={{ fontFamily }}
-        >
-          <div className="text-[18px] font-bold text-slate-800">
-            Alex Morgan
-          </div>
-
-          <div className="mt-1 text-[10px] font-medium text-violet-600">
-            Senior Software Engineer
-          </div>
-
-          <div className="mt-2 text-[9px] leading-4 text-slate-500">
-            Product-minded engineer building scalable web
-            applications, APIs and AI-powered products.
-          </div>
+          <p className="mt-0.5 text-[10px] text-slate-400">
+            Creating simple, useful and beautiful digital experiences.
+          </p>
         </div>
 
-        {/* Font Size */}
+        {/* FONT SETTINGS */}
 
-        <div className="mt-4">
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+        <div className="mt-2.5 grid grid-cols-2 gap-2">
+          <div>
+            <label className="mb-1 block text-[11px] font-medium text-slate-600">
               Font Size
-            </span>
+            </label>
 
-            <span className="rounded-lg bg-violet-50 px-2 py-1 text-[9px] font-bold text-violet-600">
-              {fontSize}
-            </span>
-          </div>
-
-          <div className="mt-2 grid grid-cols-3 gap-2">
-            {["Small", "Medium", "Large"].map(
-              (item) => (
+            <div className="grid grid-cols-3 gap-1">
+              {["Small", "Medium", "Large"].map((size) => (
                 <button
-                  key={item}
+                  key={size}
                   type="button"
-                  onClick={() => setFontSize(item)}
-                  className={`rounded-xl px-3 py-2.5 text-[9px] font-extrabold ${
-                    fontSize === item
-                      ? "border-2 border-violet-500 bg-violet-50 text-violet-600"
-                      : "border border-slate-200 bg-white text-slate-500 hover:border-violet-300"
+                  onClick={() => setFontSize(size)}
+                  className={`h-8 rounded-md border text-[10px] font-medium transition ${
+                    fontSize === size
+                      ? "border-violet-400 bg-violet-50 text-violet-700"
+                      : "border-slate-200 text-slate-600"
                   }`}
                 >
-                  {item.toUpperCase()}
+                  {size}
                 </button>
-              ),
-            )}
-          </div>
-        </div>
-
-        {/* Line Height */}
-
-        <div className="mt-4">
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
-              Line Height
-            </span>
-
-            <span className="rounded-lg bg-slate-100 px-2 py-1 text-[9px] font-bold text-slate-500">
-              {lineHeight.toFixed(1)}
-            </span>
+              ))}
+            </div>
           </div>
 
-          <input
-            type="range"
-            min="0.8"
-            max="2"
-            step="0.1"
+          <RangeField
+            label="Line Height"
             value={lineHeight}
-            onChange={(event) =>
-              setLineHeight(
-                Number(event.target.value),
-              )
-            }
-            className="mt-3 w-full accent-violet-600"
+            min={0.8}
+            max={2}
+            step={0.1}
+            displayValue={lineHeight.toFixed(1)}
+            onChange={setLineHeight}
           />
-        </div>
 
-        {/* Letter Spacing */}
-
-        <div className="mt-4">
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
-              Letter Spacing
-            </span>
-
-            <span className="rounded-lg bg-slate-100 px-2 py-1 text-[9px] font-bold text-slate-500">
-              {letterSpacing === 0
-                ? "Normal"
-                : `${letterSpacing}px`}
-            </span>
-          </div>
-
-          <input
-            type="range"
-            min="-1"
-            max="3"
-            step="0.5"
+          <RangeField
+            label="Letter Spacing"
             value={letterSpacing}
-            onChange={(event) =>
-              setLetterSpacing(
-                Number(event.target.value),
-              )
-            }
-            className="mt-3 w-full accent-violet-600"
+            min={-1}
+            max={3}
+            step={0.5}
+            displayValue={`${letterSpacing}px`}
+            onChange={setLetterSpacing}
+            className="col-span-2"
           />
         </div>
-      </div>
+      </section>
 
-      {/* ========================================================= */}
-      {/* 4. COLUMN LAYOUT */}
-      {/* ========================================================= */}
+      {/* =====================================================
+          COLUMN LAYOUT
+      ===================================================== */}
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="mb-4">
-          <h3 className="text-xs font-extrabold text-slate-800">
+      <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="mb-2.5">
+          <h3 className="text-sm font-bold text-slate-900">
             Column Layout
           </h3>
 
-          <p className="mt-1 text-[10px] text-slate-400">
-            Choose the structure that fits your content.
+          <p className="text-[10px] text-slate-400">
+            Choose your resume structure
           </p>
         </div>
 
-        <div className="grid grid-cols-4 gap-2">
-          {/* 1 */}
-
-          <button
-            type="button"
-            onClick={() => setColumns(1)}
-            className={`rounded-xl p-2 ${
-              columns === 1
-                ? "border-2 border-violet-500 bg-violet-50"
-                : "border border-slate-200 bg-white hover:border-violet-300"
-            }`}
-          >
-            <div className="h-16 rounded-lg bg-white p-2">
-              <div className="h-full rounded bg-violet-100" />
-            </div>
-
-            <div
-              className={`mt-2 text-[9px] font-extrabold ${
-                columns === 1
-                  ? "text-violet-600"
-                  : "text-slate-500"
+        <div className="grid grid-cols-4 gap-1.5">
+          {[1, 2, 3, 4].map((column) => (
+            <button
+              key={column}
+              type="button"
+              onClick={() => setColumns(column)}
+              className={`rounded-lg border p-1.5 transition ${
+                columns === column
+                  ? "border-violet-400 bg-violet-50"
+                  : "border-slate-200 bg-white"
               }`}
             >
-              1
-            </div>
-          </button>
+              <div className="flex h-10 gap-1 rounded border border-slate-200 bg-slate-50 p-1">
+                {Array.from({ length: column }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex-1 rounded-sm bg-slate-200"
+                  />
+                ))}
+              </div>
 
-          {/* 2 */}
-
-          <button
-            type="button"
-            onClick={() => setColumns(2)}
-            className={`rounded-xl p-2 ${
-              columns === 2
-                ? "border-2 border-violet-500 bg-violet-50"
-                : "border border-slate-200 bg-white hover:border-violet-300"
-            }`}
-          >
-            <div className="flex h-16 gap-1 rounded-lg bg-white">
-              <div className="w-1/3 rounded bg-slate-200" />
-              <div className="flex-1 rounded bg-slate-100" />
-            </div>
-
-            <div
-              className={`mt-2 text-[9px] font-extrabold ${
-                columns === 2
-                  ? "text-violet-600"
-                  : "text-slate-500"
-              }`}
-            >
-              2
-            </div>
-          </button>
-
-          {/* 3 */}
-
-          <button
-            type="button"
-            onClick={() => setColumns(3)}
-            className={`rounded-xl p-2 ${
-              columns === 3
-                ? "border-2 border-violet-500 bg-violet-50"
-                : "border border-slate-200 bg-white hover:border-violet-300"
-            }`}
-          >
-            <div className="grid h-16 grid-cols-[25%_50%_25%] gap-1 rounded-lg bg-white">
-              <div className="rounded bg-slate-200" />
-              <div className="rounded bg-slate-100" />
-              <div className="rounded bg-slate-200" />
-            </div>
-
-            <div
-              className={`mt-2 text-[9px] font-extrabold ${
-                columns === 3
-                  ? "text-violet-600"
-                  : "text-slate-500"
-              }`}
-            >
-              3
-            </div>
-          </button>
-
-          {/* 4 */}
-
-          <button
-            type="button"
-            onClick={() => setColumns(4)}
-            className={`rounded-xl p-2 ${
-              columns === 4
-                ? "border-2 border-violet-500 bg-violet-50"
-                : "border border-slate-200 bg-white hover:border-violet-300"
-            }`}
-          >
-            <div className="grid h-16 grid-cols-4 gap-1 rounded-lg bg-white">
-              <div className="rounded bg-slate-200" />
-              <div className="rounded bg-slate-100" />
-              <div className="rounded bg-slate-200" />
-              <div className="rounded bg-slate-100" />
-            </div>
-
-            <div
-              className={`mt-2 text-[9px] font-extrabold ${
-                columns === 4
-                  ? "text-violet-600"
-                  : "text-slate-500"
-              }`}
-            >
-              4
-            </div>
-          </button>
+              <span className="mt-1 block text-[10px] font-semibold text-slate-600">
+                {column}
+              </span>
+            </button>
+          ))}
         </div>
 
-        {/* Column Gap */}
-
-        <div className="mt-4 rounded-xl bg-slate-50 p-3">
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
-              Column Gap
-            </span>
-
-            <span className="text-[9px] font-bold text-slate-500">
-              {columnGap}px
-            </span>
-          </div>
-
-          <input
-            type="range"
-            min="8"
-            max="48"
+        <div className="mt-2.5">
+          <RangeField
+            label="Column Gap"
             value={columnGap}
-            onChange={(event) =>
-              setColumnGap(
-                Number(event.target.value),
-              )
-            }
-            className="mt-2 w-full accent-violet-600"
+            min={8}
+            max={48}
+            suffix="px"
+            onChange={setColumnGap}
           />
         </div>
-      </div>
+      </section>
 
-      {/* ========================================================= */}
-      {/* 5. BACKGROUNDS */}
-      {/* ========================================================= */}
+      {/* =====================================================
+          BACKGROUND
+      ===================================================== */}
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="mb-4">
-          <h3 className="text-xs font-extrabold text-slate-800">
-            Backgrounds
+      <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="mb-2.5">
+          <h3 className="text-sm font-bold text-slate-900">
+            Background
           </h3>
 
-          <p className="mt-1 text-[10px] text-slate-400">
-            Add subtle visual depth without hurting
-            readability.
+          <p className="text-[10px] text-slate-400">
+            Add a subtle page background
           </p>
         </div>
 
         <div className="grid grid-cols-3 gap-2">
-          {/* None */}
-
-          <button
-            type="button"
-            onClick={() => setBackground("None")}
-            className={`rounded-xl p-1.5 ${
-              background === "None"
-                ? "border-2 border-violet-500 bg-violet-50"
-                : "border border-slate-200 bg-white hover:border-violet-300"
-            }`}
-          >
-            <div className="h-20 rounded-lg border border-slate-200 bg-white" />
-
-            <span
-              className={`mt-1.5 block text-[9px] font-bold ${
-                background === "None"
-                  ? "text-violet-600"
-                  : "text-slate-500"
+          {[
+            {
+              name: "None",
+              preview: "bg-white",
+            },
+            {
+              name: "Soft",
+              preview: "bg-slate-50",
+            },
+            {
+              name: "Image",
+              preview: "",
+            },
+          ].map((item) => (
+            <button
+              key={item.name}
+              type="button"
+              onClick={() => setBackground(item.name)}
+              className={`rounded-lg border p-1.5 transition ${
+                background === item.name
+                  ? "border-violet-400 bg-violet-50"
+                  : "border-slate-200"
               }`}
             >
-              None
-            </span>
-          </button>
+              <div
+                className={`h-12 overflow-hidden rounded border border-slate-200 ${item.preview}`}
+              >
+                {item.name === "Image" && (
+                  <img
+                    src="https://app.enhancv.com/images/lgbtqIcon-3066830cf2e82b8397b4.png"
+                    alt=""
+                    className="h-full w-full object-cover opacity-70"
+                  />
+                )}
+              </div>
 
-          {/* Soft */}
-
-          <button
-            type="button"
-            onClick={() => setBackground("Soft")}
-            className={`rounded-xl p-1.5 ${
-              background === "Soft"
-                ? "border-2 border-violet-500 bg-violet-50"
-                : "border border-slate-200 bg-white hover:border-violet-300"
-            }`}
-          >
-            <div className="h-20 rounded-lg bg-gradient-to-br from-violet-50 via-white to-slate-100" />
-
-            <span
-              className={`mt-1.5 block text-[9px] font-bold ${
-                background === "Soft"
-                  ? "text-violet-600"
-                  : "text-slate-500"
-              }`}
-            >
-              Soft
-            </span>
-          </button>
-
-          {/* Image */}
-
-          <button
-            type="button"
-            onClick={() => setBackground("Image")}
-            className={`overflow-hidden rounded-xl p-1.5 ${
-              background === "Image"
-                ? "border-2 border-violet-500 bg-violet-50"
-                : "border border-slate-200 bg-white hover:border-violet-300"
-            }`}
-          >
-            <img
-              src="https://app.enhancv.com/images/lgbtqIcon-3066830cf2e82b8397b4.png"
-              alt="Background"
-              className="h-20 w-full rounded-lg object-cover"
-            />
-
-            <span
-              className={`mt-1.5 block text-[9px] font-bold ${
-                background === "Image"
-                  ? "text-violet-600"
-                  : "text-slate-500"
-              }`}
-            >
-              Image
-            </span>
-          </button>
+              <span className="mt-1 block text-[10px] font-medium text-slate-600">
+                {item.name}
+              </span>
+            </button>
+          ))}
         </div>
 
         <button
           type="button"
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 py-2.5 text-[9px] font-bold text-slate-500 hover:border-violet-300 hover:bg-violet-50 hover:text-violet-600"
+          className="mt-2 h-8 w-full rounded-md border border-dashed border-slate-300 text-[10px] font-semibold text-slate-500 transition hover:border-violet-300 hover:text-violet-600"
         >
-          <span className="text-sm">＋</span>
-          Add background
+          + Add Background
         </button>
-      </div>
+      </section>
 
-      {/* ========================================================= */}
-      {/* 6. SIGNATURE */}
-      {/* ========================================================= */}
+      {/* =====================================================
+          SIGNATURE
+      ===================================================== */}
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex items-start justify-between">
-          <div>
-            <h3 className="text-xs font-extrabold text-slate-800">
-              Signature
-            </h3>
+      <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="mb-2.5 flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-sm font-bold text-slate-900">
+                Signature
+              </h3>
 
-            <p className="mt-1 text-[10px] text-slate-400">
-              Add a handwritten or digital signature.
+              <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[8px] font-semibold text-slate-500">
+                Optional
+              </span>
+            </div>
+
+            <p className="text-[10px] text-slate-400">
+              Add your signature
             </p>
           </div>
 
-          <span className="rounded-lg bg-slate-100 px-2 py-1 text-[9px] font-bold text-slate-400">
-            Optional
+          <button
+            type="button"
+            className="h-8 shrink-0 rounded-md bg-slate-900 px-3 text-[10px] font-semibold text-white"
+          >
+            + Add New
+          </button>
+        </div>
+
+        <div className="flex h-14 items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50">
+          <span className="font-serif text-xl italic text-slate-300">
+            Your Signature
           </span>
         </div>
 
-        {/* Signature Preview */}
-
-        <div className="mt-4 flex h-20 items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50">
-          <div
-            className={`text-center ${
-              signatureAlignment === "Left"
-                ? "mr-auto ml-4"
-                : signatureAlignment === "Right"
-                  ? "ml-auto mr-4"
-                  : ""
-            }`}
-          >
-            <div className="font-serif text-xl italic text-slate-400">
-              Your Signature
-            </div>
-
-            <div className="mt-1 text-[8px] text-slate-400">
-              Preview
-            </div>
-          </div>
+        <div className="mt-2 grid grid-cols-3 gap-1.5">
+          {["Left", "Center", "Right"].map((alignment) => (
+            <button
+              key={alignment}
+              type="button"
+              onClick={() => setSignatureAlignment(alignment)}
+              className={`h-8 rounded-md border text-[10px] font-medium transition ${
+                signatureAlignment === alignment
+                  ? "border-violet-400 bg-violet-50 text-violet-700"
+                  : "border-slate-200 text-slate-600"
+              }`}
+            >
+              {alignment}
+            </button>
+          ))}
         </div>
+      </section>
 
-        <button
-          type="button"
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 py-2.5 text-[10px] font-bold text-white shadow-sm transition hover:bg-violet-700"
-        >
-          <span className="text-base">＋</span>
-          Add New
-        </button>
+      {/* =====================================================
+          BRANDING
+      ===================================================== */}
 
-        {/* Alignment */}
-
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          {["Left", "Center", "Right"].map(
-            (item) => (
-              <button
-                key={item}
-                type="button"
-                onClick={() =>
-                  setSignatureAlignment(item)
-                }
-                className={`rounded-lg py-2 text-[9px] font-bold ${
-                  signatureAlignment === item
-                    ? "border-2 border-violet-500 bg-violet-50 text-violet-600"
-                    : "border border-slate-200 text-slate-500 hover:border-violet-300"
-                }`}
-              >
-                {item}
-              </button>
-            ),
-          )}
-        </div>
-      </div>
-
-      {/* ========================================================= */}
-      {/* 7. BRANDING */}
-      {/* ========================================================= */}
-
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex items-start justify-between">
-          <div>
-            <h3 className="text-xs font-extrabold text-slate-800">
+      <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="mb-2.5 flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <h3 className="text-sm font-bold text-slate-900">
               Branding
             </h3>
 
-            <p className="mt-1 text-[10px] text-slate-400">
-              Add your personal brand to your resume.
+            <p className="text-[10px] text-slate-400">
+              Show your personal brand
             </p>
           </div>
 
-          {/* Toggle */}
-
-          <button
-            type="button"
-            aria-label="Toggle branding"
-            aria-pressed={brandingEnabled}
-            onClick={() =>
-              setBrandingEnabled(
-                (previous) => !previous,
-              )
-            }
-            className={`relative h-5 w-9 rounded-full transition ${
-              brandingEnabled
-                ? "bg-violet-600"
-                : "bg-slate-300"
-            }`}
-          >
-            <span
-              className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-all ${
-                brandingEnabled
-                  ? "right-0.5"
-                  : "left-0.5"
-              }`}
-            />
-          </button>
+          <Toggle
+            checked={brandingEnabled}
+            onChange={setBrandingEnabled}
+          />
         </div>
 
-        {/* Branding Content */}
-
         {brandingEnabled && (
-          <div className="mt-4 space-y-3">
-            {/* Brand Name */}
-
-            <label className="block">
-              <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="space-y-2">
+            <div>
+              <label className="mb-1 block text-[11px] font-medium text-slate-600">
                 Brand Name
-              </span>
+              </label>
 
               <input
                 type="text"
                 defaultValue="Alex Morgan"
-                placeholder="Your name or brand"
-                className="h-9 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-[10px] outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-50"
+                className="h-8 w-full rounded-md border border-slate-200 px-2 text-xs outline-none focus:border-violet-400"
               />
-            </label>
+            </div>
 
-            {/* Website */}
-
-            <label className="block">
-              <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-wider text-slate-400">
+            <div>
+              <label className="mb-1 block text-[11px] font-medium text-slate-600">
                 Website / Portfolio
-              </span>
+              </label>
 
               <input
                 type="text"
-                placeholder="yourwebsite.com"
-                className="h-9 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-[10px] outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-50"
+                placeholder="alexmorgan.com"
+                className="h-8 w-full rounded-md border border-slate-200 px-2 text-xs outline-none focus:border-violet-400"
               />
-            </label>
+            </div>
 
-            {/* Branding Options */}
-
-            <div className="rounded-xl bg-slate-50 p-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-semibold text-slate-600">
-                  Show branding in footer
-                </span>
-
-                <span className="rounded-md bg-emerald-50 px-1.5 py-1 text-[8px] font-bold text-emerald-600">
-                  ON
-                </span>
+            <div className="flex items-center gap-2 rounded-lg bg-slate-50 p-2">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-violet-100 text-[10px] font-bold text-violet-600">
+                A
               </div>
 
-              <p className="mt-1 text-[9px] leading-4 text-slate-400">
-                Your website or brand will appear subtly
-                at the bottom of the resume.
-              </p>
+              <div className="min-w-0">
+                <p className="truncate text-[10px] font-semibold text-slate-700">
+                  Branding enabled
+                </p>
+
+                <p className="truncate text-[9px] text-slate-400">
+                  Your name appears in the resume footer
+                </p>
+              </div>
             </div>
           </div>
         )}
-      </div>
+      </section>
 
-      {/* ========================================================= */}
-      {/* SAVE / RESET */}
-      {/* ========================================================= */}
+      {/* =====================================================
+          ACTIONS
+      ===================================================== */}
 
-      <div className="flex items-center gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
           onClick={resetDesign}
-          className="flex-1 rounded-xl border border-slate-200 bg-white py-2.5 text-[10px] font-bold text-slate-600 shadow-sm transition hover:bg-slate-50"
+          className="h-9 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
         >
           Reset Design
         </button>
 
         <button
           type="button"
-          className="flex-1 rounded-xl bg-slate-900 py-2.5 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+          className="h-9 rounded-lg bg-violet-600 text-xs font-semibold text-white shadow-sm transition hover:bg-violet-700"
         >
           Save Style
         </button>

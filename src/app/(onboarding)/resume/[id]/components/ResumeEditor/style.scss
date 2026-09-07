@@ -40,6 +40,7 @@
       transition: background-color 0.3s ease;
       width: 940px;
       height: var(--page-height);
+      font-family: var(--font-family);
       position: relative;
 
       &:not(:first-child)::after {
