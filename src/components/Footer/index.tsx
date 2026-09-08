@@ -1,5 +1,6 @@
 'use client'
 import React from "react"
+import Logo from "@/src/ui/Logo";
 
 const Index = () => {
 
@@ -9,18 +10,7 @@ const Index = () => {
             <div className="flex flex-col md:flex-row justify-between gap-10">
                 <div className="max-w-xs">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white">
-                            ✦
-                        </div>
-
-                        <span className="font-bold text-slate-900">
-                            Career<span className="text-violet-600">
-                                Forge
-                            </span>{" "}
-                            <span className="text-cyan-600 text-[9px]">
-                                AI
-                            </span>
-                        </span>
+                         <Logo/>
                     </div>
 
                     <p className="text-sm text-slate-400 mt-4 leading-6">
