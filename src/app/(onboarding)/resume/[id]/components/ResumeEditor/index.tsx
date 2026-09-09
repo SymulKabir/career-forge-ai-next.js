@@ -46,7 +46,16 @@ const paginateResumeSections = ({
       return total + subsection.getBoundingClientRect().height;
     }, 0);
   const unrenderedSectionHight = sectionHeight - renderedSectionHight;
-
+  console.log("============START=================");
+  console.log("PAGE NUMBER-->>>", currentPageIndex + 1);
+  console.log("el --->>>", el)
+  console.log("el.getBoundingClientRect().height  --->>>", el.getBoundingClientRect().height)
+  console.log("pageHight-->>>", pageHight);
+  console.log(" -------------------")
+  console.log("sectionHeight-->>>", sectionHeight);
+  console.log("renderedSectionHight-->>>", renderedSectionHight);
+  console.log(" -------------------")
+  console.log("Total unrenderedSectionHight-->>>", unrenderedSectionHight);
   // Make sure current page exists
   if (!pages[currentPageIndex]) {
     pages[currentPageIndex] = [];
@@ -89,7 +98,10 @@ const paginateResumeSections = ({
 
     const nextHeight =
       currentHeight + totalSubSectionHeight + currentSubsectionHeight;
-
+    console.log("initSubSectionIndex->>", initSubSectionIndex);
+    console.log("index->>", index);
+    console.log("currentSubsectionHeight->>", currentSubsectionHeight);
+    console.log("nextHeight->>", nextHeight);
     if (nextHeight <= pageHight) {
       totalSubSectionHeight += currentSubsectionHeight;
       validItemIndex++;
@@ -120,6 +132,8 @@ const paginateResumeSections = ({
       ...section,
       items: nextPageSubsections,
     };
+    console.log("currentHeight before recursion-->>>", currentHeight);
+
     // if (currentPageIndex < 5) {
     return paginateResumeSections({
       pageHight,
@@ -161,6 +175,7 @@ const Index = () => {
     const pageHight = setting.resumePageHeight - setting.margin.y * 2;
 
     const paginate = () => {
+      console.log("Rerender the editor")
       for (const [originalIndex, section] of resumeData.sections.entries()) {
         const result = paginateResumeSections({
           pageHight,
@@ -193,15 +208,14 @@ const Index = () => {
         } as React.CSSProperties
       }
     >
-      <div className="resume-main-editor-container not-visible">
+      <div className="resume-main-editor-container not-visible "> // use 'debugging' to show the page
         {[[...resumeData.sections]].map((pageSections, pageIndex) => {
           return (
             <PageMaker
               key={pageIndex}
               pageSections={pageSections}
               pageIndex={pageIndex}
-              sectionRefs={sectionRefs}
-              className="not-visible"
+              sectionRefs={sectionRefs} 
               syncWithProp={true}
             />
           );
@@ -215,6 +229,7 @@ const Index = () => {
               key={pageIndex}
               pageSections={pageSections}
               pageIndex={pageIndex}
+              syncWithProp={true}
             />
           );
         })}
@@ -226,8 +241,7 @@ const Index = () => {
 const PageMaker = ({
   pageSections,
   pageIndex,
-  sectionRefs,
-  className,
+  sectionRefs, 
   syncWithProp,
 }: any) => {
   const { setting } = useResumeContext();
@@ -261,7 +275,7 @@ const PageMaker = ({
       </style>
       <div
         key={pageIndex}
-        className={`page ${className}`}
+        className={`page  `}
         style={
           {
             paddingLeft: `${setting.margin.x}px`,
