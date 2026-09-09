@@ -8,10 +8,7 @@ import { useResume } from "../../hooks/index";
    TYPES
 ========================================================= */
 
-type SettingChange = (payload: {
-  propertyPath: string;
-  value: any;
-}) => void;
+type SettingChange = (payload: { propertyPath: string; value: any }) => void;
 
 type RangeFieldProps = {
   label: string;
@@ -219,7 +216,17 @@ function TypographyGroup({
   fontWeightMin = 400,
   fontWeightMax = 800,
 }: TypographyGroupProps) {
-  const safeConfig: Required<TypographyConfig> = {
+  type BorderConfig = {
+    enabled?: boolean;
+    width?: number;
+    style?: string;
+    color?: string;
+    position?: string;
+    radius?: number;
+    spacing?: number;
+  };
+
+  const safeConfig = {
     enabled: config?.enabled ?? false,
     fontSize: config?.fontSize ?? 16,
     fontWeight: config?.fontWeight ?? 400,
@@ -231,9 +238,26 @@ function TypographyGroup({
     sectionGap: config?.sectionGap ?? 0,
   };
 
+  const safeBorder = {
+    enabled: config?.border?.enabled ?? false,
+    width: config?.border?.width ?? 2,
+    style: config?.border?.style ?? "solid",
+    color: config?.border?.color ?? "#1a202c",
+    position: config?.border?.position ?? "bottom",
+    radius: config?.border?.radius ?? 0,
+    spacing: config?.border?.spacing ?? 6,
+  };
+
   const change = (field: string, value: any) => {
     handleSettingChange({
       propertyPath: `${path}.${field}`,
+      value,
+    });
+  };
+
+  const borderChange = (field: string, value: any) => {
+    handleSettingChange({
+      propertyPath: `${path}.border.${field}`,
       value,
     });
   };
@@ -291,7 +315,7 @@ function TypographyGroup({
             ].filter(
               (option) =>
                 Number(option.value) >= fontWeightMin &&
-                Number(option.value) <= fontWeightMax
+                Number(option.value) <= fontWeightMax,
             )}
             onChange={(value) => change("fontWeight", Number(value))}
           />
@@ -352,6 +376,140 @@ function TypographyGroup({
             suffix="px"
             onChange={(value) => change("sectionGap", value)}
           />
+        </div>
+      )}
+
+      {/* BORDER */}
+      {path === "sections.sectionTitle" && (
+        <div className="col-span-2 rounded-lg border border-slate-200 bg-white p-2.5">
+          {/* Header */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <h5 className="text-[11px] font-semibold text-slate-800">
+                  Border
+                </h5>
+
+                {safeBorder.enabled && (
+                  <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-violet-700">
+                    On
+                  </span>
+                )}
+              </div>
+
+              <p className="mt-0.5 text-[9px] text-slate-400">
+                Style the section title divider
+              </p>
+            </div>
+
+            <Toggle
+              checked={safeBorder.enabled}
+              onChange={(value) => borderChange("enabled", value)}
+            />
+          </div>
+
+          {/* Controls */}
+          {safeBorder.enabled && (
+            <div className="mt-2.5 grid grid-cols-2 gap-x-3 gap-y-2.5">
+              {/* Position */}
+              <SelectField
+                label="Position"
+                value={safeBorder.position}
+                options={[
+                  { label: "Bottom", value: "bottom" },
+                  { label: "Top", value: "top" },
+                  { label: "Top + Bottom", value: "both" },
+                ]}
+                onChange={(value) => borderChange("position", value)}
+              />
+
+              {/* Style */}
+              <SelectField
+                label="Style"
+                value={safeBorder.style}
+                options={[
+                  { label: "Solid", value: "solid" },
+                  { label: "Dashed", value: "dashed" },
+                  { label: "Dotted", value: "dotted" },
+                  { label: "Double", value: "double" },
+                ]}
+                onChange={(value) => borderChange("style", value)}
+              />
+
+              {/* Width */}
+              <RangeField
+                label="Width"
+                value={safeBorder.width}
+                min={1}
+                max={6}
+                step={1}
+                suffix="px"
+                onChange={(value) => borderChange("width", value)}
+              />
+
+              {/* Radius */}
+              <RangeField
+                label="Radius"
+                value={safeBorder.radius}
+                min={0}
+                max={12}
+                step={1}
+                suffix="px"
+                onChange={(value) => borderChange("radius", value)}
+              />
+
+              {/* Spacing */}
+              <RangeField
+                label="Title Spacing"
+                value={safeBorder.spacing}
+                min={0}
+                max={20}
+                step={1}
+                suffix="px"
+                onChange={(value) => borderChange("spacing", value)}
+              />
+
+              {/* Color */}
+              <ColorField
+                label="Color"
+                value={safeBorder.color}
+                onChange={(value) => borderChange("color", value)}
+              />
+
+              {/* Preview */}
+              <div className="col-span-2 mt-0.5 rounded-md bg-slate-50 px-2.5 py-2">
+                <div
+                  className="text-[11px] font-bold uppercase"
+                  style={{
+                    color: safeConfig.fontColor,
+                    borderTop:
+                      safeBorder.position === "top" ||
+                      safeBorder.position === "both"
+                        ? `${safeBorder.width}px ${safeBorder.style} ${safeBorder.color}`
+                        : undefined,
+                    borderBottom:
+                      safeBorder.position === "bottom" ||
+                      safeBorder.position === "both"
+                        ? `${safeBorder.width}px ${safeBorder.style} ${safeBorder.color}`
+                        : undefined,
+                    borderRadius: `${safeBorder.radius}px`,
+                    paddingTop:
+                      safeBorder.position === "top" ||
+                      safeBorder.position === "both"
+                        ? `${safeBorder.spacing}px`
+                        : undefined,
+                    paddingBottom:
+                      safeBorder.position === "bottom" ||
+                      safeBorder.position === "both"
+                        ? `${safeBorder.spacing}px`
+                        : undefined,
+                  }}
+                >
+                  Experience
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -462,15 +620,14 @@ export default function DesignFontPanel() {
 
   const radiusOptions = ["Sharp", "Soft", "Round", "Pill"];
 
+  console.log("setting ---->>>>", setting);
+
   /* =========================================================
      RENDER
   ========================================================= */
 
   return (
-    <div
-      id="designFontPanel"
-      className="space-y-2 pb-3"
-    >
+    <div id="designFontPanel" className="space-y-2 pb-3">
       {/* =====================================================
           DESIGN & FONT
       ===================================================== */}
@@ -506,9 +663,7 @@ export default function DesignFontPanel() {
               Quick Style
             </span>
 
-            <span className="text-[10px] text-slate-400">
-              {quickStyle}
-            </span>
+            <span className="text-[10px] text-slate-400">{quickStyle}</span>
           </div>
 
           <div className="grid grid-cols-3 gap-2">
@@ -566,10 +721,10 @@ export default function DesignFontPanel() {
               <RangeField
                 label="Top / Bottom"
                 value={setting.margin.y}
-                min={0}
-                max={3}
-                step={0.1}
-                displayValue={`${setting.margin.y}"`}
+                min={10}
+                max={80}
+                step={10}
+                displayValue={`${setting.margin.y}px`}
                 onChange={(value) =>
                   handleSettingChange({
                     propertyPath: "margin.y",
@@ -583,10 +738,10 @@ export default function DesignFontPanel() {
               <RangeField
                 label="Left / Right"
                 value={setting.margin.x}
-                min={0}
-                max={3}
-                step={0.1}
-                displayValue={`${setting.margin.x}"`}
+                min={10}
+                max={80}
+                step={10}
+                displayValue={`${setting.margin.x}px`}
                 onChange={(value) =>
                   handleSettingChange({
                     propertyPath: "margin.x",
@@ -622,7 +777,7 @@ export default function DesignFontPanel() {
               path="sections.sectionTitle"
               config={setting?.sections?.sectionTitle}
               handleSettingChange={handleSettingChange}
-              fontSizeMax={32}
+              fontSizeMax={40}
             />
 
             {/* SUBSECTION TITLE */}
@@ -630,8 +785,8 @@ export default function DesignFontPanel() {
             <TypographyGroup
               title="Subsection Title"
               description="Secondary section headings"
-              path="sections.subsectionTitle"
-              config={setting?.sections?.subsectionTitle}
+              path="sections.subSectionTitle"
+              config={setting?.sections?.subSectionTitle}
               handleSettingChange={handleSettingChange}
               fontSizeMax={24}
             />
@@ -718,9 +873,7 @@ export default function DesignFontPanel() {
       <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
         <div className="mb-2.5 flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-bold text-slate-900">
-              Colors
-            </h3>
+            <h3 className="text-sm font-bold text-slate-900">Colors</h3>
 
             <p className="text-[10px] text-slate-400">
               Choose your accent color
@@ -786,9 +939,7 @@ export default function DesignFontPanel() {
 
       <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
         <div className="mb-2.5">
-          <h3 className="text-sm font-bold text-slate-900">
-            Font Style
-          </h3>
+          <h3 className="text-sm font-bold text-slate-900">Font Style</h3>
 
           <p className="text-[10px] text-slate-400">
             Control your resume typography
@@ -898,9 +1049,7 @@ export default function DesignFontPanel() {
 
       <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
         <div className="mb-2.5">
-          <h3 className="text-sm font-bold text-slate-900">
-            Column Layout
-          </h3>
+          <h3 className="text-sm font-bold text-slate-900">Column Layout</h3>
 
           <p className="text-[10px] text-slate-400">
             Choose your resume structure
@@ -921,10 +1070,7 @@ export default function DesignFontPanel() {
             >
               <div className="flex h-10 gap-1 rounded border border-slate-200 bg-slate-50 p-1">
                 {Array.from({ length: column }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="flex-1 rounded-sm bg-slate-200"
-                  />
+                  <div key={index} className="flex-1 rounded-sm bg-slate-200" />
                 ))}
               </div>
 
@@ -953,9 +1099,7 @@ export default function DesignFontPanel() {
 
       <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
         <div className="mb-2.5">
-          <h3 className="text-sm font-bold text-slate-900">
-            Background
-          </h3>
+          <h3 className="text-sm font-bold text-slate-900">Background</h3>
 
           <p className="text-[10px] text-slate-400">
             Add a subtle page background
@@ -1022,18 +1166,14 @@ export default function DesignFontPanel() {
         <div className="mb-2.5 flex items-center justify-between gap-2">
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <h3 className="text-sm font-bold text-slate-900">
-                Signature
-              </h3>
+              <h3 className="text-sm font-bold text-slate-900">Signature</h3>
 
               <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[8px] font-semibold text-slate-500">
                 Optional
               </span>
             </div>
 
-            <p className="text-[10px] text-slate-400">
-              Add your signature
-            </p>
+            <p className="text-[10px] text-slate-400">Add your signature</p>
           </div>
 
           <button
@@ -1075,19 +1215,14 @@ export default function DesignFontPanel() {
       <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
         <div className="mb-2.5 flex items-center justify-between gap-2">
           <div className="min-w-0">
-            <h3 className="text-sm font-bold text-slate-900">
-              Branding
-            </h3>
+            <h3 className="text-sm font-bold text-slate-900">Branding</h3>
 
             <p className="text-[10px] text-slate-400">
               Show your personal brand
             </p>
           </div>
 
-          <Toggle
-            checked={brandingEnabled}
-            onChange={setBrandingEnabled}
-          />
+          <Toggle checked={brandingEnabled} onChange={setBrandingEnabled} />
         </div>
 
         {brandingEnabled && (
@@ -1157,4 +1292,4 @@ export default function DesignFontPanel() {
       </div>
     </div>
   );
-} 
+}

@@ -21,6 +21,15 @@ export const RESUME_SETTING = {
       textTransform: "uppercase",
       gap: 0,
       sectionGap: 12,
+      border: {
+        enabled: true,
+        width: 2,
+        style: "solid",
+        color: "#1a202c",
+        position: "bottom",
+        radius: 0,
+        spacing: 6,
+      },
     },
 
     subSectionTitle: {
@@ -57,7 +66,7 @@ export const RESUME_SETTING = {
       textTransform: "none",
       gap: 2,
       sectionGap: 10,
-    }
+    },
   },
 
   textStyles: {

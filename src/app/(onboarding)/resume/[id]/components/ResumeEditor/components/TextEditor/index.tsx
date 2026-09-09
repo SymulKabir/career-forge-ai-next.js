@@ -260,7 +260,7 @@ const Index: React.FC<EditableTextProps> = ({
       <div className="flex justify-center font-sans">
         <div className="w-full flex flex-col relative group">
           {/* Top Toolbar */}
-          <div className="hidden group-focus-within:flex print:hidden bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-xl items-center gap-1.5 p-1.5 absolute w-max max-w-full left-1/2 -translate-x-1/2 bottom-[calc(100%+12px)] z-50 shadow-xl shadow-slate-200/50 overflow-x-auto whitespace-nowrap scrollbar-none transition-all duration-200 animate-in fade-in slide-in-from-bottom-2">
+          <div className="hidden group-focus-within:flex print:hidden bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-xl items-center gap-1.5 p-1.5 absolute w-max max-w-full left-1/2 -translate-x-1/2 bottom-[calc(100%+12px)] z-50 shadow-xl shadow-slate-200/50 overflow-x-auto whitespace-nowrap scrollbar-none transition-all duration-200 animate-in fade-in slide-in-from-bottom-2 avoid-default">
             {activeGroups.map((group, groupIdx) => (
               <React.Fragment key={group.id}>
                 {groupIdx > 0 && (

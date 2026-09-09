@@ -14,7 +14,7 @@ const Index: React.FC<EditableTextProps> = ({
   name,
   className
 }) => {
-  const { getValue, handleInputChange, splitAndCreateItem } = useEditor()
+  const { getValue } = useEditor()
   const Component = tag as any;
   return (
     <>
@@ -29,11 +29,10 @@ const Index: React.FC<EditableTextProps> = ({
           background-color: transparent;
         }
          .editable-field:hover {
-          background-color: rgba(37, 99, 235, 0.03);
+          // background-color: rgba(37, 99, 235, 0.03);
         }
 
-        .editable-field:focus {
-          background-color: rgba(37, 99, 235, 0.05);
+        .editable-field:focus { 
           outline: none !important;
           border: none !important;
           box-shadow: none !important;

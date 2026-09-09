@@ -6,6 +6,7 @@ import DescriptionCard from "./components/DescriptionCard";
 import { useResumeContext } from "../../context/resume-editor-context";
 import SubSectionToolBar from "./components/SubSectionToolBar";
 import SectionTitle from "./components/SectionTitle";
+import { px } from "./utils/resumeEditor";
 
 const paginateResumeSections = ({
   pageHight,
@@ -44,7 +45,7 @@ const paginateResumeSections = ({
     .reduce((total, subsection) => {
       return total + subsection.getBoundingClientRect().height;
     }, 0);
-  const unrenderedSectionHight = sectionHeight -  renderedSectionHight
+  const unrenderedSectionHight = sectionHeight - renderedSectionHight;
 
   // Make sure current page exists
   if (!pages[currentPageIndex]) {
@@ -80,7 +81,7 @@ const paginateResumeSections = ({
 
   let totalSubSectionHeight = 0;
   let validItemIndex = 0;
- 
+
   for (let index = initSubSectionIndex; index < subSections.length; index++) {
     const element = subSections[index];
 
@@ -88,17 +89,14 @@ const paginateResumeSections = ({
 
     const nextHeight =
       currentHeight + totalSubSectionHeight + currentSubsectionHeight;
- 
 
     if (nextHeight <= pageHight) {
       totalSubSectionHeight += currentSubsectionHeight;
       validItemIndex++;
-    } else { 
-
+    } else {
       break;
     }
   }
-
 
   const subsections = section.items || [];
 
@@ -160,13 +158,10 @@ const Index = () => {
     let currentPageIndex = 0;
     let currentHeight = 0;
 
-    const pageHight =
-      setting.resumePageHeight - setting.margin.y * 2;
+    const pageHight = setting.resumePageHeight - setting.margin.y * 2;
 
     const paginate = () => {
-
       for (const [originalIndex, section] of resumeData.sections.entries()) {
-
         const result = paginateResumeSections({
           pageHight,
           section,
@@ -179,8 +174,6 @@ const Index = () => {
 
         currentPageIndex = result.currentPageIndex;
         currentHeight = result.currentHeight;
-
-     
       }
 
       setPaginatedPages([...pages]);
@@ -208,7 +201,7 @@ const Index = () => {
               pageSections={pageSections}
               pageIndex={pageIndex}
               sectionRefs={sectionRefs}
-              className="not-visible" 
+              className="not-visible"
               syncWithProp={true}
             />
           );
@@ -238,59 +231,94 @@ const PageMaker = ({
   syncWithProp,
 }: any) => {
   const { setting } = useResumeContext();
- 
+  const metadata = setting?.sections?.metadata;
+
   return (
-    <div
-      key={pageIndex}
-      className={`page ${className}`}
-      style={
-        {
-          paddingLeft: `${setting.margin.x}px`,
-          paddingRight: `${setting.margin.x}px`,
-          paddingTop: `${setting.margin.y}px`,
-          paddingBottom: `${setting.margin.y}px`,
-          background: "#FFFFFF",
-          marginBottom: "40px",
-          "--page-number": `"Page ${pageIndex + 1}"`,
-        } as React.CSSProperties
-      }
-    >
-      <div className="page-inner-container">
-        {pageIndex === 0 && <header className="resume-header active-focus" />}
+    <>
+      <style>
+        {`
+          .resume-body {
+            font-family: ${setting?.font?.family || "Inter, sans-serif"};
+            font-size: ${px(metadata?.fontSize ?? 13)};
+            font-weight: ${metadata?.fontWeight ?? 400};
+            color: ${metadata?.fontColor ?? "#6b7280"};
+            line-height: ${metadata?.lineHeight ?? 1.4};
+            letter-spacing: ${px(metadata?.letterSpacing ?? 0)};
+            text-transform: ${metadata?.textTransform ?? "none"};
+          }
 
-        <div className="resume-body">
-          {pageSections.map((section: any, index: number) => {
-            // return <></>
-            const name = `sections.${section.positionIndex}`;
-            return (
-              <div
-                key={pageIndex + index}
-                ref={
-                  sectionRefs
-                    ? (el) => {
-                        sectionRefs.current[section.positionIndex] = el;
-                      }
-                    : undefined
-                }
-                className="section-container section-styles active-focus"
-              >
-                <SubSectionToolBar variant="section" />
+          .resume-body *:not(.avoid-default, .avoid-default *) {
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
+            line-height: inherit;
+            letter-spacing: inherit;
+            text-transform: inherit;
+          }
+          }
+      `}
+      </style>
+      <div
+        key={pageIndex}
+        className={`page ${className}`}
+        style={
+          {
+            paddingLeft: `${setting.margin.x}px`,
+            paddingRight: `${setting.margin.x}px`,
+            paddingTop: `${setting.margin.y}px`,
+            paddingBottom: `${setting.margin.y}px`,
+            background: "#FFFFFF",
+            marginBottom: "40px",
+            "--page-number": `"Page ${pageIndex + 1}"`,
+          } as React.CSSProperties
+        }
+      >
+        <div className="page-inner-container">
+          {pageIndex === 0 && <header className="resume-header active-focus" />}
 
-                <SectionTitle name={`${name}.sectionTitle.content`} />
+          <div className="resume-body">
+            {pageSections.map((section: any, index: number) => {
+              // return <></>
+              const name = `sections.${section.positionIndex}`;
+              return (
+                <div
+                  key={pageIndex + index}
+                  ref={
+                    sectionRefs
+                      ? (el) => {
+                          sectionRefs.current[section.positionIndex] = el;
+                        }
+                      : undefined
+                  }
+                  className="section-container section-styles active-focus"
+                >
+                  <SubSectionToolBar variant="section" />
 
-                {section.sectionLayout === "BulletsCard" && (
-                  <BulletsCard data={section} name={name} syncWithProp={syncWithProp} />
-                )}
+                  <SectionTitle name={`${name}.sectionTitle.content`} />
 
-                {section.sectionLayout === "DescriptionCard" && (
-                  <DescriptionCard data={section} name={name} syncWithProp={syncWithProp} />
-                )}
-              </div>
-            );
-          })}
+                  {section.sectionLayout === "BulletsCard" && (
+                    <BulletsCard
+                      data={section}
+                      name={name}
+                      syncWithProp={syncWithProp}
+                    />
+                  )}
+
+                  {section.sectionLayout === "DescriptionCard" && (
+                    <DescriptionCard
+                      data={section}
+                      name={name}
+                      syncWithProp={syncWithProp}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

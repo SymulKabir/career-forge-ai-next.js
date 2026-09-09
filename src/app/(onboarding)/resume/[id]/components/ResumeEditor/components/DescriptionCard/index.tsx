@@ -5,8 +5,8 @@ import InputField from "../InputField";
 import TextEditor from "../TextEditor";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import SectionTitle from "../SectionTitle";
-import PrimaryTitle from "../PrimaryTitle";
-import SecondaryTitle from "../SecondaryTitle";
+import PrimaryTitle from "../SubSectionTitle";
+import SecondaryTitle from "../OrganizationTitle";
 import SubSectionToolBar from "../SubSectionToolBar";
 import useEditor from "../../hooks/useEditor";
 
@@ -82,9 +82,6 @@ const Index: React.FC<ExperienceProps> = ({
 
 
             .resume-link-text {
-              font-size: ${px(link?.fontSize)};
-              font-weight: ${link?.fontWeight ?? 500};
-              color: ${link?.color || "#2563eb"};
               display: inline-flex;
               align-items: center;
               gap: 4px;

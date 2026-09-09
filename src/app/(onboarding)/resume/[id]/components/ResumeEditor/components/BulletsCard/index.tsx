@@ -4,9 +4,8 @@ import React from "react";
 import InputField from "../InputField";
 import TextEditor from "../TextEditor";
 import { useResumeContext } from "../../../../context/resume-editor-context";
-import SectionTitle from "../SectionTitle";
-import PrimaryTitle from "../PrimaryTitle";
-import SecondaryTitle from "../SecondaryTitle";
+import SubSectionTitle from "../SubSectionTitle";
+import OrganizationTitle from "../OrganizationTitle";
 import SubSectionToolBar from "../SubSectionToolBar";
 import useEditor from "../../hooks/useEditor";
 
@@ -68,7 +67,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
               box-sizing: border-box;
               gap: ${gapValue};
             }
-            .company-logo-box {
+            .organization-logo-box {
               flex-shrink: 0;
               width: 35px;
               height: 35px;
@@ -93,17 +92,10 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
             .resume-metadata-item {
               display: flex;
               align-items: center;
-              gap: 6px;
-              font-size: ${px(metadata?.fontSize)};
-              font-weight: ${metadata?.fontWeight ?? 400};
-              color: ${metadata?.color || "#6b7280"};
-              line-height: ${metadata?.lineHeight ?? 1.4};
+              gap: 6px; 
             }
 
             .resume-link-text {
-              font-size: ${px(link?.fontSize)};
-              font-weight: ${link?.fontWeight ?? 500};
-              color: ${link?.color || "#2563eb"};
               display: inline-flex;
               align-items: center;
               gap: 4px;
@@ -139,10 +131,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
 
       <div
         className="milestone-container" 
-      >
-        <SubSectionToolBar
-          variant="section"
-        /> 
+      > 
 
         {(data?.items || []).map((item: any, itemIndex: number) => (
           <div
@@ -155,7 +144,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
               variant="subsection"
               propertyPath={`${name}.items.${item.positionIndex}`}
             />
-            <div className="company-logo-box">
+            <div className="organization-logo-box">
               <svg
                 width="22"
                 height="22"
@@ -172,9 +161,9 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
             </div>
 
             <div className="experience-content">
-              {getValue(`${name}.items.${item.positionIndex}.title.isVisible`) && <PrimaryTitle name={`${name}.items.${item.positionIndex}.title.content`} />}
+              {getValue(`${name}.items.${item.positionIndex}.title.isVisible`) && <SubSectionTitle name={`${name}.items.${item.positionIndex}.title.content`} />}
 
-              {getValue(`${name}.items.${item.positionIndex}.subtitle.isVisible`) && <SecondaryTitle name={`${name}.items.${item.positionIndex}.subtitle.content`} />}
+              {getValue(`${name}.items.${item.positionIndex}.subtitle.isVisible`) && <OrganizationTitle name={`${name}.items.${item.positionIndex}.subtitle.content`} />}
 
               {/* Metadata */}
               {(getValue(`${name}.items.${item.positionIndex}.duration.isVisible`) || getValue(`${name}.items.${item.positionIndex}.location.isVisible`)) && <div className="metadata-row">
