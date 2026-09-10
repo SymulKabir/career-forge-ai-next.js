@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useResumeContext } from "../context/resume-editor-context";
+import { structuredResume } from "../utils/resume";
 
-const useResume = () => {
+
+export const useInitResume = () => {
+  const { resumeData, setStructuredResumeData } = useResumeContext()
+  useEffect(() => {
+    if (!Object.keys({ ...(resumeData || {}).length })) return
+    setStructuredResumeData(structuredResume({ ...resumeData }))
+  }, [setStructuredResumeData, resumeData])
+}
+export const useResume = () => {
   const { resumeData, setResumeData, setSetting, setToolBar } = useResumeContext();
   const updateNestedState = (
     obj: any,
@@ -20,13 +29,13 @@ const useResume = () => {
 
     return copy;
   };
- const getResumeValue = (name: string): any => {
+  const getResumeValue = (name: string): any => {
     if (!name) return "";
 
     const keys = name.split(".");
     let current: any = resumeData;
-console.log("name --->>>", name)
-console.log("keys --->>>", keys)
+    console.log("name --->>>", name)
+    console.log("keys --->>>", keys)
     for (const key of keys) {
       if (current === null || current === undefined) {
         return "";
@@ -37,14 +46,14 @@ console.log("keys --->>>", keys)
 
     return current ?? "";
   };
-  const handleResumeChange =  (e: any) => {
+  const handleResumeChange = (e: any) => {
     const name = e.currentTarget.getAttribute("name") || e.target?.name;
     const type = e.currentTarget.getAttribute("datatype") || e.target?.datatype;
     // Supports both standard input/textarea (.value) and contenteditable divs (.textContent)
     let value: any = "";
     if (type === "boolean") {
       const currentValue = e.currentTarget.value;
-      value = currentValue === "true" ? true : false; 
+      value = currentValue === "true" ? true : false;
     } else if (type === "htmlEditor") {
       value = e.target.innerHTML;
     } else {
@@ -83,7 +92,7 @@ console.log("keys --->>>", keys)
   }) => {
     if (!propertyPath) return;
 
-    const keys = propertyPath.split("."); 
+    const keys = propertyPath.split(".");
 
     setSetting((prevSetting: any) =>
       updateNestedState(prevSetting, keys, value),
@@ -112,4 +121,3 @@ console.log("keys --->>>", keys)
   };
 };
 
-export { useResume };

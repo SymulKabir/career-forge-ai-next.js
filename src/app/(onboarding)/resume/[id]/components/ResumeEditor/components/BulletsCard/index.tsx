@@ -30,11 +30,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
   const body = textStyles?.body;
   const metadata = textStyles?.metadata;
   const highlight = textStyles?.highlight;
-  const link = textStyles?.link;
-
-  const fontFamily = font?.family || "Inter, sans-serif";
   const resumeBorder = colors?.border || "#1a202c";
-  const resumeBackground = colors?.background || "#ffffff";
   const logoBackground = colors?.companyLogoBackground || "#edf2f7";
   const gapValue = px(setting?.gap); 
 

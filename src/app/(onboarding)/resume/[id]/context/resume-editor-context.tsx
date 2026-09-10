@@ -14,6 +14,8 @@ interface ResumeEditorContextValue {
   setResumeData: (resumeData: typeof DUMMY_STRUCTURED_RESUME) => void;
   toolBar: typeof TOOLBAR;
   setToolBar: (resumeData: typeof TOOLBAR) => void;
+  structuredResumeData: typeof any;
+  setStructuredResumeData: (resumeData: typeof any) => void;
 }
 
 const ResumeEditorContext = createContext<ResumeEditorContextValue | null>(
@@ -29,7 +31,8 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
     ...TOOLBAR,
   });
   const [resumeData, setResumeData] = useState({ ...addPositionIndex(DUMMY_STRUCTURED_RESUME) });
-
+  const [structuredResumeData, setStructuredResumeData] = useState({});
+console.log("resumeData ===>>>", resumeData)
   return (
     <ResumeEditorContext.Provider
       value={{
@@ -39,6 +42,8 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
         setSetting,
         resumeData,
         setResumeData,
+        structuredResumeData,
+        setStructuredResumeData,
         toolBar,
         setToolBar,
       }}

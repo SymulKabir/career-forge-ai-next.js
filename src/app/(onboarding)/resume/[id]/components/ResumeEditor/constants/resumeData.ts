@@ -67,6 +67,7 @@ export const DUMMY_STRUCTURED_RESUME = {
   },
   sections: [
     {
+      column: 0,
       position: 0,
       sectionLayout: "BulletsCard",
       sectionTitle: { content: "Experience", isVisible: true },
@@ -262,6 +263,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       ],
     },
     {
+      column: 0,
       sectionLayout: "DescriptionCard",
       sectionTitle: { content: "Summary", isVisible: true },
       items: [
@@ -282,6 +284,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       ],
     },
     {
+      column: 0,
       sectionLayout: "DescriptionCard",
       sectionTitle: { content: "Summary", isVisible: true },
       items: [
@@ -302,6 +305,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       ],
     },
     {
+      column: 1,
       sectionLayout: "BulletsCard",
       sectionTitle: { content: "Experience", isVisible: true },
       items: [
@@ -390,6 +394,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       ],
     },
     {
+      column: 0,
       sectionLayout: "BulletsCard",
       sectionTitle: { content: "Experience 44", isVisible: true },
       items: [
@@ -478,6 +483,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       ],
     },
     {
+      column: 1,
       sectionLayout: "DescriptionCard",
       sectionTitle: { content: "Summary", isVisible: true },
       items: [
@@ -498,6 +504,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       ],
     },
     {
+      column: 0,
       sectionLayout: "DescriptionCard",
       sectionTitle: { content: "Summary", isVisible: true },
       items: [
@@ -518,6 +525,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       ],
     },
     {
+      column: 1,
       sectionLayout: "BulletsCard",
       sectionTitle: { content: "Experience", isVisible: true },
       items: [
