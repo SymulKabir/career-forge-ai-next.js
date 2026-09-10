@@ -10,6 +10,23 @@ export const RESUME_SETTING = {
   font: {
     family: "Inter, sans-serif",
   },
+  header: {
+    layout: "split", // reverse, center, minimal
+    background: "#FFF",
+    nameSize: 36,
+    nameWeight: 800,
+    nameColor: "#000000",
+    titleSize: 20,
+    titleWeight: 600,
+    titleColor: "#0084ff",
+    metaTextSize: 14,
+    metaTextColor: "#4b5563",
+    imageSize: 130,
+    imageRadius: "50%",
+    alignment: "space-between",
+    gap: 20,
+    paddingBottom: 20,
+  },
   sections: {
     sectionTitle: {
       enabled: true,
@@ -151,4 +168,13 @@ export const RESUME_SETTING = {
     companyLogoBackground: "#edf2f7",
     accent: "#2563eb",
   },
+};
+
+export const TOOLBAR = {
+  collapse: {
+    marginFont: false,
+    header: true,
+    section: true,
+    stylingLayout: true, 
+  } 
 };

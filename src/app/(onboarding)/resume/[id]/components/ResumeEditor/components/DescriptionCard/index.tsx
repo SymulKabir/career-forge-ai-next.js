@@ -1,12 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import InputField from "../InputField";
+import React, { useState } from "react"; 
 import TextEditor from "../TextEditor";
-import { useResumeContext } from "../../../../context/resume-editor-context";
-import SectionTitle from "../SectionTitle";
-import PrimaryTitle from "../SubSectionTitle";
-import SecondaryTitle from "../OrganizationTitle";
+import { useResumeContext } from "../../../../context/resume-editor-context"; 
 import SubSectionToolBar from "../SubSectionToolBar";
 import useEditor from "../../hooks/useEditor";
 
@@ -34,13 +30,8 @@ const Index: React.FC<ExperienceProps> = ({
   const sectionTitle = textStyles?.sectionTitle;
   const body = textStyles?.body;
   const metadata = textStyles?.metadata;
-  const highlight = textStyles?.highlight;
-  const link = textStyles?.link;
-
-  const fontFamily = font?.family || "Inter, sans-serif";
-  const resumeBorder = colors?.border || "#1a202c";
-  const resumeBackground = colors?.background || "#ffffff";
-  const logoBackground = colors?.companyLogoBackground || "#edf2f7";
+  const highlight = textStyles?.highlight; 
+  const resumeBorder = colors?.border || "#1a202c"; 
   const gapValue = px(setting?.gap);
 
   return (

@@ -7,6 +7,7 @@ import { useResumeContext } from "../../context/resume-editor-context";
 import SubSectionToolBar from "./components/SubSectionToolBar";
 import SectionTitle from "./components/SectionTitle";
 import { px } from "./utils/resumeEditor";
+import ResumeHeader from "./components/ResumeHeader";
 
 const paginateResumeSections = ({
   pageHight,
@@ -17,6 +18,7 @@ const paginateResumeSections = ({
   currentHeight,
   initSubSectionIndex = 0,
   sectionRefs,
+  headerRef,
 }: {
   pageHight: number;
   section: any;
@@ -25,12 +27,19 @@ const paginateResumeSections = ({
   currentPageIndex: number;
   currentHeight: number;
   initSubSectionIndex?: number;
+  headerRef?: React.MutableRefObject<HTMLDivElement | null>;
   sectionRefs: React.MutableRefObject<{
     [key: number]: HTMLDivElement | null;
   }>;
 }) => {
-  const el = sectionRefs.current[originalIndex];
+  if (currentPageIndex === 0 && originalIndex === 0 && headerRef?.current) {
+    const headerHeight = headerRef.current.getBoundingClientRect().height || 0;
+    currentHeight += headerHeight;
+  }
+  console.log("currentHeight after--->>>", currentHeight)
 
+
+  const el = sectionRefs.current[originalIndex];
   if (!el) {
     return {
       currentPageIndex,
@@ -48,13 +57,16 @@ const paginateResumeSections = ({
   const unrenderedSectionHight = sectionHeight - renderedSectionHight;
   console.log("============START=================");
   console.log("PAGE NUMBER-->>>", currentPageIndex + 1);
-  console.log("el --->>>", el)
-  console.log("el.getBoundingClientRect().height  --->>>", el.getBoundingClientRect().height)
+  console.log("el --->>>", el);
+  console.log(
+    "el.getBoundingClientRect().height  --->>>",
+    el.getBoundingClientRect().height,
+  );
   console.log("pageHight-->>>", pageHight);
-  console.log(" -------------------")
+  console.log(" -------------------");
   console.log("sectionHeight-->>>", sectionHeight);
   console.log("renderedSectionHight-->>>", renderedSectionHight);
-  console.log(" -------------------")
+  console.log(" -------------------");
   console.log("Total unrenderedSectionHight-->>>", unrenderedSectionHight);
   // Make sure current page exists
   if (!pages[currentPageIndex]) {
@@ -144,6 +156,7 @@ const paginateResumeSections = ({
       currentHeight,
       initSubSectionIndex: validItemIndex,
       sectionRefs,
+      headerRef
     });
     // }
   } else {
@@ -161,6 +174,7 @@ const Index = () => {
   const sectionRefs = useRef<{
     [key: number]: HTMLDivElement | null;
   }>({});
+  const headerRef = useRef(null)
 
   const [paginatedPages, setPaginatedPages] = useState<any[][]>([[]]);
 
@@ -175,7 +189,7 @@ const Index = () => {
     const pageHight = setting.resumePageHeight - setting.margin.y * 2;
 
     const paginate = () => {
-      console.log("Rerender the editor")
+      console.log("Rerender the editor");
       for (const [originalIndex, section] of resumeData.sections.entries()) {
         const result = paginateResumeSections({
           pageHight,
@@ -185,6 +199,7 @@ const Index = () => {
           currentPageIndex,
           currentHeight,
           sectionRefs,
+          headerRef,
         });
 
         currentPageIndex = result.currentPageIndex;
@@ -208,14 +223,17 @@ const Index = () => {
         } as React.CSSProperties
       }
     >
-      <div className="resume-main-editor-container not-visible "> // use 'debugging' to show the page
+      <div className="resume-main-editor-container not-visible">
+        {" "}
+        // use 'debugging' class to show the page
         {[[...resumeData.sections]].map((pageSections, pageIndex) => {
           return (
             <PageMaker
               key={pageIndex}
               pageSections={pageSections}
               pageIndex={pageIndex}
-              sectionRefs={sectionRefs} 
+              sectionRefs={sectionRefs}
+              headerRef={headerRef}
               syncWithProp={true}
             />
           );
@@ -241,7 +259,8 @@ const Index = () => {
 const PageMaker = ({
   pageSections,
   pageIndex,
-  sectionRefs, 
+  sectionRefs,
+  headerRef,
   syncWithProp,
 }: any) => {
   const { setting } = useResumeContext();
@@ -284,16 +303,18 @@ const PageMaker = ({
             paddingBottom: `${setting.margin.y}px`,
             background: "#FFFFFF",
             marginBottom: "40px",
-            "--page-number": `"Page ${pageIndex + 1}"`,
+            "--page-number": `"----- Page ${pageIndex + 1} -----"`,
           } as React.CSSProperties
         }
       >
         <div className="page-inner-container">
-          {pageIndex === 0 && <header className="resume-header active-focus" />}
-
+          {pageIndex === 0 && (
+            <div ref={headerRef}>
+              <ResumeHeader />
+            </div>
+          )}
           <div className="resume-body">
             {pageSections.map((section: any, index: number) => {
-              // return <></>
               const name = `sections.${section.positionIndex}`;
               return (
                 <div

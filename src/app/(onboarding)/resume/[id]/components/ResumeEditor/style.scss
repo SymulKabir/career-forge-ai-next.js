@@ -30,9 +30,9 @@
       }
     }
 
-    .page {
-      &:first-child {
-        margin: 50px 0px;
+    .page { 
+      &:first-of-type {
+        margin-top: 50px; 
       }
 
       background-color: #fff;
@@ -41,9 +41,9 @@
       width: 940px;
       height: var(--page-height);
       font-family: var(--font-family);
-      position: relative;
+      position: relative; 
 
-      &:not(:first-child)::after {
+      &:not(:first-of-type)::after {
         content: var(--page-number);
 
         position: absolute;
@@ -92,7 +92,7 @@
 
         // 2. The innermost focused section wrapper (the leaf node) gets the white card effect.
         &:focus-within {
-          background-color: #ffffff;
+          background-color: #ffffff !important;
           outline: 5px solid #ffffff;
 
           &>.section-tools {

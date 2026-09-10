@@ -61,6 +61,9 @@ export const DUMMY_STRUCTURED_RESUME = {
     phone: { content: "+8801881476432", isVisible: true },
     location: { content: "Khilkhet, Dhaka", isVisible: true },
     website: { content: "https://symulkabir.vercel.app", isVisible: true },
+    github: { content: "https://symulkabir.vercel.app", isVisible: true },
+    dob: { content: "07 May 1999", isVisible: true },
+    picture: { content: "07 May 1999", isVisible: true },
   },
   sections: [
     {

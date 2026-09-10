@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { RESUME_SETTING } from "../components/ResumeEditor/constants/resumeSetting";
+import { RESUME_SETTING, TOOLBAR } from "../components/ResumeEditor/constants/resumeSetting";
 import { DUMMY_STRUCTURED_RESUME } from "../components/ResumeEditor/constants/resumeData";
 import { addPositionIndex } from "../components/ResumeEditor/utils";
 
@@ -12,6 +12,8 @@ interface ResumeEditorContextValue {
   setSetting: (setting: typeof RESUME_SETTING) => void;
   resumeData: typeof DUMMY_STRUCTURED_RESUME;
   setResumeData: (resumeData: typeof DUMMY_STRUCTURED_RESUME) => void;
+  toolBar: typeof TOOLBAR;
+  setToolBar: (resumeData: typeof TOOLBAR) => void;
 }
 
 const ResumeEditorContext = createContext<ResumeEditorContextValue | null>(
@@ -22,6 +24,9 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
   const [activeTool, setActiveTool] = useState<string | null>(null);
   const [setting, setSetting] = useState<typeof RESUME_SETTING>({
     ...RESUME_SETTING,
+  });
+  const [toolBar, setToolBar] = useState<typeof TOOLBAR>({
+    ...TOOLBAR,
   });
   const [resumeData, setResumeData] = useState({ ...addPositionIndex(DUMMY_STRUCTURED_RESUME) });
 
@@ -34,6 +39,8 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
         setSetting,
         resumeData,
         setResumeData,
+        toolBar,
+        setToolBar,
       }}
     >
       {children}

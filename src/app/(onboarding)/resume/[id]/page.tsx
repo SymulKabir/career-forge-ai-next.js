@@ -1,7 +1,7 @@
 "use client";
 
-import { RESUME_CONSTANTS } from "./constants/resume-utils";
-import { ResumeEditorProvider } from "./context/resume-editor-context";
+import { RESUME_CONSTANTS } from "./constants/resume-utils"; 
+import { ResumeEditorProvider } from "@/src/app/(onboarding)/resume/[id]/context/resume-editor-context"
 import ResumeToolbar from "./components/ResumeToolbar";
 import CloseButton from "./components/ToolBox/CloseButton";
 import DesignAndFont from "./components/ToolBox/DesignAndFont";
