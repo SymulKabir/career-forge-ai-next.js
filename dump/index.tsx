@@ -36,7 +36,8 @@ const paginateResumeSections = ({
     const headerHeight = headerRef.current.getBoundingClientRect().height || 0;
     currentHeight += headerHeight;
   }
-  console.log("currentHeight after--->>>", currentHeight);
+  console.log("currentHeight after--->>>", currentHeight)
+
 
   const el = sectionRefs.current[originalIndex];
   if (!el) {
@@ -155,7 +156,7 @@ const paginateResumeSections = ({
       currentHeight,
       initSubSectionIndex: validItemIndex,
       sectionRefs,
-      headerRef,
+      headerRef
     });
     // }
   } else {
@@ -173,7 +174,7 @@ const Index = () => {
   const sectionRefs = useRef<{
     [key: number]: HTMLDivElement | null;
   }>({});
-  const headerRef = useRef(null);
+  const headerRef = useRef(null)
 
   const [paginatedPages, setPaginatedPages] = useState<any[][]>([[]]);
 
@@ -277,21 +278,6 @@ const PageMaker = ({
             line-height: ${metadata?.lineHeight ?? 1.4};
             letter-spacing: ${px(metadata?.letterSpacing ?? 0)};
             text-transform: ${metadata?.textTransform ?? "none"};
-            &.grid-2 {
-              display: grid;
-              /* Defines the 70% (7fr) and 30% (3fr) proportions on the container tracks, with a 20px gap */
-              grid-template-columns: 7fr 3fr;
-              column-gap: 20px;
-              
-              /* Ensures items align to the top of their track without stretching */
-              align-items: start;
-
-              /* Child items take natural/max content height without fixed widths */
-              & > * {
-                width: 100%;
-                height: max-content;
-              }
-            }
           }
 
           .resume-body *:not(.avoid-default, .avoid-default *) {
@@ -302,7 +288,8 @@ const PageMaker = ({
             line-height: inherit;
             letter-spacing: inherit;
             text-transform: inherit;
-          } 
+          }
+          }
       `}
       </style>
       <div
@@ -326,7 +313,7 @@ const PageMaker = ({
               <ResumeHeader />
             </div>
           )}
-          <div className="resume-body grid-2">
+          <div className="resume-body">
             {pageSections.map((section: any, index: number) => {
               const name = `sections.${section.positionIndex}`;
               return (
