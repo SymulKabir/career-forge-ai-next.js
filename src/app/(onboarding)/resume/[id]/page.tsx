@@ -48,7 +48,7 @@ export default function ResumeEditorShell() {
                 left-[-${RESUME_CONSTANTS.editorShell.leftSectionWidth}]
                 left-[-350px]
                 w-[${RESUME_CONSTANTS.editorShell.leftSectionWidth}]
-                `}
+              `}
         >
           <CloseButton />
 

@@ -12,36 +12,33 @@ import { useInitResume } from "../../hooks";
 import { paginateResumeSections } from "./utils";
 
 const Index = () => {
-  const { resumeData, setting, structuredResumeData } = useResumeContext();
+  const {
+    setting,
+    structuredResumeData,
+    layoutResumeData,
+    setLayoutResumeData,
+  } = useResumeContext();
   useInitResume();
 
   const sectionRefs = useRef({});
-  const headerRef = useRef(null);
-  const [paginatedPages, setPaginatedPages] = useState<any[][]>([[]]);
+  const headerRef = useRef(null); 
 
-  console.log("sectionRefs --->>>", sectionRefs.current);
   useLayoutEffect(() => {
+    setLayoutResumeData((state: any) => {
+      return { ...state, header: { ...structuredResumeData.personalInfo } };
+    });
     if (!structuredResumeData?.columns?.length) return;
-
     const pages: any[][] = [[]];
 
-    let currentPageIndex = 0;
-    let currentHeight = 0;
     const state: any = {};
-    console.log("hello 1");
     const pageHight = setting.resumePageHeight - setting.margin.y * 2;
-    console.log("hello 2");
 
     const paginate = () => {
       for (const [rowIndex, row] of structuredResumeData?.columns.entries()) {
-        console.log("rowIndex--->>>", rowIndex);
-        console.log("row--->>>", row);
         if (!state[rowIndex]) {
           state[rowIndex] = { currentPageIndex: 0, currentHeight: 0 };
         }
         for (const [sectionIndex, section] of row.entries()) {
-          console.log("sectionIndex ---->>>", sectionIndex);
-          console.log("section1 ---->>>", section);
           const result = paginateResumeSections({
             pageHight,
             section,
@@ -53,19 +50,19 @@ const Index = () => {
             sectionRefs,
             headerRef,
           });
-
-          // state[rowIndex].currentPageIndex = result.currentPageIndex;
-          // state[rowIndex].currentHeight = result.currentHeight;
+          state[rowIndex].currentPageIndex = result.currentPageIndex;
+          state[rowIndex].currentHeight = result.currentHeight;
         }
       }
-      console.log("pages =====>>>>", pages);
+      console.log("pages ---->>>>", pages);
+      setLayoutResumeData((state: any) => {
+        return { ...state, pages: pages };
+      });
       // setPaginatedPages([...pages]);
     };
-    paginate();
-    // requestAnimationFrame(paginate);
+    requestAnimationFrame(paginate);
   }, [structuredResumeData, setting]);
 
-  console.log("structuredResumeData --->>>>", structuredResumeData);
   return (
     <section
       className="resume-editor"
@@ -78,7 +75,7 @@ const Index = () => {
         } as React.CSSProperties
       }
     >
-      <div className="resume-main-editor-container not-visible debugging">
+      <div className="resume-main-editor-container not-visible">
         {" "}
         // use 'debugging' class to show the page
         {structuredResumeData?.columns?.length &&
@@ -97,17 +94,16 @@ const Index = () => {
       </div>
 
       <div className="resume-main-editor-container">
-        {false &&
-          paginatedPages.map((pageSections, pageIndex) => {
-            return (
-              <PageMaker
-                key={pageIndex}
-                pageSections={pageSections}
-                pageIndex={pageIndex}
-                syncWithProp={true}
-              />
-            );
-          })}
+        {layoutResumeData?.pages?.map((columns, pageIndex) => {
+          return (
+            <PageMaker
+              key={pageIndex}
+              columns={columns}
+              pageIndex={pageIndex}
+              syncWithProp={true}
+            />
+          );
+        })}
       </div>
     </section>
   );
@@ -178,7 +174,6 @@ const PageMaker = ({
           )}
           <div className="resume-body gird-2">
             {columns.map((column: any, columnIndex: number) => {
-              console.log("columnIndex->>", columnIndex);
               return (
                 <div className="body-item">
                   {column.map((section: any, index: number) => {
@@ -188,12 +183,11 @@ const PageMaker = ({
                       <div
                         key={pageIndex + columnIndex + index}
                         ref={(el) => {
+                          if (!sectionRefs) return undefined;
                           sectionRefs.current[columnIndex] ??= {};
-                          console.log("el333---->>>>", el);
                           if (el) {
                             sectionRefs.current[columnIndex][index] = el;
-                          }  
-                          console.log("sectionRefs.current --->>>", sectionRefs.current)
+                          }
                         }}
                         className="section-container section-styles active-focus"
                       >

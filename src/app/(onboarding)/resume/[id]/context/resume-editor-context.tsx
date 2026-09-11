@@ -1,7 +1,10 @@
 "use client";
 
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { RESUME_SETTING, TOOLBAR } from "../components/ResumeEditor/constants/resumeSetting";
+import {
+  RESUME_SETTING,
+  TOOLBAR,
+} from "../components/ResumeEditor/constants/resumeSetting";
 import { DUMMY_STRUCTURED_RESUME } from "../components/ResumeEditor/constants/resumeData";
 import { addPositionIndex } from "../components/ResumeEditor/utils";
 
@@ -16,6 +19,8 @@ interface ResumeEditorContextValue {
   setToolBar: (resumeData: typeof TOOLBAR) => void;
   structuredResumeData: typeof any;
   setStructuredResumeData: (resumeData: typeof any) => void;
+  layoutResumeData: typeof any;
+  setLayoutResumeData: (resumeData: typeof any) => void;
 }
 
 const ResumeEditorContext = createContext<ResumeEditorContextValue | null>(
@@ -30,8 +35,14 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
   const [toolBar, setToolBar] = useState<typeof TOOLBAR>({
     ...TOOLBAR,
   });
-  const [resumeData, setResumeData] = useState({ ...addPositionIndex(DUMMY_STRUCTURED_RESUME) });
+  const [resumeData, setResumeData] = useState({
+    ...addPositionIndex(DUMMY_STRUCTURED_RESUME),
+  });
   const [structuredResumeData, setStructuredResumeData] = useState({});
+  const [layoutResumeData, setLayoutResumeData] = useState({
+    header: {},
+    pages: [],
+  });
   return (
     <ResumeEditorContext.Provider
       value={{
@@ -45,6 +56,8 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
         setStructuredResumeData,
         toolBar,
         setToolBar,
+        layoutResumeData,
+        setLayoutResumeData,
       }}
     >
       {children}
@@ -56,7 +69,9 @@ export function useResumeContext() {
   const context = useContext(ResumeEditorContext);
 
   if (!context) {
-    throw new Error("useResumeContext must be used inside ResumeEditorProvider");
+    throw new Error(
+      "useResumeContext must be used inside ResumeEditorProvider",
+    );
   }
 
   return context;

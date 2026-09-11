@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   RotateCcw,
   RotateCw,
@@ -48,7 +48,7 @@ const Index: React.FC<EditableTextProps> = ({
   const { getValue, handleInputChange } = useEditor();
 
   // Control default value assignment & conditional re-rendering update
-  useLayoutEffect(() => { 
+  useEffect(() => { 
     if (editorRef.current && name) {
       const externalValue = getValue(name) || "";
       
