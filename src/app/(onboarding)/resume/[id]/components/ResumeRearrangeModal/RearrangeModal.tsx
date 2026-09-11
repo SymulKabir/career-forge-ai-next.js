@@ -2,9 +2,14 @@
 
 import { useMemo, useState } from "react";
 import type { ResumeLayoutItem } from "../../types";
-import ResumeLayoutCard from "./ResumeLayoutCard";
 import { DEFAULT_RESUME_LAYOUT } from "../../constants/resume-utils";
 import { useResumeContext } from "../../context/resume-editor-context";
+
+type RearrangeModalProps = {
+  layoutItems?: ResumeLayoutItem[];
+  onCancel?: () => void;
+  onSave?: (layout: ResumeLayoutItem[]) => void;
+};
 
 type DraggedSection = {
   pageIndex: number;
@@ -18,150 +23,59 @@ type DropTarget = {
   sectionIndex: number;
 };
 
-type RearrangeModalProps = {
-  layoutItems?: ResumeLayoutItem[];
-  onCancel?: () => void;
-  onSave?: (layout: ResumeLayoutItem[]) => void;
-};
-
 const RearrangeModal = ({
   layoutItems = DEFAULT_RESUME_LAYOUT,
   onSave,
+  onCancel,
 }: RearrangeModalProps) => {
-  const {
-    setting,
-    layoutResumeData,
-    setActiveTool,
-    setLayoutResumeData,
-  } = useResumeContext();
+  const { setting, layoutResumeData, setLayoutResumeData, setActiveTool } = useResumeContext();
 
-  const [draggedSection, setDraggedSection] =
-    useState<DraggedSection | null>(null);
+  const [draggedSection, setDraggedSection] = useState<DraggedSection | null>(null);
+  const [dropTarget, setDropTarget] = useState<DropTarget | null>(null);
 
-  const [dropTarget, setDropTarget] =
-    useState<DropTarget | null>(null);
+  // Consider pageHeight as 100% (fallback to 1000px if not defined in settings)
+  const totalPageHeight = setting?.resumePageHeight || 1000;
 
-  /* =========================================================
-     PAGE GROUPS
-  ========================================================= */
-
-  const pageGroups = useMemo(() => {
-    const pages = new Map<number, ResumeLayoutItem[]>();
-
-    layoutItems.forEach((item) => {
-      const pageItems = pages.get(item.page) ?? [];
-
-      pageItems.push(item);
-
-      pages.set(item.page, pageItems);
-    });
-
-    return Array.from(pages.entries())
-      .sort(([pageA], [pageB]) => pageA - pageB)
-      .map(([page, items]) => {
-        const fullItems = items
-          .filter((item) => item.column === "full")
-          .sort((a, b) => a.order - b.order);
-
-        const leftItems = items
-          .filter((item) => item.column === "left")
-          .sort((a, b) => a.order - b.order);
-
-        const rightItems = items
-          .filter((item) => item.column === "right")
-          .sort((a, b) => a.order - b.order);
-
-        return {
-          page,
-          fullItems,
-          leftItems,
-          rightItems,
-        };
+  const activeLayoutData = layoutResumeData?.pages ? layoutResumeData : {
+    pages: useMemo(() => {
+      const pagesMap = new Map<number, ResumeLayoutItem[]>();
+      layoutItems.forEach((item) => {
+        const pageItems = pagesMap.get(item.page) ?? [];
+        pageItems.push(item);
+        pagesMap.set(item.page, pageItems);
       });
-  }, [layoutItems]);
 
-  /* =========================================================
-     DRAG START
-  ========================================================= */
-
-  const handleDragStart = (
-    pageIndex: number,
-    columnIndex: number,
-    sectionIndex: number,
-  ) => {
-    setDraggedSection({
-      pageIndex,
-      columnIndex,
-      sectionIndex,
-    });
+      return Array.from(pagesMap.entries())
+        .sort(([a], [b]) => a - b)
+        .map(([_, items]) => {
+          const left = items.filter((i) => i.column === "left").sort((a, b) => a.order - b.order);
+          const right = items.filter((i) => i.column === "right").sort((a, b) => a.order - b.order);
+          const full = items.filter((i) => i.column === "full").sort((a, b) => a.order - b.order);
+          return [left, right, full].filter((col) => col.length > 0);
+        });
+    }, [layoutItems])
   };
 
-  /* =========================================================
-     DRAG OVER
-  ========================================================= */
-
-  const handleDragOver = (
-    event: React.DragEvent,
-    pageIndex: number,
-    columnIndex: number,
-    sectionIndex: number,
-  ) => {
-    event.preventDefault();
-
-    setDropTarget({
-      pageIndex,
-      columnIndex,
-      sectionIndex,
-    });
+  const handleDragStart = (pageIndex: number, columnIndex: number, sectionIndex: number) => {
+    setDraggedSection({ pageIndex, columnIndex, sectionIndex });
   };
 
-  /* =========================================================
-     DRAG OVER COLUMN
-  ========================================================= */
-
-  const handleColumnDragOver = (
-    event: React.DragEvent,
-    pageIndex: number,
-    columnIndex: number,
-  ) => {
+  const handleDragOver = (event: React.DragEvent, pageIndex: number, columnIndex: number, sectionIndex: number) => {
     event.preventDefault();
-
-    setDropTarget({
-      pageIndex,
-      columnIndex,
-      sectionIndex: -1,
-    });
+    setDropTarget({ pageIndex, columnIndex, sectionIndex });
   };
 
-  /* =========================================================
-     DROP
-  ========================================================= */
-
-  const handleDrop = (
-    event: React.DragEvent,
-    targetPageIndex: number,
-    targetColumnIndex: number,
-    targetSectionIndex: number = -1,
-  ) => {
+  const handleColumnDragOver = (event: React.DragEvent, pageIndex: number, columnIndex: number) => {
     event.preventDefault();
+    setDropTarget({ pageIndex, columnIndex, sectionIndex: -1 });
+  };
 
-    if (!draggedSection) {
-      return;
-    }
+  const handleDrop = (event: React.DragEvent, targetPageIndex: number, targetColumnIndex: number, targetSectionIndex: number = -1) => {
+    event.preventDefault();
+    if (!draggedSection) return;
 
-    const {
-      pageIndex: sourcePageIndex,
-      columnIndex: sourceColumnIndex,
-      sectionIndex: sourceSectionIndex,
-    } = draggedSection;
-
-    /*
-     * Create a deep copy.
-     *
-     * DO NOT mutate layoutResumeData directly.
-     */
-    const pages = structuredClone(layoutResumeData.pages);
-
+    const { pageIndex: sourcePageIndex, columnIndex: sourceColumnIndex, sectionIndex: sourceSectionIndex } = draggedSection;
+    const pages = structuredClone(activeLayoutData.pages);
     const sourceColumn = pages[sourcePageIndex]?.[sourceColumnIndex];
 
     if (!sourceColumn) {
@@ -170,11 +84,7 @@ const RearrangeModal = ({
       return;
     }
 
-    const [movedSection] = sourceColumn.splice(
-      sourceSectionIndex,
-      1,
-    );
-
+    const [movedSection] = sourceColumn.splice(sourceSectionIndex, 1);
     if (!movedSection) {
       setDraggedSection(null);
       setDropTarget(null);
@@ -182,96 +92,68 @@ const RearrangeModal = ({
     }
 
     const targetColumn = pages[targetPageIndex]?.[targetColumnIndex];
-
     if (!targetColumn) {
       setDraggedSection(null);
       setDropTarget(null);
       return;
     }
 
-    /*
-     * If moving inside the same column,
-     * account for the removed item.
-     */
     let insertIndex = targetSectionIndex;
-
-    if (
-      sourcePageIndex === targetPageIndex &&
-      sourceColumnIndex === targetColumnIndex &&
-      targetSectionIndex > sourceSectionIndex
-    ) {
+    if (sourcePageIndex === targetPageIndex && sourceColumnIndex === targetColumnIndex && targetSectionIndex > sourceSectionIndex) {
       insertIndex -= 1;
     }
 
-    /*
-     * Drop at the end of the column.
-     */
     if (insertIndex < 0 || insertIndex > targetColumn.length) {
       insertIndex = targetColumn.length;
     }
 
+    movedSection.page = targetPageIndex;
+    movedSection.column = targetColumnIndex === 0 ? "left" : targetColumnIndex === 1 ? "right" : "full";
+
     targetColumn.splice(insertIndex, 0, movedSection);
 
-    /*
-     * Update the state.
-     */
-    setLayoutResumeData({
-      ...layoutResumeData,
-      pages,
-    });
+    if (setLayoutResumeData) {
+      setLayoutResumeData({ pages });
+    }
 
     setDraggedSection(null);
     setDropTarget(null);
   };
-
-  /* =========================================================
-     DRAG END
-  ========================================================= */
 
   const handleDragEnd = () => {
     setDraggedSection(null);
     setDropTarget(null);
   };
 
-  /* =========================================================
-     CANCEL
-  ========================================================= */
+  const handleSave = () => {
+    const flattenedItems: ResumeLayoutItem[] = [];
+    activeLayoutData.pages.forEach((page, pIdx) => {
+      page.forEach((column, cIdx) => {
+        column.forEach((item, oIdx) => {
+          flattenedItems.push({
+            ...item,
+            page: pIdx,
+            column: cIdx === 0 ? "left" : cIdx === 1 ? "right" : "full",
+            order: oIdx,
+          });
+        });
+      });
+    });
 
-  const handleCancel = () => {
-    setDraggedSection(null);
-    setDropTarget(null);
-
+    onSave?.(flattenedItems);
     setActiveTool(null);
   };
 
-  /* =========================================================
-     SAVE
-  ========================================================= */
-
-  const handleSave = () => {
-    onSave?.(layoutItems);
+  const handleCancel = () => {
+    onCancel?.();
+    setActiveTool(null);
   };
-
-  /* =========================================================
-     RENDER
-  ========================================================= */
 
   return (
     <>
       <div
         id="rearrangeModal"
-        className="
-          absolute
-          inset-0
-          top-0
-          z-[100]
-          flex
-          items-center
-          justify-center
-          bg-slate-950/55
-          backdrop-blur-sm
-          hidden
-        "
+        className="absolute inset-0 top-0 z-[100] flex items-center justify-center bg-slate-950/55 backdrop-blur-sm"
       >
         <div
           className="
@@ -286,13 +168,10 @@ const RearrangeModal = ({
             bg-white
             shadow-2xl
             sm:rounded-3xl
-            md:w-[800px]
+            md:w-[860px]
           "
         >
-          {/* =================================================
-              HEADER
-          ================================================= */}
-
+          {/* Header */}
           <div
             className="
               flex
@@ -360,18 +239,12 @@ const RearrangeModal = ({
                 strokeWidth="1.8"
                 viewBox="0 0 24 24"
               >
-                <path
-                  strokeLinecap="round"
-                  d="M6 6l12 12M18 6 6 18"
-                />
+                <path strokeLinecap="round" d="M6 6l12 12M18 6 6 18" />
               </svg>
             </button>
           </div>
 
-          {/* =================================================
-              BODY
-          ================================================= */}
-
+          {/* Body */}
           <div
             id="rearrangeContent"
             className="
@@ -390,475 +263,122 @@ const RearrangeModal = ({
               className="
                 mx-auto
                 flex
-                max-w-3xl
+                max-w-2xl
                 flex-col
                 gap-8
               "
             >
-              {/* =================================================
-                  ACTUAL RESUME LAYOUT
-              ================================================= */}
+              <div className="page container flex flex-col gap-8">
+                {activeLayoutData.pages.map((page, pageIndex) => {
+                  return (
+                    <div key={pageIndex} className="flex flex-col items-center">
+                      
+                      {/* Page Tag */}
+                      <div className="mb-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                        Page {pageIndex + 1}
+                      </div>
 
-              <div className="page container">
-                {layoutResumeData.pages.map(
-                  (page, pageIndex) => {
-                    const pageHeight =
-                      setting.resumePageHeight;
-
-                    const marginY =
-                      setting.margin.y;
-
-                    const marginX =
-                      setting.margin.x;
-
-                    return (
-                      <div
-                        key={pageIndex}
-                        className="
-                          relative
-                          mx-auto
-                          mb-8
-                          w-full
-                          max-w-[794px]
-                          overflow-hidden
-                          bg-white
-                          shadow-[0_8px_30px_rgba(15,23,42,0.12)]
-                        "
-                        style={{
-                          minHeight: `${pageHeight}px`,
-                        }}
-                      >
-                        {/* =================================================
-                            PAGE HEADER
-                        ================================================= */}
-
+                      {/* Paper Document Container */}
+                      <div className="w-full rounded-2xl bg-white shadow-md border border-slate-200/90 overflow-hidden p-4">
+                        
+                        {/* Header Box matching screenshot style */}
                         {pageIndex === 0 && (
-                          <div
-                            className="
-                              border-b
-                              border-slate-200
-                              p-4
-                            "
-                          >
-                            <div
-                              className="
-                                rounded
-                                border
-                                border-dashed
-                                border-slate-300
-                                p-3
-                                text-center
-                                text-xs
-                                text-slate-400
-                              "
-                            >
-                              Resume Header
-                            </div>
+                          <div className="mb-4 rounded-xl bg-slate-100 border border-slate-200/80 px-4 py-3 text-slate-600 flex items-center justify-center gap-2 shadow-sm">
+                            <span className="text-slate-400 text-xs">🔒</span>
+                            <span className="text-xs font-bold tracking-wide">Header</span>
                           </div>
                         )}
 
-                        {/* =================================================
-                            PAGE BODY
-                        ================================================= */}
-
+                        {/* Columns Grid Layout */}
                         <div
-                          className="
-                            grid
-                            grid-cols-2
-                            items-start
-                            gap-4
-                          "
-                          style={{
-                            padding: `${marginY}px ${marginX}px`,
-                          }}
+                          className="grid grid-cols-2 gap-3 items-start"
                         >
-                          {page.map(
-                            (
-                              column,
-                              columnIndex,
-                            ) => {
-                              return (
-                                <div
-                                  key={columnIndex}
-                                  className={`
-                                    relative
-                                    min-h-[180px]
-                                    rounded-lg
-                                    border-2
-                                    border-dashed
-                                    p-2
-                                    transition
-                                    ${
-                                      dropTarget?.pageIndex ===
-                                        pageIndex &&
-                                      dropTarget?.columnIndex ===
-                                        columnIndex
-                                        ? "border-violet-400 bg-violet-50/70"
-                                        : "border-slate-200"
-                                    }
-                                  `}
-                                  onDragOver={(event) =>
-                                    handleColumnDragOver(
-                                      event,
-                                      pageIndex,
-                                      columnIndex,
-                                    )
-                                  }
-                                  onDrop={(event) =>
-                                    handleDrop(
-                                      event,
-                                      pageIndex,
-                                      columnIndex,
-                                      -1,
-                                    )
-                                  }
-                                >
-                                  {/* COLUMN LABEL */}
+                          {page.map((column, columnIndex) => {
+                            const isColumnDropTarget =
+                              dropTarget?.pageIndex === pageIndex && dropTarget?.columnIndex === columnIndex;
 
-                                  <div
-                                    className="
-                                      mb-2
-                                      text-center
-                                      text-[9px]
-                                      font-bold
-                                      uppercase
-                                      tracking-widest
-                                      text-slate-300
-                                    "
-                                  >
-                                    Column{" "}
-                                    {columnIndex + 1}
-                                  </div>
+                            return (
+                              <div
+                                key={columnIndex}
+                                className={`relative flex flex-col gap-3 min-h-[160px] rounded-xl transition-all ${
+                                  isColumnDropTarget ? "ring-2 ring-indigo-500/20 bg-indigo-50/20" : ""
+                                }`}
+                                onDragOver={(e) => handleColumnDragOver(e, pageIndex, columnIndex)}
+                                onDrop={(e) => handleDrop(e, pageIndex, columnIndex, -1)}
+                              >
+                                {column.map((section, sectionIndex) => {
+                                  const rawHeight = section.sectionHeight || 80;
+                                  
+                                  {/* Calculate sectionHeight as a percentage where pageHeight represents 100% */}
+                                  const percentageHeight = Number(((rawHeight / totalPageHeight) * 100).toFixed(2));
 
-                                  {/* =================================================
-                                      SECTIONS
-                                  ================================================= */}
+                                  const isDragging =
+                                    draggedSection?.pageIndex === pageIndex &&
+                                    draggedSection?.columnIndex === columnIndex &&
+                                    draggedSection?.sectionIndex === sectionIndex;
 
-                                  {column.map(
-                                    (
-                                      section,
-                                      sectionIndex,
-                                    ) => {
-                                      const isDragging =
-                                        draggedSection?.pageIndex ===
-                                          pageIndex &&
-                                        draggedSection?.columnIndex ===
-                                          columnIndex &&
-                                        draggedSection?.sectionIndex ===
-                                          sectionIndex;
+                                  const isSectionDropTarget =
+                                    dropTarget?.pageIndex === pageIndex &&
+                                    dropTarget?.columnIndex === columnIndex &&
+                                    dropTarget?.sectionIndex === sectionIndex;
 
-                                      const isDropTarget =
-                                        dropTarget?.pageIndex ===
-                                          pageIndex &&
-                                        dropTarget?.columnIndex ===
-                                          columnIndex &&
-                                        dropTarget?.sectionIndex ===
-                                          sectionIndex;
-
-                                      return (
-                                        <div
-                                          key={
-                                            section.id ??
-                                            `${pageIndex}-${columnIndex}-${sectionIndex}`
-                                          }
-                                          className="relative"
-                                          onDragOver={(
-                                            event,
-                                          ) =>
-                                            handleDragOver(
-                                              event,
-                                              pageIndex,
-                                              columnIndex,
-                                              sectionIndex,
-                                            )
-                                          }
-                                          onDrop={(
-                                            event,
-                                          ) =>
-                                            handleDrop(
-                                              event,
-                                              pageIndex,
-                                              columnIndex,
-                                              sectionIndex,
-                                            )
-                                          }
-                                        >
-                                          {/* DROP INDICATOR */}
-
-                                          {isDropTarget &&
-                                            !isDragging && (
-                                              <div
-                                                className="
-                                                  absolute
-                                                  -top-1
-                                                  left-0
-                                                  right-0
-                                                  z-20
-                                                  h-1
-                                                  rounded-full
-                                                  bg-violet-500
-                                                "
-                                              />
-                                            )}
-
-                                          {/* =================================================
-                                              DRAGGABLE SECTION
-                                          ================================================= */}
-
-                                          <div
-                                            draggable
-                                            onDragStart={() =>
-                                              handleDragStart(
-                                                pageIndex,
-                                                columnIndex,
-                                                sectionIndex,
-                                              )
-                                            }
-                                            onDragEnd={
-                                              handleDragEnd
-                                            }
-                                            className={`
-                                              group
-                                              mb-2
-                                              cursor-grab
-                                              select-none
-                                              rounded-lg
-                                              border
-                                              bg-white
-                                              shadow-sm
-                                              transition-all
-                                              active:cursor-grabbing
-                                              ${
-                                                isDragging
-                                                  ? "scale-[0.98] opacity-40"
-                                                  : "hover:-translate-y-[1px] hover:shadow-md"
-                                              }
-                                            `}
-                                          >
-                                            {/* DRAG HANDLE */}
-
-                                            <div
-                                              className="
-                                                flex
-                                                items-center
-                                                gap-2
-                                                border-b
-                                                border-slate-100
-                                                px-2
-                                                py-1
-                                                text-[8px]
-                                                text-slate-300
-                                              "
-                                            >
-                                              <span
-                                                className="
-                                                  cursor-grab
-                                                  tracking-widest
-                                                "
-                                              >
-                                                ⋮⋮
-                                              </span>
-
-                                              <span>
-                                                Drag to move
-                                              </span>
-                                            </div>
-
-                                            {/* SECTION CONTENT */}
-
-                                            <div className="p-2">
-                                              <p
-                                                className="
-                                                  text-xs
-                                                  font-semibold
-                                                  text-slate-700
-                                                "
-                                              >
-                                                {
-                                                  section
-                                                    .sectionTitle
-                                                    ?.content
-                                                }
-                                              </p>
-
-                                              {section.sectionHeight && (
-                                                <p
-                                                  className="
-                                                    mt-1
-                                                    text-[9px]
-                                                    text-slate-400
-                                                  "
-                                                >
-                                                  Height:{" "}
-                                                  {
-                                                    section.sectionHeight
-                                                  }
-                                                  px
-                                                </p>
-                                              )}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      );
-                                    },
-                                  )}
-
-                                  {/* =================================================
-                                      EMPTY COLUMN
-                                  ================================================= */}
-
-                                  {column.length ===
-                                    0 && (
+                                  return (
                                     <div
-                                      className="
-                                        flex
-                                        min-h-[120px]
-                                        items-center
-                                        justify-center
-                                        rounded-md
-                                        border
-                                        border-dashed
-                                        border-slate-200
-                                        text-[10px]
-                                        text-slate-300
-                                      "
+                                      key={section.id ?? `${pageIndex}-${columnIndex}-${sectionIndex}`}
+                                      className="relative group/section"
+                                      onDragOver={(e) => handleDragOver(e, pageIndex, columnIndex, sectionIndex)}
+                                      onDrop={(e) => handleDrop(e, pageIndex, columnIndex, sectionIndex)}
                                     >
-                                      Drop section here
+                                      {/* Drop Target Indicator */}
+                                      {isSectionDropTarget && !isDragging && (
+                                        <div className="absolute -top-2 left-0 right-0 z-20 h-1 rounded-full bg-indigo-600 shadow-sm animate-pulse" />
+                                      )}
+
+                                      {/* Card using percentage height relative to 100% page height */}
+                                      <div
+                                        draggable
+                                        onDragStart={() => handleDragStart(pageIndex, columnIndex, sectionIndex)}
+                                        onDragEnd={handleDragEnd}
+                                        className={`rounded-xl border border-slate-200/90 bg-slate-50/70 p-4 shadow-sm transition-all duration-200 cursor-grab active:cursor-grabbing select-none flex flex-col justify-center ${
+                                          isDragging
+                                            ? "scale-95 opacity-30 shadow-none border-dashed border-indigo-400"
+                                            : "hover:bg-slate-100 hover:border-indigo-300 hover:shadow"
+                                        }`}
+                                        style={{ height: `${percentageHeight}%` }}
+                                      >
+                                        <div className="flex items-start justify-between">
+                                          {/* Two-dot drag indicator handle */}
+                                          <div className="text-slate-400 font-bold text-xs tracking-tighter leading-none select-none">
+                                            &#8759;
+                                          </div>
+                                          <p className="flex-1 text-center text-xs font-bold text-slate-800 tracking-tight px-2 truncate">
+                                            {section.sectionTitle?.content || "Untitled"}
+                                          </p>
+                                          <div className="w-3" /> {/* Spacer for symmetry */}
+                                        </div>
+                                      </div>
                                     </div>
-                                  )}
-                                </div>
-                              );
-                            },
-                          )}
+                                  );
+                                })}
+
+                                {column.length === 0 && (
+                                  <div className="flex flex-1 items-center justify-center rounded-xl border border-dashed border-slate-200 p-6 text-center text-xs text-slate-400">
+                                    Drop sections here
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
-                    );
-                  },
-                )}
+                    </div>
+                  );
+                })}
               </div>
-
-              {/* =================================================
-                  OLD LAYOUT PREVIEW
-              ================================================= */}
-
-              {pageGroups.map(
-                ({
-                  page,
-                  fullItems,
-                  leftItems,
-                  rightItems,
-                }) => (
-                  <div
-                    key={page}
-                    className="layout-page"
-                    data-page={page}
-                  >
-                    <div className="mb-2 text-center">
-                      <span
-                        className="
-                          text-[10px]
-                          font-bold
-                          uppercase
-                          tracking-[.15em]
-                          text-slate-400
-                        "
-                      >
-                        Page {page}
-                      </span>
-                    </div>
-
-                    <div
-                      className="
-                        relative
-                        mx-auto
-                        w-full
-                        max-w-[430px]
-                        rounded-xl
-                        border
-                        border-slate-200
-                        bg-white
-                        p-2
-                        shadow-[0_8px_30px_rgba(15,23,42,0.08)]
-                        sm:p-3
-                      "
-                    >
-                      {/* FULL */}
-
-                      <div
-                        className="
-                          layout-column
-                          layout-full
-                          mb-1.5
-                          min-h-[30px]
-                        "
-                        data-page={page}
-                        data-column="full"
-                      >
-                        {fullItems.map((item) => (
-                          <ResumeLayoutCard
-                            key={item.id}
-                            item={item}
-                          />
-                        ))}
-                      </div>
-
-                      {/* LEFT + RIGHT */}
-
-                      <div
-                        className="
-                          grid
-                          grid-cols-[1fr_1fr]
-                          items-start
-                          gap-1.5
-                        "
-                      >
-                        <div
-                          className="
-                            layout-column
-                            min-h-[180px]
-                          "
-                          data-page={page}
-                          data-column="left"
-                        >
-                          {leftItems.map(
-                            (item) => (
-                              <ResumeLayoutCard
-                                key={item.id}
-                                item={item}
-                              />
-                            ),
-                          )}
-                        </div>
-
-                        <div
-                          className="
-                            layout-column
-                            min-h-[180px]
-                          "
-                          data-page={page}
-                          data-column="right"
-                        >
-                          {rightItems.map(
-                            (item) => (
-                              <ResumeLayoutCard
-                                key={item.id}
-                                item={item}
-                              />
-                            ),
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ),
-              )}
             </div>
           </div>
 
-          {/* =================================================
-              FOOTER
-          ================================================= */}
-
+          {/* Footer */}
           <div
             className="
               flex
@@ -937,7 +457,6 @@ const RearrangeModal = ({
           </div>
         </div>
       </div>
-
       <input
         type="hidden"
         id="resumeLayoutJson"
