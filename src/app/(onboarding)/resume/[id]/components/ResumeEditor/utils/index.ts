@@ -73,10 +73,13 @@ export const paginateResumeSections = ({
 
   console.log("========START==============");
   console.log("PAGE NUMBER ----->>>>", currentPageIndex + 1);
+  console.log("el================>>>>", el)
+  console.log("el.getBoundingClientRect().height================>>>>", el.getBoundingClientRect().height)
+  console.log("pageHight-------->>>>", pageHight)
+  console.log("currentHeight-------->>>>", currentHeight)
+  console.log("sectionHeight -->>>", sectionHeight);
   console.log("rowIndex ----->>>>", rowIndex);
   console.log("sectionIndex ----->>>>", sectionIndex);
-  console.log("subSections -->>>", subSections);
-  console.log("sectionHeight -->>>", sectionHeight);
   console.log("renderedSectionHight -->>>", renderedSectionHight);
   console.log("unrenderedSectionHight -->>>", unrenderedSectionHight);
 

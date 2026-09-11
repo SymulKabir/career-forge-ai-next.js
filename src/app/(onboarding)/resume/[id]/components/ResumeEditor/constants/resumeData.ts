@@ -115,23 +115,6 @@ export const DUMMY_STRUCTURED_RESUME = {
         <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
       <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
       <li>Design, configure, and maintain Linux-based production servers.</li>
-      <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-        <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-      <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-      <li>Design, configure, and maintain Linux-based production servers.</li>
-      <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-        <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-      <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-      <li>Design, configure, and maintain Linux-based production servers.</li>
-      <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-        <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-      <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-      <li>Design, configure, and maintain Linux-based production servers.</li>
-      <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-        <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-      <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-      <li>Design, configure, and maintain Linux-based production servers.</li>
-      <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
     </ul>
   `,
             isVisible: true,
