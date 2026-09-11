@@ -175,7 +175,7 @@ const PageMaker = ({
           <div className="resume-body gird-2">
             {columns.map((column: any, columnIndex: number) => {
               return (
-                <div className="body-item">
+                <div key={columnIndex} className="body-item">
                   {column.map((section: any, index: number) => {
                     const name = `sections.${section.positionIndex}`;
 

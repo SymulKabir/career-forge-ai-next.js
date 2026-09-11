@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import SubSectionToolBar from "../SubSectionToolBar";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import { px } from "../../utils/resumeEditor";
 import { useResume } from "../../../../hooks";
 import InputField from "../InputField";
+import { CloudUpload, Eye, EyeOff, X } from "lucide-react";
 
 const Index: React.FC = () => {
-  const { setting, resumeData } = useResumeContext();
+  const { setting, resumeData, setResumeData } = useResumeContext();
   const { getResumeValue } = useResume();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  
+  const [zoom, setZoom] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const config = {
     layout: setting?.header?.layout,
@@ -20,11 +32,81 @@ const Index: React.FC = () => {
     titleColor: setting?.header?.titleColor,
     metaTextSize: setting?.header?.metaTextSize,
     metaTextColor: setting?.header?.metaTextColor,
-    imageSize: setting?.header?.imageSize,
-    imageRadius: setting?.header?.imageRadius,
+    imageSize: setting?.header?.imageSize ?? 100,
+    imageRadius: setting?.header?.imageRadius ?? "8px",
     gap: setting?.header?.gap,
     paddingBottom: setting?.header?.paddingBottom,
   };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSelectedImage(reader.result as string);
+        setZoom(1);
+        setPosition({ x: 0, y: 0 });
+        setIsModalOpen(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveImage = () => {
+    if (selectedImage) {
+      setResumeData((prev: any) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          picture: {
+            ...prev.personalInfo.picture,
+            content: selectedImage,
+            zoom: zoom,
+            position: position,
+          },
+        },
+      }));
+    }
+    setIsModalOpen(false);
+  };
+
+  const togglePictureVisibility = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setResumeData((prev: any) => ({
+      ...prev,
+      personalInfo: {
+        ...prev.personalInfo,
+        picture: {
+          ...prev.personalInfo.picture,
+          isVisible: !prev.personalInfo.picture.isVisible,
+        },
+      },
+    }));
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    setPosition({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y,
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const isPictureVisible = resumeData?.personalInfo?.picture?.isVisible ?? true;
+  const pictureData = resumeData?.personalInfo?.picture;
+  
+  const currentZoom = pictureData?.zoom ?? 1;
+  const currentPosition = pictureData?.position ?? { x: 0, y: 0 };
 
   return (
     <>
@@ -43,7 +125,7 @@ const Index: React.FC = () => {
           --meta-size: ${px(config.metaTextSize)};
           --meta-color: ${config.metaTextColor};
           --img-size: ${px(config.imageSize)};
-          --img-radius: ${config.imageRadius};
+          --img-radius: ${typeof config.imageRadius === 'number' ? px(config.imageRadius) : config.imageRadius};
         } 
 
         .resume-header:focus-within { 
@@ -55,7 +137,6 @@ const Index: React.FC = () => {
           display: flex;
         }
 
-        /* Layout Variations */
         .resume-header.layout-split .header-content-wrapper {
           flex-direction: row;
           justify-content: space-between;
@@ -128,6 +209,10 @@ const Index: React.FC = () => {
         }
 
         .resume-header .header-image-container {
+          position: relative;
+        }
+
+        .resume-header .header-image-container .img-inner-container {
           flex-shrink: 0;
           width: var(--img-size);
           height: var(--img-size);
@@ -138,19 +223,178 @@ const Index: React.FC = () => {
           position: relative;
         }
 
-        .resume-header .header-image-container .profile-img {
+        .resume-header .header-image-container .img-inner-container .profile-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
+          transform: translate(${currentPosition.x}px, ${currentPosition.y}px) scale(${currentZoom});
+          transform-origin: center center;
         }
 
-        .resume-header .header-image-container .profile-img-placeholder {
+        .resume-header .header-image-container .img-inner-container .profile-img-placeholder {
           width: 100%;
           height: 100%;
           background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
           display: flex;
           align-items: center;
           justify-content: center;
+        }
+
+        .image-hover-actions {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          opacity: 0;
+          transition: opacity 0.2s ease-in-out;
+          border-radius: var(--img-radius);
+        }
+
+        .header-image-container:hover .image-hover-actions {
+          opacity: 1;
+        }
+
+        .action-btn {
+          width: 40px;
+          height: 40px;
+          border: none;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          color: #fff;
+        }
+
+        .upload-action-btn {
+          background-color: #059669;
+        }
+
+        .visibility-action-btn {
+          background-color: #e11d48;
+        }
+
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: rgba(0, 0, 0, 0.6);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+        }
+
+        .modal-content {
+          background: #ffffff;
+          padding: 24px;
+          border-radius: 12px;
+          width: 400px;
+          text-align: center;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+          margin: 0;
+          font-size: 18px;
+          color: #111;
+        }
+
+        .close-modal-btn {
+          background: none;
+          border: none;
+          font-size: 18px;
+          cursor: pointer;
+          color: #666;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .modal-body {
+          margin-bottom: 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .modal-preview-container {
+          width: var(--img-size);
+          height: var(--img-size);
+          max-width: 200px;
+          max-height: 200px;
+          min-width: 100px;
+          min-height: 100px;
+          margin: 0 auto 16px auto;
+          border-radius: var(--img-radius);
+          overflow: hidden;
+          background: #e5e7eb;
+          border: 2px solid #e5e7eb;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: grab;
+          position: relative;
+        }
+
+        .modal-preview-container:active {
+          cursor: grabbing;
+        }
+
+        .modal-preview-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transform: translate(${position.x}px, ${position.y}px) scale(${zoom});
+          transform-origin: center center;
+          user-select: none;
+          pointer-events: none;
+        }
+
+        .zoom-slider {
+          width: 80%;
+          margin-top: 10px;
+        }
+
+        .modal-footer {
+          display: flex;
+          gap: 10px;
+          justify-content: space-between;
+        }
+
+        .modal-btn {
+          flex: 1;
+          padding: 10px;
+          border-radius: 6px;
+          font-weight: 600;
+          cursor: pointer;
+          border: 1px solid #ccc;
+        }
+
+        .btn-secondary {
+          background: #fff;
+          color: #333;
+        }
+
+        .btn-primary {
+          background: #7c3aed;
+          color: #fff;
+          border: none;
         }
       `}</style>
 
@@ -223,9 +467,9 @@ const Index: React.FC = () => {
             </div>
           </div>
 
-          {resumeData.personalInfo.picture.isVisible && (
-            <div className="header-image-container">
-              {resumeData.personalInfo.picture.content ? (
+          <div className="header-image-container">
+            <div className="img-inner-container">
+              {isPictureVisible && resumeData.personalInfo.picture.content ? (
                 <img
                   src={getResumeValue("personalInfo.picture.content")}
                   alt={getResumeValue("personalInfo.fullName.content")}
@@ -237,9 +481,95 @@ const Index: React.FC = () => {
                 </div>
               )}
             </div>
-          )}
+
+            <div className="image-hover-actions">
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+              <button
+                className="action-btn upload-action-btn"
+                title="Upload Photo"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <CloudUpload size={18} />
+              </button>
+              <button
+                className="action-btn visibility-action-btn"
+                title={isPictureVisible ? "Hide Photo" : "Show Photo"}
+                onClick={togglePictureVisibility}
+              >
+                {isPictureVisible ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </div>
+          </div>
         </div>
       </header>
+
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Upload photo:</h3>
+              <button
+                className="close-modal-btn"
+                onClick={() => setIsModalOpen(false)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div 
+                className="modal-preview-container"
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+              >
+                {selectedImage && (
+                  <img
+                    src={selectedImage}
+                    alt="Preview"
+                    className="modal-preview-img"
+                  />
+                )}
+              </div>
+              <p style={{ fontSize: "12px", color: "#666", marginBottom: "8px" }}>
+                Click and drag to reposition image. Square images work best.
+              </p>
+              <input
+                type="range"
+                min="1"
+                max="3"
+                step="0.05"
+                value={zoom}
+                onChange={(e) => setZoom(parseFloat(e.target.value))}
+                className="zoom-slider"
+              />
+            </div>
+            <div className="modal-footer">
+              <button
+                className="modal-btn btn-secondary"
+                onClick={() => {
+                  setIsModalOpen(false);
+                  fileInputRef.current?.click();
+                }}
+              >
+                Upload
+              </button>
+              <button
+                className="modal-btn btn-primary"
+                onClick={handleSaveImage}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

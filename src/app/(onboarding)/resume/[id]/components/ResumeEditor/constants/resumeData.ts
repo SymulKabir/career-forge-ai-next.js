@@ -63,7 +63,7 @@ export const DUMMY_STRUCTURED_RESUME = {
     website: { content: "https://symulkabir.vercel.app", isVisible: true },
     github: { content: "https://symulkabir.vercel.app", isVisible: true },
     dob: { content: "07 May 1999", isVisible: true },
-    picture: { content: "07 May 1999", isVisible: true },
+    picture: { content: "07 May 1999", position: {zoom: 1, x: 0, y: 0 }, isVisible: true },
   },
   sections: [
     {
