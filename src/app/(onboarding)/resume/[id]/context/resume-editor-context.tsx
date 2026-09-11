@@ -32,7 +32,6 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
   });
   const [resumeData, setResumeData] = useState({ ...addPositionIndex(DUMMY_STRUCTURED_RESUME) });
   const [structuredResumeData, setStructuredResumeData] = useState({});
-console.log("resumeData ===>>>", resumeData)
   return (
     <ResumeEditorContext.Provider
       value={{

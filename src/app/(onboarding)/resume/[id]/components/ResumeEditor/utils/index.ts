@@ -25,7 +25,8 @@ export const addPositionIndex = (data: any) => {
 export const paginateResumeSections = ({
   pageHight,
   section,
-  originalIndex,
+  rowIndex,
+  sectionIndex,
   pages,
   currentPageIndex,
   currentHeight,
@@ -35,7 +36,8 @@ export const paginateResumeSections = ({
 }: {
   pageHight: number;
   section: any;
-  originalIndex: number;
+  rowIndex: number;
+  sectionIndex: number;
   pages: any[][];
   currentPageIndex: number;
   currentHeight: number;
@@ -45,13 +47,13 @@ export const paginateResumeSections = ({
     [key: number]: HTMLDivElement | null;
   }>;
 }) => {
-  if (currentPageIndex === 0 && originalIndex === 0 && headerRef?.current) {
+  if (currentPageIndex === 0 && sectionIndex === 0 && headerRef?.current) {
     const headerHeight = headerRef.current.getBoundingClientRect().height || 0;
     currentHeight += headerHeight;
   }
-  console.log("currentHeight after--->>>", currentHeight);
 
-  const el = sectionRefs.current[originalIndex];
+  const el = sectionRefs.current[rowIndex][sectionIndex];
+
   if (!el) {
     return {
       currentPageIndex,
@@ -66,31 +68,23 @@ export const paginateResumeSections = ({
     .reduce((total, subsection) => {
       return total + subsection.getBoundingClientRect().height;
     }, 0);
+
   const unrenderedSectionHight = sectionHeight - renderedSectionHight;
-  console.log("============START=================");
-  console.log("PAGE NUMBER-->>>", currentPageIndex + 1);
-  console.log("el --->>>", el);
-  console.log(
-    "el.getBoundingClientRect().height  --->>>",
-    el.getBoundingClientRect().height,
-  );
-  console.log("pageHight-->>>", pageHight);
-  console.log(" -------------------");
-  console.log("sectionHeight-->>>", sectionHeight);
-  console.log("renderedSectionHight-->>>", renderedSectionHight);
-  console.log(" -------------------");
-  console.log("Total unrenderedSectionHight-->>>", unrenderedSectionHight);
+
+  console.log("========START==============");
+  console.log("PAGE NUMBER ----->>>>", currentPageIndex + 1);
+  console.log("rowIndex ----->>>>", rowIndex);
+  console.log("sectionIndex ----->>>>", sectionIndex);
+  console.log("subSections -->>>", subSections);
+  console.log("sectionHeight -->>>", sectionHeight);
+  console.log("renderedSectionHight -->>>", renderedSectionHight);
+  console.log("unrenderedSectionHight -->>>", unrenderedSectionHight);
+
   // Make sure current page exists
   if (!pages[currentPageIndex]) {
     pages[currentPageIndex] = [];
   }
 
-  /*
-   * =====================================================
-   * CASE 1:
-   * Entire section fits on current page
-   * =====================================================
-   */
   if (currentHeight + unrenderedSectionHight <= pageHight) {
     pages[currentPageIndex].push({
       ...section,
@@ -102,15 +96,7 @@ export const paginateResumeSections = ({
     };
   }
 
-  /*
-   * =====================================================
-   * CASE 2:
-   * Section doesn't fit.
-   * Try to split using subsections.
-   * =====================================================
-   */
-
-  // const subSections = el.querySelectorAll(".subsection-card");
+  return;
 
   let totalSubSectionHeight = 0;
   let validItemIndex = 0;
@@ -122,10 +108,6 @@ export const paginateResumeSections = ({
 
     const nextHeight =
       currentHeight + totalSubSectionHeight + currentSubsectionHeight;
-    console.log("initSubSectionIndex->>", initSubSectionIndex);
-    console.log("index->>", index);
-    console.log("currentSubsectionHeight->>", currentSubsectionHeight);
-    console.log("nextHeight->>", nextHeight);
     if (nextHeight <= pageHight) {
       totalSubSectionHeight += currentSubsectionHeight;
       validItemIndex++;
@@ -156,13 +138,13 @@ export const paginateResumeSections = ({
       ...section,
       items: nextPageSubsections,
     };
-    console.log("currentHeight before recursion-->>>", currentHeight);
 
     // if (currentPageIndex < 5) {
     return paginateResumeSections({
       pageHight,
       section: nextSection,
-      originalIndex,
+      rowIndex,
+      sectionIndex,
       pages,
       currentPageIndex,
       currentHeight,

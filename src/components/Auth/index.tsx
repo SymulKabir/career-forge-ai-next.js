@@ -67,13 +67,7 @@ export default function AuthModal() {
       //     password: loginPassword,
       //     rememberMe: rememberLogin,
       //   }),
-      // });
-
-      console.log({
-        email: loginEmail,
-        password: loginPassword,
-        rememberMe: rememberLogin,
-      });
+      // }); 
     } finally {
       setIsSubmitting(false);
     }
@@ -110,14 +104,7 @@ export default function AuthModal() {
       //     rememberMe: rememberRegister,
       //   }),
       // });
-
-      console.log({
-        name,
-        email: registerEmail,
-        password: registerPassword,
-        confirmPassword,
-        rememberMe: rememberRegister,
-      });
+ 
     } finally {
       setIsSubmitting(false);
     }

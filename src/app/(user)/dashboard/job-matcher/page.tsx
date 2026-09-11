@@ -40,11 +40,7 @@ const Index = () => {
   const [jobType, setJobType] = useState("All job types");
 
   const handleSearch = () => {
-    console.log({
-      search,
-      location,
-      jobType,
-    });
+    
   };
 
   return (

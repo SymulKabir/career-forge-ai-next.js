@@ -11,83 +11,61 @@ import ResumeHeader from "./components/ResumeHeader";
 import { useInitResume } from "../../hooks";
 import { paginateResumeSections } from "./utils";
 
-
-
 const Index = () => {
   const { resumeData, setting, structuredResumeData } = useResumeContext();
-  useInitResume()
-  const sectionRefs = useRef<{
-    [key: number]: HTMLDivElement | null;
-  }>({});
+  useInitResume();
+
+  const sectionRefs = useRef({});
   const headerRef = useRef(null);
-  console.log("structuredResumeData -->>", structuredResumeData)
   const [paginatedPages, setPaginatedPages] = useState<any[][]>([[]]);
 
+  console.log("sectionRefs --->>>", sectionRefs.current);
   useLayoutEffect(() => {
-    if (!structuredResumeData?.sections?.length) return;
+    if (!structuredResumeData?.columns?.length) return;
 
     const pages: any[][] = [[]];
 
     let currentPageIndex = 0;
     let currentHeight = 0;
-    const state = {}
-
+    const state: any = {};
+    console.log("hello 1");
     const pageHight = setting.resumePageHeight - setting.margin.y * 2;
+    console.log("hello 2");
 
     const paginate = () => {
-      console.log("Rerender the editor");
-
-      for (const [originalIndex, row] of structuredResumeData.sections.entries()) {
-        console.log("originalIndex --->>", originalIndex)
-        console.log("row --->>", row)
-        console.log("row.columns.entries() --->>", Object.entries(row.columns))
-        if (!Object.entries(row.columns).length) return
-        for (const [rowIndex, section] of Object.entries(row.columns)) {
-          console.log("rowIndex -->>", rowIndex)
-          if (!state[rowIndex]) {
-            state[rowIndex] = {
-              currentPageIndex: 0,
-              currentHeight: 0
-            }
-          }
-          console.log("state -->>", state)
-
+      for (const [rowIndex, row] of structuredResumeData?.columns.entries()) {
+        console.log("rowIndex--->>>", rowIndex);
+        console.log("row--->>>", row);
+        if (!state[rowIndex]) {
+          state[rowIndex] = { currentPageIndex: 0, currentHeight: 0 };
+        }
+        for (const [sectionIndex, section] of row.entries()) {
+          console.log("sectionIndex ---->>>", sectionIndex);
+          console.log("section1 ---->>>", section);
           const result = paginateResumeSections({
             pageHight,
             section,
-            originalIndex,
+            rowIndex,
+            sectionIndex,
             pages,
             currentPageIndex: state[rowIndex].currentPageIndex,
             currentHeight: state[rowIndex].currentHeight,
             sectionRefs,
             headerRef,
           });
-          console.log("result --->>>>>", result)
-          state[rowIndex].currentPageIndex = result.currentPageIndex;
-          state[rowIndex].currentHeight = result.currentHeight;
+
+          // state[rowIndex].currentPageIndex = result.currentPageIndex;
+          // state[rowIndex].currentHeight = result.currentHeight;
         }
-
-        // return
-        // const result = paginateResumeSections({
-        //   pageHight,
-        //   section,
-        //   originalIndex,
-        //   pages,
-        //   currentPageIndex,
-        //   currentHeight,
-        //   sectionRefs,
-        //   headerRef,
-        // });
-
-        // currentPageIndex = result.currentPageIndex;
-        // currentHeight = result.currentHeight;
       }
-      console.log("pages =====>>>>", pages)
-      setPaginatedPages([...pages]);
+      console.log("pages =====>>>>", pages);
+      // setPaginatedPages([...pages]);
     };
-
-    requestAnimationFrame(paginate);
+    paginate();
+    // requestAnimationFrame(paginate);
   }, [structuredResumeData, setting]);
+
+  console.log("structuredResumeData --->>>>", structuredResumeData);
   return (
     <section
       className="resume-editor"
@@ -100,41 +78,43 @@ const Index = () => {
         } as React.CSSProperties
       }
     >
-      <div className="resume-main-editor-container not-visible">
+      <div className="resume-main-editor-container not-visible debugging">
         {" "}
         // use 'debugging' class to show the page
-        {[[...resumeData.sections]].map((pageSections, pageIndex) => {
-          return (
-            <PageMaker
-              key={pageIndex}
-              pageSections={pageSections}
-              pageIndex={pageIndex}
-              sectionRefs={sectionRefs}
-              headerRef={headerRef}
-              syncWithProp={true}
-            />
-          );
-        })}
+        {structuredResumeData?.columns?.length &&
+          [[...structuredResumeData.columns]].map((columns, pageIndex) => {
+            return (
+              <PageMaker
+                key={pageIndex}
+                columns={columns}
+                pageIndex={pageIndex}
+                sectionRefs={sectionRefs}
+                headerRef={headerRef}
+                syncWithProp={true}
+              />
+            );
+          })}
       </div>
 
       <div className="resume-main-editor-container">
-        {paginatedPages.map((pageSections, pageIndex) => {
-          return (
-            <PageMaker
-              key={pageIndex}
-              pageSections={pageSections}
-              pageIndex={pageIndex}
-              syncWithProp={true}
-            />
-          );
-        })}
+        {false &&
+          paginatedPages.map((pageSections, pageIndex) => {
+            return (
+              <PageMaker
+                key={pageIndex}
+                pageSections={pageSections}
+                pageIndex={pageIndex}
+                syncWithProp={true}
+              />
+            );
+          })}
       </div>
     </section>
   );
 };
 
 const PageMaker = ({
-  pageSections,
+  columns,
   pageIndex,
   sectionRefs,
   headerRef,
@@ -142,7 +122,6 @@ const PageMaker = ({
 }: any) => {
   const { setting } = useResumeContext();
   const metadata = setting?.sections?.metadata;
-  return null
   return (
     <>
       <style>
@@ -155,20 +134,13 @@ const PageMaker = ({
             line-height: ${metadata?.lineHeight ?? 1.4};
             letter-spacing: ${px(metadata?.letterSpacing ?? 0)};
             text-transform: ${metadata?.textTransform ?? "none"};
-            &.grid-2 {
+            &.gird-2{
               display: grid;
-              /* Defines the 70% (7fr) and 30% (3fr) proportions on the container tracks, with a 20px gap */
-              grid-template-columns: 7fr 3fr;
-              column-gap: 20px;
-              
-              /* Ensures items align to the top of their track without stretching */
-              align-items: start;
+              grid-template-columns: 1fr 40%;
+              gap: 20px;
 
-              /* Child items take natural/max content height without fixed widths */
-              & > * {
-                width: 100%;
-                height: max-content;
-              }
+            }
+            .body-item{
             }
           }
 
@@ -204,41 +176,49 @@ const PageMaker = ({
               <ResumeHeader />
             </div>
           )}
-          <div className="resume-body grid-21">
-            {pageSections.map((section: any, index: number) => {
-              console.log("section --------->>>>>", section)
-              const name = `sections.${section.positionIndex}`;
+          <div className="resume-body gird-2">
+            {columns.map((column: any, columnIndex: number) => {
+              console.log("columnIndex->>", columnIndex);
               return (
-                <div
-                  key={pageIndex + index}
-                  ref={
-                    sectionRefs
-                      ? (el) => {
-                        sectionRefs.current[section.positionIndex] = el;
-                      }
-                      : undefined
-                  }
-                  className="section-container section-styles active-focus"
-                >
-                  <SubSectionToolBar variant="section" />
+                <div className="body-item">
+                  {column.map((section: any, index: number) => {
+                    const name = `sections.${section.positionIndex}`;
 
-                  <SectionTitle name={`${name}.sectionTitle.content`} />
+                    return (
+                      <div
+                        key={pageIndex + columnIndex + index}
+                        ref={(el) => {
+                          sectionRefs.current[columnIndex] ??= {};
+                          console.log("el333---->>>>", el);
+                          if (el) {
+                            sectionRefs.current[columnIndex][index] = el;
+                          }  
+                          console.log("sectionRefs.current --->>>", sectionRefs.current)
+                        }}
+                        className="section-container section-styles active-focus"
+                      >
+                        <SubSectionToolBar variant="section" />
 
-                  {section.sectionLayout === "BulletsCard" && (
-                    <BulletsCard
-                      data={section}
-                      name={name}
-                      syncWithProp={syncWithProp}
-                    />
-                  )}
+                        <SectionTitle name={`${name}.sectionTitle.content`} />
 
-                  {section.sectionLayout === "DescriptionCard" && (
-                    <DescriptionCard
-                      data={section}
-                      name={name}
-                      syncWithProp={syncWithProp}
-                    />
-                  )}
+                        {section.sectionLayout === "BulletsCard" && (
+                          <BulletsCard
+                            data={section}
+                            name={name}
+                            syncWithProp={syncWithProp}
+                          />
+                        )}
+
+                        {section.sectionLayout === "DescriptionCard" && (
+                          <DescriptionCard
+                            data={section}
+                            name={name}
+                            syncWithProp={syncWithProp}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               );
             })}

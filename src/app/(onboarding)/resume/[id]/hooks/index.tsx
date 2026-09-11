@@ -34,13 +34,10 @@ export const useResume = () => {
 
     const keys = name.split(".");
     let current: any = resumeData;
-    console.log("name --->>>", name)
-    console.log("keys --->>>", keys)
     for (const key of keys) {
       if (current === null || current === undefined) {
         return "";
       }
-      console.log("current[key] --->>", current[key])
       current = current[key];
     }
 

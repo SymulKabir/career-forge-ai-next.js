@@ -9,8 +9,6 @@ import {
 
 const Index = ({ activeTool, setActiveTool }: any) => {
   const handleToolClick = (title: string) => {
-    console.log("Click ");
-    console.log("title ", title);
     setActiveTool(activeTool === title ? null : title);
   };
   const toolBoxToggle = ({ toolBox, childId }: any) => {
@@ -45,8 +43,6 @@ const Index = ({ activeTool, setActiveTool }: any) => {
     const actionGroup = activeBtn?.getAttribute("data-action-group");
     const childId = activeBtn?.getAttribute("data-child-id");
 
-    console.log("actionGroup -->>>", actionGroup)
-    console.log("childId -->>>", childId)
     setTimeout(() => {
       if (actionGroup === "ToolBox") {
         toolBoxToggle({ toolBox, childId });
@@ -79,12 +75,9 @@ const Index = ({ activeTool, setActiveTool }: any) => {
 
  
   useEffect(() => {
-    console.log("🔥 SUBSCRIBER FIRED");
-    console.log("activeTool -->", activeTool); 
     resetAllUi();
     if (!activeTool) return;
     makeToolActive(activeTool);
-    console.log("");
   }, [activeTool]);
 
   return {handleToolClick}
