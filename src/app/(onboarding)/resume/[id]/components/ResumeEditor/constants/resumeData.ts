@@ -46,7 +46,7 @@ export interface PersonalInfoData {
 }
 
 export interface StructuredResumeData {
-  personalInfo: PersonalInfoData;
+  header: PersonalInfoData;
   sections: ResumeSection[];
 }
 
@@ -54,7 +54,7 @@ export interface StructuredResumeData {
 // 2. Dummy Resume Data Object
 // ==========================================
 export const DUMMY_STRUCTURED_RESUME = {
-  personalInfo: {
+  header: {
     fullName: { content: "Symul Kabir", isVisible: true },
     headline: { content: "Junior CTO & Full Stack Developer", isVisible: true },
     email: { content: "saimonpranta@gmail.com", isVisible: true },
@@ -63,7 +63,7 @@ export const DUMMY_STRUCTURED_RESUME = {
     website: { content: "https://symulkabir.vercel.app", isVisible: true },
     github: { content: "https://symulkabir.vercel.app", isVisible: true },
     dob: { content: "07 May 1999", isVisible: true },
-    picture: { content: "07 May 1999", position: {zoom: 1, x: 0, y: 0 }, isVisible: true },
+    picture: { imgContent: "", position: {zoom: 1, x: 0, y: 0 }, isVisible: true },
   },
   sections: [
     {
@@ -73,6 +73,15 @@ export const DUMMY_STRUCTURED_RESUME = {
       sectionTitle: { content: "Experience", isVisible: true },
       items: [
         {
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: {
+              zoom: 1,
+              x: 0,
+              y: 0
+            }
+          },
           title: {
             content: "1 Junior CTO & Full Stack Developer",
             isVisible: true,
@@ -595,7 +604,138 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
         },
       ],
-    } 
+    },
+    {
+      column: 1,
+      sectionLayout: "TagCard",
+      sectionTitle: { content: "Skills", isVisible: true },
+      items: [
+        {
+          title: {
+            content: "AI & Machine Learning",
+            isVisible: true,
+          },
+          lists: {
+            content: [
+              "LangChain",
+              "RAG",
+              "LLM Integration",
+              "Agentic AI",
+              "OpenCV",
+              "Face Recognition",
+            ],
+            isVisible: true,
+          },
+        },
+        {
+          title: {
+            content: "DevOps & Cloud",
+            isVisible: true,
+          },
+          lists: {
+            content: [
+              "Docker",
+              "Kubernetes",
+              "Jenkins",
+              "Terraform",
+              "Ansible",
+              "AWS",
+              "Nginx",
+            ],
+            isVisible: true,
+          },
+        },
+        {
+          title: {
+            content: "Backend",
+            isVisible: true,
+          },
+          lists: {
+            content: [
+              "Node.js",
+              "Express.js",
+              "FastAPI",
+              "Flask",
+              "ASP.NET Core",
+              "Microservices",
+            ],
+            isVisible: true,
+          },
+        },
+      ],
+    },
+    {
+      column: 0,
+      position: 0,
+      sectionLayout: "BadgeTitleCard",
+      sectionTitle: { content: "BadgeTitleCard Data", isVisible: true },
+      items: [
+        {
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: {
+              zoom: 1,
+              x: 0,
+              y: 0
+            }
+          },
+          title: {
+            content: "1 Junior CTO & Full Stack Developer",
+            isVisible: true,
+          }, 
+          duration: {
+            content: {
+              from: "07/2023",
+              to: "Present",
+            },
+            isVisible: true,
+          },
+         
+          description: {
+            content:
+              "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
+            isVisible: true,
+          }, 
+        },
+        {
+          title: {
+            content: "2 MERN Stack Developer",
+            isVisible: true,
+          },  
+          duration: {
+            content: {
+              from: "07/2023",
+              to: "Present",
+            },
+            isVisible: true,
+          }, 
+          description: {
+            content:
+              "Developed full-stack web applications and scalable APIs using the MERN stack.",
+            isVisible: true,
+          }, 
+        },
+        {
+          title: {
+            content: "3 MERN Stack Developer",
+            isVisible: true,
+          }, 
+          duration: {
+            content: {
+              from: "07/2023",
+              to: "Present",
+            },
+            isVisible: true,
+          }, 
+          description: {
+            content:
+              "Developed full-stack web applications and scalable APIs using the MERN stack.",
+            isVisible: true,
+          }, 
+        }, 
+      ],
+    },
   ],
 };
  

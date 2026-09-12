@@ -1,8 +1,10 @@
 export const addPositionIndex = (data: any) => {
   if (Array.isArray(data)) {
-    return data.map((item, index) => {
+    return data.map((item: any, index: number) => {
       const updatedItem = addPositionIndex(item);
-
+      if (updatedItem === null || typeof updatedItem !== "object") {
+        return updatedItem;
+      }
       return {
         ...updatedItem,
         positionIndex: index,

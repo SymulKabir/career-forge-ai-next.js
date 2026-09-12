@@ -180,14 +180,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
                     name={`${name}.items.${item.positionIndex}.title.content`}
                   />
                 )}
-
-                {getValue(
-                  `${name}.items.${item.positionIndex}.subtitle.isVisible`,
-                ) && (
-                  <OrganizationTitle
-                    name={`${name}.items.${item.positionIndex}.subtitle.content`}
-                  />
-                )}
+ 
 
                 {/* Metadata */}
                 {(getValue(
@@ -221,54 +214,9 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
                       </div>
                     )}
 
-                    {getValue(
-                      `${name}.items.${item.positionIndex}.location.isVisible`,
-                    ) && (
-                      <div className="resume-metadata-item">
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg>
-                        <InputField
-                          tag="span"
-                          name={`${name}.items.${item.positionIndex}.location.content`}
-                        />
-                      </div>
-                    )}
+                     
                   </div>
-                )}
-
-                {/* Website Link */}
-                {getValue(
-                  `${name}.items.${item.positionIndex}.link.isVisible`,
-                ) && (
-                  <div>
-                    <span className="resume-link-text">
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                      </svg>
-                      <InputField
-                        tag="span"
-                        name={`${name}.items.${item.positionIndex}.link.content`}
-                      />
-                    </span>
-                  </div>
-                )}
+                )} 
 
                 {getValue(
                   `${name}.items.${item.positionIndex}.description.isVisible`,
@@ -278,16 +226,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
                     mode="description"
                     syncWithProp={syncWithProp}
                   />
-                )}
-                {getValue(
-                  `${name}.items.${item.positionIndex}.bullets.isVisible`,
-                ) && (
-                  <TextEditor
-                    name={`${name}.items.${item.positionIndex}.bullets.content`}
-                    mode="list"
-                    syncWithProp={syncWithProp}
-                  />
-                )}
+                )} 
               </div>
             </div>
           );

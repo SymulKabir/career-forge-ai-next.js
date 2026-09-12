@@ -2,16 +2,16 @@ import React, { useEffect } from "react";
 import { useResumeContext } from "../context/resume-editor-context";
 import { structuredResume } from "../utils/resume";
 
-
 export const useInitResume = () => {
-  const { resumeData, setStructuredResumeData } = useResumeContext()
+  const { resumeData, setStructuredResumeData } = useResumeContext();
   useEffect(() => {
-    if (!Object.keys({ ...(resumeData || {}).length })) return
-    setStructuredResumeData(structuredResume({ ...resumeData }))
-  }, [setStructuredResumeData, resumeData])
-}
+    if (!Object.keys({ ...(resumeData || {}).length })) return;
+    setStructuredResumeData(structuredResume({ ...resumeData }));
+  }, [setStructuredResumeData, resumeData]);
+};
 export const useResume = () => {
-  const { resumeData, setResumeData, setSetting, setToolBar } = useResumeContext();
+  const { resumeData, setResumeData, setSetting, setToolBar } =
+    useResumeContext();
   const updateNestedState = (
     obj: any,
     pathKeys: string[],
@@ -80,6 +80,28 @@ export const useResume = () => {
     };
     setResumeData((prevData) => updateNestedState(prevData, keys, value));
   };
+  const updateResume = ({ propertyPath, value }: any) => {
+    if (!propertyPath) return;
+
+    const keys = propertyPath.split(".");
+
+    // Helper to immutably update nested objects and arrays
+    const updateNestedState = (
+      obj: any,
+      pathKeys: string[],
+      newValue: any,
+    ): any => {
+      if (pathKeys.length === 0) return newValue;
+
+      const [head, ...tail] = pathKeys;
+      const isArray = Array.isArray(obj);
+      const copy = isArray ? [...obj] : { ...obj };
+
+      copy[head] = updateNestedState(copy[head], tail, newValue);
+      return copy;
+    };
+    setResumeData((prevData: any) => updateNestedState(prevData, keys, value));
+  };
   const handleSettingChange = ({
     propertyPath,
     value,
@@ -115,6 +137,6 @@ export const useResume = () => {
     handleResumeChange,
     handleSettingChange,
     handleToolbarChange,
+    updateResume,
   };
 };
-

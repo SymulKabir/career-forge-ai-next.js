@@ -3,6 +3,8 @@ import "./style.scss";
 import { RESUME_CONSTANTS } from "../../constants/resume-utils";
 import BulletsCard from "./components/BulletsCard";
 import DescriptionCard from "./components/DescriptionCard";
+import BadgeTitleCard from "./components/BadgeTitleCard";
+import TagCard from "./components/TagCard";
 import { useResumeContext } from "../../context/resume-editor-context";
 import SubSectionToolBar from "./components/SubSectionToolBar";
 import SectionTitle from "./components/SectionTitle";
@@ -53,12 +55,10 @@ const Index = () => {
           state[rowIndex].currentPageIndex = result.currentPageIndex;
           state[rowIndex].currentHeight = result.currentHeight;
         }
-      }
-      console.log("pages ---->>>>", pages);
+      } 
       setLayoutResumeData((state: any) => {
         return { ...state, pages: pages };
-      });
-      // setPaginatedPages([...pages]);
+      }); 
     };
     requestAnimationFrame(paginate);
   }, [structuredResumeData, setting]);
@@ -191,7 +191,7 @@ const PageMaker = ({
                         }}
                         className="section-container section-styles active-focus"
                       >
-                        <SubSectionToolBar variant="section" />
+                        <SubSectionToolBar variant="section" propertyPath={`${name}`} />
 
                         <SectionTitle name={`${name}.sectionTitle.content`} />
 
@@ -205,6 +205,20 @@ const PageMaker = ({
 
                         {section.sectionLayout === "DescriptionCard" && (
                           <DescriptionCard
+                            data={section}
+                            name={name}
+                            syncWithProp={syncWithProp}
+                          />
+                        )}
+                        {section.sectionLayout === "TagCard" && (
+                          <TagCard
+                            data={section}
+                            name={name}
+                            syncWithProp={syncWithProp}
+                          />
+                        )}
+                        {section.sectionLayout === "BadgeTitleCard" && (
+                          <BadgeTitleCard
                             data={section}
                             name={name}
                             syncWithProp={syncWithProp}

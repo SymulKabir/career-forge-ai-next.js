@@ -34,7 +34,7 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
   });
   const [toolBar, setToolBar] = useState<typeof TOOLBAR>({
     ...TOOLBAR,
-  });
+  }); 
   const [resumeData, setResumeData] = useState({
     ...addPositionIndex(DUMMY_STRUCTURED_RESUME),
   });
