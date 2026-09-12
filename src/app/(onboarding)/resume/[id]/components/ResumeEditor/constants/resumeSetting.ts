@@ -28,6 +28,24 @@ export const RESUME_SETTING = {
     paddingBottom: 20,
   },
   sections: {
+    image: {
+      enabled: true,
+      size: 40,
+      backgroundColor: "#f3f4f6",
+      borderColor: "#e5e7eb",
+      borderWidth: 1,
+      borderRadius: 6,
+      padding: 4,
+    },
+    icons: {
+      enabled: true,
+      size: 16,
+      color: "#4b5563",
+      backgroundColor: "#f3f4f6",
+      borderColor: "#e5e7eb",
+      borderWidth: 1,
+      borderRadius: 6,
+    },
     sectionTitle: {
       enabled: true,
       fontSize: 18,
@@ -175,6 +193,6 @@ export const TOOLBAR = {
     marginFont: false,
     header: true,
     section: true,
-    stylingLayout: true, 
-  } 
+    stylingLayout: true,
+  }
 };

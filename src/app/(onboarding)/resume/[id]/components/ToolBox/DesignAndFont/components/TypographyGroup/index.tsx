@@ -93,23 +93,12 @@ const Index = ({
             <h4 className="truncate text-xs font-semibold text-slate-800">
               {title}
             </h4>
-
-            {safeConfig.enabled && (
-              <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-violet-700">
-                On
-              </span>
-            )}
           </div>
 
           <p className="mt-0.5 truncate text-[10px] text-slate-400">
             {description}
           </p>
         </div>
-
-        <Toggle
-          checked={safeConfig.enabled}
-          onChange={(value) => change("enabled", value)}
-        />
       </div>
 
       {/* GROUP CONTROLS */}

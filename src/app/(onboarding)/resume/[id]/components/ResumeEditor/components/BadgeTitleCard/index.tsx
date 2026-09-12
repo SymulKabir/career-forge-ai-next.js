@@ -6,10 +6,9 @@ import TextEditor from "../TextEditor";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import { useResume } from "../../../../hooks/index";
 import SubSectionTitle from "../SubSectionTitle";
-import OrganizationTitle from "../OrganizationTitle";
 import SubSectionToolBar from "../SubSectionToolBar";
 import useEditor from "../../hooks/useEditor";
-import ImgPreview from "../../ImgPreview";
+import IconPreview from "../../IconPreview";
 
 interface ExperienceProps {
   data?: any;
@@ -27,7 +26,7 @@ const px = (value?: number | string) => {
 const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
-  const { getResumeValue, updateResume } = useResume();
+  const { getResumeValue } = useResume();
   const { textStyles, colors } = setting || {};
   const sectionTitle = textStyles?.sectionTitle;
   const body = textStyles?.body;
@@ -36,12 +35,12 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
   const resumeBorder = colors?.border || "#1a202c";
   const logoBackground = colors?.companyLogoBackground || "#edf2f7";
   const gapValue = px(setting?.gap);
- 
+
 
   return (
     <>
       <style>{`
-        .milestone-container {
+        .badge-title-container {
             .section-header-wrapper {
               padding-bottom: 3px;
               margin-bottom: 5px;
@@ -67,16 +66,12 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
               box-sizing: border-box;
               gap: ${gapValue};
             }
-            .organization-logo-box {
-              flex-shrink: 0;
-              width: 35px;
-              height: 35px;
+            .subtitle-icon-box {
+              flex-shrink: 0; 
               border-radius: 8px;
               display: flex;
-              align-items: center;
+              align-items: start;
               justify-content: center;
-              background: ${logoBackground};
-              color: ${metadata?.color || "#6b7280"};
             }
             .experience-content {
               flex-grow: 1;
@@ -129,7 +124,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
          
       `}</style>
 
-      <div className="milestone-container">
+      <div className="badge-title-container">
         {(data?.items || []).map((item: any, itemIndex: number) => {
           const isVisible = getResumeValue(
             `${name}.items.${item.positionIndex}.orgImg.isVisible`,
@@ -144,43 +139,23 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
                 variant="subsection"
                 propertyPath={`${name}.items.${item.positionIndex}`}
               />
-              {isVisible && (
-                <div className="organization-logo-box">
-                  <ImgPreview
-                    rootPath={`${name}.items.${item.positionIndex}.orgImg`}
-                    placeholder={`
-                            <svg
-                            width="22"
-                            height="22"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                          </svg>
-                      `}
-                    styles={{
-                      size: px(25),
-                      radius: "3px",
-                    }}
-                    hide={{ visible: true }}
-                  />
-                </div>
-              )}
+              {/* {isVisible && ( */}
+              <div className="subtitle-icon-box">
+                <IconPreview
+                  rootPath={`${name}.items.${item.positionIndex}.orgImg`}
+                />
+              </div>
+              {/* )} */}
 
               <div className="experience-content">
                 {getValue(
                   `${name}.items.${item.positionIndex}.title.isVisible`,
                 ) && (
-                  <SubSectionTitle
-                    name={`${name}.items.${item.positionIndex}.title.content`}
-                  />
-                )}
- 
+                    <SubSectionTitle
+                      name={`${name}.items.${item.positionIndex}.title.content`}
+                    />
+                  )}
+
 
                 {/* Metadata */}
                 {(getValue(
@@ -189,44 +164,44 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
                   getValue(
                     `${name}.items.${item.positionIndex}.location.isVisible`,
                   )) && (
-                  <div className="metadata-row">
-                    {getValue(
-                      `${name}.items.${item.positionIndex}.duration.isVisible`,
-                    ) && (
-                      <div className="resume-metadata-item">
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <rect x="3" y="4" width="18" height="18" rx="2" />
-                          <line x1="16" y1="2" x2="16" y2="6" />
-                          <line x1="8" y1="2" x2="8" y2="6" />
-                          <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                        <InputField
-                          tag="span"
-                          name={`${name}.items.${item.positionIndex}.duration.content.from`}
-                        />
-                      </div>
-                    )}
+                    <div className="metadata-row">
+                      {getValue(
+                        `${name}.items.${item.positionIndex}.duration.isVisible`,
+                      ) && (
+                          <div className="resume-metadata-item">
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <rect x="3" y="4" width="18" height="18" rx="2" />
+                              <line x1="16" y1="2" x2="16" y2="6" />
+                              <line x1="8" y1="2" x2="8" y2="6" />
+                              <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                            <InputField
+                              tag="span"
+                              name={`${name}.items.${item.positionIndex}.duration.content.from`}
+                            />
+                          </div>
+                        )}
 
-                     
-                  </div>
-                )} 
+
+                    </div>
+                  )}
 
                 {getValue(
                   `${name}.items.${item.positionIndex}.description.isVisible`,
                 ) && (
-                  <TextEditor
-                    name={`${name}.items.${item.positionIndex}.description.content`}
-                    mode="description"
-                    syncWithProp={syncWithProp}
-                  />
-                )} 
+                    <TextEditor
+                      name={`${name}.items.${item.positionIndex}.description.content`}
+                      mode="description"
+                      syncWithProp={syncWithProp}
+                    />
+                  )}
               </div>
             </div>
           );

@@ -6,22 +6,26 @@ import { useResume } from "../../../hooks";
 
 type ImgPreviewProps = {
   rootPath: string;
-  placeholder?: string; 
+  placeholder?: string;
   hide?: {
     upload?: boolean;
     visible?: boolean;
-  };  
+  };
   styles: {
     size?: string;
     radius?: string;
-  };  
+    backgroundColor?: string;
+    borderColor?: string;
+    borderWidth?: string;
+    padding?: string;
+  };
 };
 
-const ImgPreview: React.FC<ImgPreviewProps> = ({ 
+const ImgPreview: React.FC<ImgPreviewProps> = ({
   rootPath,
-  placeholder, 
+  placeholder,
   styles,
-  hide, 
+  hide,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -99,7 +103,7 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
       value: !getResumeValue(visiblePath)
     });
   };
- 
+
   return (
     <>
       <style>{`
@@ -298,12 +302,21 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
 
       {/* Profile Image Container */}
       <div className="preview-img-container">
+
         <div
-          className="img-inner-container"
-          style={{
-            height: styles.size,
-            width: styles.size,
-            borderRadius: styles.radius,
+        className="img-inner-container"
+         style={{
+            width: styles?.size ?? "40px",
+            height: styles?.size ?? "40px",
+            borderRadius: styles?.radius ?? "6px",
+            backgroundColor:
+              styles?.backgroundColor ?? "#f3f4f6",
+            borderColor:
+              styles?.borderColor ?? "#e5e7eb",
+            borderWidth:
+              styles?.borderWidth ?? "1px",
+            padding:
+              styles?.padding ?? "0px",
           }}
         >
           {imgContent ? (
@@ -351,75 +364,77 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
             </button>
           )}
         </div>
-      </div>
+      </div >
 
       {/* Adjustment Modal */}
-      {isModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Adjust Image</h3>
-              <button
-                type="button"
-                className="close-modal-btn"
-                onClick={() => setIsModalOpen(false)}
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="modal-body">
-              <div
-                className="modal-preview-container"
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-              >
-                {selectedImage && (
-                  <img
-                    src={selectedImage}
-                    alt="Preview"
-                    className="modal-preview-img"
-                    draggable={false}
-                  />
-                )}
+      {
+        isModalOpen && (
+          <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>Adjust Image</h3>
+                <button
+                  type="button"
+                  className="close-modal-btn"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  <X size={18} />
+                </button>
               </div>
-              <p
-                style={{ fontSize: "12px", color: "#666", margin: "0 0 8px 0" }}
-              >
-                Drag image to reposition, use slider to zoom
-              </p>
-              <input
-                type="range"
-                min="0.5"
-                max="3"
-                step="0.05"
-                value={zoom}
-                onChange={(e) => setZoom(parseFloat(e.target.value))}
-                className="zoom-slider"
-              />
-            </div>
 
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="modal-btn btn-secondary"
-                onClick={() => setIsModalOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="modal-btn btn-primary"
-                onClick={handleSaveImage}
-              >
-                Save Picture
-              </button>
+              <div className="modal-body">
+                <div
+                  className="modal-preview-container"
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
+                >
+                  {selectedImage && (
+                    <img
+                      src={selectedImage}
+                      alt="Preview"
+                      className="modal-preview-img"
+                      draggable={false}
+                    />
+                  )}
+                </div>
+                <p
+                  style={{ fontSize: "12px", color: "#666", margin: "0 0 8px 0" }}
+                >
+                  Drag image to reposition, use slider to zoom
+                </p>
+                <input
+                  type="range"
+                  min="0.5"
+                  max="3"
+                  step="0.05"
+                  value={zoom}
+                  onChange={(e) => setZoom(parseFloat(e.target.value))}
+                  className="zoom-slider"
+                />
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="modal-btn btn-secondary"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="modal-btn btn-primary"
+                  onClick={handleSaveImage}
+                >
+                  Save Picture
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
     </>
   );
 };
