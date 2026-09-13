@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React  from "react";
 import useEditor from "../../hooks/useEditor";
+import {getResumeFormat} from "../../../../utils/resume"
 
 // ==========================================
 // REUSABLE EDITABLE TEXT COMPONENT
@@ -8,18 +9,20 @@ interface EditableTextProps {
   tag?: any;
   name?: string;
   className?: string;
-  placeholder?: string; // 1. Added placeholder prop
+  placeholderPath?: string; 
 }
 
 const Index: React.FC<EditableTextProps> = ({
   tag = "span",
   name,
   className,
-  placeholder = "Type here...", // Default placeholder text
+  placeholderPath 
 }) => {
   const { getValue } = useEditor();
   const Component = tag as any;
-
+  const placeholder = getResumeFormat(placeholderPath) || "Typing here..."
+console.log("placeholderPath --->>>", placeholderPath)
+console.log("placeholder --->>>", placeholder)
   return (
     <>
       <style>

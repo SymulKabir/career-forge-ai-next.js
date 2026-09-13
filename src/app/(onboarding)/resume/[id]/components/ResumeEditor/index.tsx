@@ -11,7 +11,7 @@ import SubSectionToolBar from "./components/SubSectionToolBar";
 import SectionTitle from "./components/SectionTitle";
 import { px } from "./utils/resumeEditor";
 import ResumeHeader from "./components/ResumeHeader";
-import { useInitResume } from "../../hooks";
+import { useInitResume, useResume } from "../../hooks";
 import { paginateResumeSections } from "./utils";
 
 const Index = () => {
@@ -120,12 +120,98 @@ const PageMaker = ({
   syncWithProp,
 }: any) => {
   const { setting } = useResumeContext();
+  const { handleSettingChange, getSettingValue } = useResume()
   const metadata = setting?.sections?.metadata;
   const [toolsConfig, setToolsConfig] = useState({
     entry: {},
     delete: {},
     rearrange: {},
-    setting: {},
+    setting: {
+      dropdownList: [
+        {
+          label: "Uppercase",
+          value: "uppercase",
+          active: getSettingValue("sections.sectionTitle.textTransform") === "uppercase",
+          action: (obj: any) => {
+            handleSettingChange({
+              propertyPath: "sections.sectionTitle.textTransform",
+              value: obj.value
+            })
+            setToolsConfig((state) => {
+              const setting = state.setting.map((item: any, index: number) => {
+                if (index === obj.index) {
+                  item["active"] = true
+                }
+                return {...item}
+              })
+              return { ...state, setting }
+            })
+          }
+        },
+        {
+          label: "Lowercase",
+          value: "lowercase",
+          active: getSettingValue("sections.sectionTitle.textTransform") === "lowercase",
+          action: (obj: any) => {
+            handleSettingChange({
+              propertyPath: "sections.sectionTitle.textTransform",
+              value: obj.value
+            })
+            setToolsConfig((state) => {
+              const setting = state.setting.map((item: any, index: number) => {
+                if (index === obj.index) {
+                  item["active"] = true
+                }
+                return {...item}
+              })
+              return { ...state, setting }
+            })
+          }
+        },
+        {
+          label: "Capitalize",
+          value: "capitalize",
+          active: getSettingValue("sections.sectionTitle.textTransform") === "capitalize",
+          action: (obj: any) => {
+            handleSettingChange({
+              propertyPath: "sections.sectionTitle.textTransform",
+              value: obj.value
+            })
+            setToolsConfig((state) => {
+              const setting = state.setting.map((item: any, index: number) => {
+                if (index === obj.index) {
+                  item["active"] = true
+                }
+                return {...item}
+              })
+              return { ...state, setting }
+            })
+          }
+
+        },
+        {
+          label: "None",
+          value: "none",
+          active: getSettingValue("sections.sectionTitle.textTransform") === "none",
+          action: (obj: any) => {
+            handleSettingChange({
+              propertyPath: "sections.sectionTitle.textTransform",
+              value: obj.value
+            })
+            setToolsConfig((state) => {
+              const setting = state.setting.map((item: any, index: number) => {
+                if (index === obj.index) {
+                  item["active"] = true
+                }
+                return {...item}
+              })
+              return { ...state, setting }
+            })
+          }
+
+        },
+      ]
+    },
   });
   return (
     <>
@@ -190,6 +276,7 @@ const PageMaker = ({
                     console.log("index--->>>", index);
                     console.log("section--->>>", section);
                     console.log("name224 ---->>>", name)
+                    if (!section.isVisible) return null
                     return (
                       <div
                         key={pageIndex + columnIndex + index}
@@ -210,7 +297,7 @@ const PageMaker = ({
                           format={section.format}
                         />
 
-                        <SectionTitle name={`${name}.sectionTitle.content`} />
+                        <SectionTitle name={`${name}.sectionTitle.content`} placeholderPath={`${section.format}.sectionTitle.placeholder`} />
 
                         {section.sectionLayout === "BulletsCard" && (
                           <BulletsCard

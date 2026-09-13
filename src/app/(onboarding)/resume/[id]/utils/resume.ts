@@ -1,3 +1,5 @@
+import { RESUME_FORMAT } from "../components/ResumeEditor/constants/resumeForma";
+
  
 
 const formatSections = (sections:any) => {
@@ -15,3 +17,19 @@ export const structuredResume = (data: any) => ({
   sections: null,
   columns: formatSections(data.sections),
 });
+
+
+export const getResumeFormat = (name: string): any => {
+    if (!name) return "";
+
+    const keys = name.split(".");
+    let current: any = RESUME_FORMAT;
+    for (const key of keys) {
+      if (current === null || current === undefined) {
+        return "";
+      }
+      current = current[key];
+    }
+
+    return current ?? "";
+  };

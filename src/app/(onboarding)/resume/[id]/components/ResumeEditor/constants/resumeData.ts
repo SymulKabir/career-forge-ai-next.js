@@ -74,6 +74,7 @@ export const DUMMY_STRUCTURED_RESUME = {
     {
       column: 0,
       position: 0,
+      isVisible: true,
       sectionLayout: "BulletsCard",
       format:"professionalExperience",
       sectionTitle: { content: "Professional Experience", isVisible: true },
@@ -174,6 +175,7 @@ export const DUMMY_STRUCTURED_RESUME = {
     {
       column: 0,
       position: 1,
+      isVisible: true,
       sectionLayout: "summary",
       format:"professionalExperience",
       sectionTitle: { content: "Summary", isVisible: true },
@@ -190,6 +192,7 @@ export const DUMMY_STRUCTURED_RESUME = {
     {
       column: 1,
       position: 0,
+      isVisible: true,
       sectionLayout: "TagCard",
       format:"skills",
       sectionTitle: { content: "Technical Skills", isVisible: true },
@@ -251,6 +254,7 @@ export const DUMMY_STRUCTURED_RESUME = {
     {
       column: 1,
       position: 1,
+      isVisible: true,
       sectionLayout: "BadgeTitleCard",
       format:"education",
       sectionTitle: { content: "Education & Qualifications", isVisible: true },
@@ -301,6 +305,7 @@ export const DUMMY_STRUCTURED_RESUME = {
     {
       column: 1,
       position: 2,
+      isVisible: true,
       sectionLayout: "LinkCard",
       format:"socialLinks",
       sectionTitle: { content: "Find Me Online", isVisible: true },

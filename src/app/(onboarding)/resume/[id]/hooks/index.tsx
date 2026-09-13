@@ -11,7 +11,7 @@ export const useInitResume = () => {
   }, [setStructuredResumeData, resumeData]);
 };
 export const useResume = () => {
-  const { resumeData, setResumeData, setSetting, setToolBar } =
+  const { resumeData, setResumeData, setting, setSetting, setToolBar } =
     useResumeContext();
   const updateNestedState = (
     obj: any,
@@ -103,7 +103,7 @@ export const useResume = () => {
     };
     setResumeData((prevData: any) => updateNestedState(prevData, keys, value));
   };
-  const addResumeListItem = (pathLocation, newData, targetIndex = null) => {
+  const addResumeListItem = (pathLocation:string, newData:any, targetIndex:number | null = null) => {
     if (!pathLocation) return;
 
     const keys = pathLocation.split(".");
@@ -141,6 +141,20 @@ export const useResume = () => {
       return { ...addPositionIndex(listUpdateData) };
     });
   };
+   const getSettingValue = (name: string): any => {
+    if (!name) return "";
+
+    const keys = name.split(".");
+    let current: any = setting
+    for (const key of keys) {
+      if (current === null || current === undefined) {
+        return "";
+      }
+      current = current[key];
+    }
+
+    return current ?? "";
+  };
   const handleSettingChange = ({
     propertyPath,
     value,
@@ -148,6 +162,9 @@ export const useResume = () => {
     propertyPath: string;
     value: any;
   }) => {
+    console.log("Hell77 click")
+    console.log("propertyPath-->>", propertyPath)
+    console.log("value-->>", value)
     if (!propertyPath) return;
 
     const keys = propertyPath.split(".");
@@ -181,5 +198,8 @@ export const useResume = () => {
     handleToolbarChange,
     updateResume,
     addResumeListItem,
+    getSettingValue
   };
 };
+
+ 

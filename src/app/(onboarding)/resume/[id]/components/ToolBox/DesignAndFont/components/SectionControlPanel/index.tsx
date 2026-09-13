@@ -17,11 +17,6 @@ const Index = () => {
   const iconSettings = setting?.sections?.icons;
   const imageSettings = setting?.sections?.image;
 
-  /*
-   * =========================================
-   * TOGGLE ENABLED STATE
-   * =========================================
-   */
 
   const handleToggle = (
     propertyPath: string,
@@ -33,11 +28,6 @@ const Index = () => {
     });
   };
 
-  /*
-   * =========================================
-   * TYPOGRAPHY CARD
-   * =========================================
-   */
 
   const TypographyCard = ({
     title,
@@ -60,9 +50,6 @@ const Index = () => {
 
     return (
       <div className="rounded-lg border border-slate-100 bg-slate-50 p-2.5">
-        {/* =========================================
-            CARD HEADER
-        ========================================= */}
 
         <div className="mb-2.5 flex items-center justify-between">
           <div>

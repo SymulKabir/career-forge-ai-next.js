@@ -16,12 +16,14 @@ import {
   ListOrdered,
 } from "lucide-react";
 import useEditor from "../../hooks/useEditor";
+import { getResumeFormat } from "../../../../utils/resume";
 
 interface EditableTextProps {
   name?: string;
   className?: string;
   mode?: "free" | "description" | "list";
   syncWithProp?: boolean; // Controls if it should force update when external data changes
+  placeholderPath?:string;
 }
 
 const Index: React.FC<EditableTextProps> = ({
@@ -29,6 +31,7 @@ const Index: React.FC<EditableTextProps> = ({
   className,
   mode = "free",
   syncWithProp = false, // Defaults to false to protect cursor position during active typing
+  placeholderPath,
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [charCount, setCharCount] = useState<number>(0);
@@ -46,6 +49,7 @@ const Index: React.FC<EditableTextProps> = ({
   });
 
   const { getValue, handleInputChange } = useEditor();
+  const placeholder = getResumeFormat(placeholderPath) || "Type here..."
 
   // Control default value assignment & conditional re-rendering update
   useLayoutEffect(() => { 
@@ -295,6 +299,7 @@ const Index: React.FC<EditableTextProps> = ({
             ref={editorRef}
             name={`${name}`}
             data-name={name}
+            data-placeholder={placeholder}
             datatype="htmlEditor"
             className={`editor-content h-max min-h-[5px] text-[15px] leading-[1.6] text-[#2d3748] outline-none overflow-y-auto ${className || ""}`}
             contentEditable
@@ -314,6 +319,15 @@ const Index: React.FC<EditableTextProps> = ({
 
       {/* Embedded Component Styles */}
       <style jsx>{`
+        .editor-content:empty::before {
+          content: attr(data-placeholder);
+          color: #94a3b8;
+          pointer-events: none;
+        }
+
+        .editor-content:focus:empty::before {
+          color: #cbd5e1;
+        }
         .editor-content :global(ul) {
           list-style-type: disc !important;
           padding-left: 22px;

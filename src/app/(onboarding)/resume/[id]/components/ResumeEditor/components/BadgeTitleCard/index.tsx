@@ -37,6 +37,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
   const gapValue = px(setting?.gap);
 
 
+
   return (
     <>
       <style>{`

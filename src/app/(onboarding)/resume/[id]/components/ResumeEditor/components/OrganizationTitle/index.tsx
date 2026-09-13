@@ -3,7 +3,7 @@ import InputField from "../InputField";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import { px } from "../../utils/resumeEditor";
 
-const Index = ({ name }) => {
+const Index = ({ name, placeholderPath }:any) => {
   const { setting } = useResumeContext();
 
   const config = setting?.sections?.organizationTitle;
@@ -31,6 +31,7 @@ const Index = ({ name }) => {
         tag="h3"
         className="organization-title avoid-default"
         name={name}
+        placeholderPath={placeholderPath}
       />
     </>
   );
