@@ -22,11 +22,10 @@ const Index = () => {
   const handleInputChange = async (e: any) => {
     const name = e.currentTarget.getAttribute("name") || e.target?.name;
     const type = e.currentTarget.getAttribute("datatype") || e.target?.datatype;
-    // Supports both standard input/textarea (.value) and contenteditable divs (.textContent)
     let value: any = "";
     if (type === "boolean") {
       const currentValue = e.currentTarget.value;
-      value = currentValue === "true" ? true : false; 
+      value = currentValue === "true" ? true : false;
     } else if (type === "htmlEditor") {
       value = e.target.innerHTML;
     } else {

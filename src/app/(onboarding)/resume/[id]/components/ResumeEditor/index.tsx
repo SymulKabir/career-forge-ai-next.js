@@ -4,6 +4,7 @@ import { RESUME_CONSTANTS } from "../../constants/resume-utils";
 import BulletsCard from "./components/BulletsCard";
 import DescriptionCard from "./components/DescriptionCard";
 import BadgeTitleCard from "./components/BadgeTitleCard";
+import LinkCard from "./components/LinkCard";
 import TagCard from "./components/TagCard";
 import { useResumeContext } from "../../context/resume-editor-context";
 import SubSectionToolBar from "./components/SubSectionToolBar";
@@ -21,9 +22,8 @@ const Index = () => {
     setLayoutResumeData,
   } = useResumeContext();
   useInitResume();
-
   const sectionRefs = useRef({});
-  const headerRef = useRef(null); 
+  const headerRef = useRef(null);
 
   useLayoutEffect(() => {
     setLayoutResumeData((state: any) => {
@@ -55,10 +55,13 @@ const Index = () => {
           state[rowIndex].currentPageIndex = result.currentPageIndex;
           state[rowIndex].currentHeight = result.currentHeight;
         }
-      } 
+      }
+
+      console.log("pages--->>>>", pages);
+
       setLayoutResumeData((state: any) => {
         return { ...state, pages: pages };
-      }); 
+      });
     };
     requestAnimationFrame(paginate);
   }, [structuredResumeData, setting]);
@@ -118,6 +121,12 @@ const PageMaker = ({
 }: any) => {
   const { setting } = useResumeContext();
   const metadata = setting?.sections?.metadata;
+  const [toolsConfig, setToolsConfig] = useState({
+    entry: {},
+    delete: {},
+    rearrange: {},
+    setting: {},
+  });
   return (
     <>
       <style>
@@ -178,7 +187,9 @@ const PageMaker = ({
                 <div key={columnIndex} className="body-item">
                   {column.map((section: any, index: number) => {
                     const name = `sections.${section.positionIndex}`;
-
+                    console.log("index--->>>", index);
+                    console.log("section--->>>", section);
+                    console.log("name224 ---->>>", name)
                     return (
                       <div
                         key={pageIndex + columnIndex + index}
@@ -191,7 +202,13 @@ const PageMaker = ({
                         }}
                         className="section-container section-styles active-focus"
                       >
-                        <SubSectionToolBar variant="section" propertyPath={`${name}`} />
+                        <SubSectionToolBar
+                          variant="section"
+                          propertyPath={`${name}`}
+                          tools={toolsConfig}
+                          layoutType={section.sectionLayout}
+                          format={section.format}
+                        />
 
                         <SectionTitle name={`${name}.sectionTitle.content`} />
 
@@ -219,6 +236,13 @@ const PageMaker = ({
                         )}
                         {section.sectionLayout === "BadgeTitleCard" && (
                           <BadgeTitleCard
+                            data={section}
+                            name={name}
+                            syncWithProp={syncWithProp}
+                          />
+                        )}
+                        {section.sectionLayout === "LinkCard" && (
+                          <LinkCard
                             data={section}
                             name={name}
                             syncWithProp={syncWithProp}

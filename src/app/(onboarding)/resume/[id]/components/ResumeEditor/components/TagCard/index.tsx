@@ -125,7 +125,6 @@ const SkillsCard: React.FC<SkillsProps> = ({ data, name, syncWithProp }) => {
           const itemPath = `${name}.items.${item.positionIndex ?? itemIndex}`;
           const isTitleVisible = getValue(`${itemPath}.title.isVisible`);
           const listContent = getResumeValue(`${itemPath}.lists.content`) || [];
-          console.log("listContent --->>>", listContent);
           return (
             <div
               key={itemIndex}

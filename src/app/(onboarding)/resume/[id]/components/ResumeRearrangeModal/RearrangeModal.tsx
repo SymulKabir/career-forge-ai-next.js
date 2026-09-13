@@ -33,7 +33,6 @@ const RearrangeModal = ({
   const [draggedSection, setDraggedSection] = useState<DraggedSection | null>(null);
   const [dropTarget, setDropTarget] = useState<DropTarget | null>(null);
 
-  console.log("draggedSection ------->>>>", draggedSection)
   // Consider pageHeight as 100% (fallback to 1000px if not defined in settings)
   const totalPageHeight = setting?.resumePageHeight || 1000;
 

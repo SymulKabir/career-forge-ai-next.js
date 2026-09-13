@@ -41,9 +41,6 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
   const isVisible = getResumeValue(visiblePath);
   const imgContent = getResumeValue(imgContentPath);
   const position = getResumeValue(positionPath);
-  console.log("isVisible ------->>>>", isVisible)
-  console.log("imgContent ------->>>>", imgContent)
-  console.log("position ------->>>>", position)
   if (!isVisible) return null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

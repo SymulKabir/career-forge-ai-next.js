@@ -53,7 +53,309 @@ export interface StructuredResumeData {
 // ==========================================
 // 2. Dummy Resume Data Object
 // ==========================================
+
 export const DUMMY_STRUCTURED_RESUME = {
+  header: {
+    fullName: { content: "Symul Kabir", isVisible: true },
+    headline: { content: "Junior CTO & Full Stack Developer", isVisible: true },
+    email: { content: "saimonpranta@gmail.com", isVisible: true },
+    phone: { content: "+8801881476432", isVisible: true },
+    location: { content: "Khilkhet, Dhaka", isVisible: true },
+    website: { content: "https://symulkabir.vercel.app", isVisible: true },
+    github: { content: "https://github.com/saimonpranta", isVisible: true },
+    dob: { content: "07 May 1999", isVisible: true },
+    picture: {
+      imgContent: "",
+      position: { zoom: 1, x: 0, y: 0 },
+      isVisible: true,
+    },
+  },
+  sections: [
+    {
+      column: 0,
+      position: 0,
+      sectionLayout: "BulletsCard",
+      format:"professionalExperience",
+      sectionTitle: { content: "Professional Experience", isVisible: true },
+      items: [
+        {
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: { zoom: 1, x: 0, y: 0 },
+          },
+          title: {
+            content: "Junior CTO & Full Stack Developer",
+            isVisible: true,
+          },
+          subtitle: {
+            content: "Micple Company Ltd",
+            isVisible: true,
+          },
+          link: {
+            content: "https://micple.com/",
+            isVisible: true,
+          },
+          duration: {
+            content: {
+              from: "07/2023",
+              to: "Present",
+            },
+            isVisible: true,
+          },
+          location: {
+            content: "Khilkhet, Dhaka",
+            isVisible: true,
+          },
+          description: {
+            content:
+              "Leading overall technical strategy, architectural decisions, and infrastructure scaling for enterprise-grade web applications.",
+            isVisible: true,
+          },
+          bullets: {
+            content: `
+              <ul>
+                <li>Spearheaded the technical direction and cross-platform architecture of high-availability production web applications.</li>
+                <li>Engineered scalable microservices and full-stack solutions utilizing React.js, Next.js, FastAPI, Express.js, and MongoDB.</li>
+                <li>Architected and managed robust Linux-based production server environments with automated SSL and security hardeners.</li>
+                <li>Optimized deployment lifecycles by designing streamlined Docker containers and continuous integration/continuous deployment (CI/CD) pipelines.</li>
+              </ul>
+            `,
+            isVisible: true,
+          },
+        },
+        {
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: { zoom: 1, x: 0, y: 0 },
+          },
+          title: {
+            content: "MERN Stack Developer",
+            isVisible: true,
+          },
+          subtitle: {
+            content: "Ameliasoft Ltd",
+            isVisible: true,
+          },
+          link: {
+            content: "https://ameliasoft.com",
+            isVisible: true,
+          },
+          duration: {
+            content: {
+              from: "01/2022",
+              to: "06/2023",
+            },
+            isVisible: true,
+          },
+          location: {
+            content: "Uttara, Dhaka",
+            isVisible: true,
+          },
+          description: {
+            content:
+              "Built responsive user interfaces and high-performance backend micro-APIs for digital commerce solutions.",
+            isVisible: true,
+          },
+          bullets: {
+            content: `
+              <ul>
+                <li>Developed modular frontend components with React, TypeScript, and Tailwind CSS ensuring lightning-fast load times.</li>
+                <li>Constructed secure RESTful APIs and optimized complex MongoDB database schemas for high-frequency transactional data.</li>
+                <li>Integrated third-party payment gateways, real-time notification hooks, and secure JWT-based authentication mechanisms.</li>
+              </ul>
+            `,
+            isVisible: true,
+          },
+        },
+      ],
+    },
+    {
+      column: 0,
+      position: 1,
+      sectionLayout: "summary",
+      format:"professionalExperience",
+      sectionTitle: { content: "Summary", isVisible: true },
+      items: [
+        {
+          description: {
+            content:
+              "Driven Full Stack Software Engineer and technical lead with deep expertise in modern web frameworks, cloud containerization, and artificial intelligence integration. Adept at transforming complex business requirements into high-performing, secure, and scalable software solutions.",
+            isVisible: true,
+          },
+        },
+      ],
+    },
+    {
+      column: 1,
+      position: 0,
+      sectionLayout: "TagCard",
+      format:"skills",
+      sectionTitle: { content: "Technical Skills", isVisible: true },
+      items: [
+        {
+          title: {
+            content: "Frontend & Web",
+            isVisible: true,
+          },
+          lists: {
+            content: [
+              "React.js",
+              "Next.js",
+              "TypeScript",
+              "Tailwind CSS",
+              "SCSS",
+              "Micro Frontend",
+            ],
+            isVisible: true,
+          },
+        },
+        {
+          title: {
+            content: "Backend & Databases",
+            isVisible: true,
+          },
+          lists: {
+            content: [
+              "Node.js",
+              "Express.js",
+              "FastAPI",
+              "Flask",
+              "MongoDB",
+              "MySQL",
+              "Weaviate",
+            ],
+            isVisible: true,
+          },
+        },
+        {
+          title: {
+            content: "AI & Cloud DevOps",
+            isVisible: true,
+          },
+          lists: {
+            content: [
+              "Docker",
+              "Nginx",
+              "CI/CD Pipelines",
+              "LangChain",
+              "RAG Systems",
+              "OpenCV",
+            ],
+            isVisible: true,
+          },
+        },
+      ],
+    },
+    {
+      column: 1,
+      position: 1,
+      sectionLayout: "BadgeTitleCard",
+      format:"education",
+      sectionTitle: { content: "Education & Qualifications", isVisible: true },
+      items: [
+        {
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: { zoom: 1, x: 0, y: 0 },
+          },
+          title: {
+            content: "Post-Graduate Diploma in Information Technology",
+            isVisible: true,
+          },
+          duration: {
+            content: {
+              from: "2021",
+              to: "2022",
+            },
+            isVisible: true,
+          },
+          description: {
+            content:
+              "Specialized in advanced database systems, software engineering principles, and enterprise network setups.",
+            isVisible: true,
+          },
+        },
+        {
+          title: {
+            content: "Bachelor of Science",
+            isVisible: true,
+          },
+          duration: {
+            content: {
+              from: "2017",
+              to: "2021",
+            },
+            isVisible: true,
+          },
+          description: {
+            content:
+              "Focused on core computing mechanics, algorithm design, and structured programming paradigms.",
+            isVisible: true,
+          },
+        },
+      ],
+    },
+    {
+      column: 1,
+      position: 2,
+      sectionLayout: "LinkCard",
+      format:"socialLinks",
+      sectionTitle: { content: "Find Me Online", isVisible: true },
+      items: [
+        {
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: { zoom: 1, x: 0, y: 0 },
+          },
+          title: {
+            content: "LinkedIn",
+            isVisible: true,
+          },
+          link: {
+            content: "https://linkedin.com/in/saimonpranta",
+            isVisible: true,
+          },
+        },
+        {
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: { zoom: 1, x: 0, y: 0 },
+          },
+          title: {
+            content: "GitHub",
+            isVisible: true,
+          },
+          link: {
+            content: "https://github.com/saimonpranta",
+            isVisible: true,
+          },
+        },
+        {
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: { zoom: 1, x: 0, y: 0 },
+          },
+          title: {
+            content: "Portfolio",
+            isVisible: true,
+          },
+          link: {
+            content: "https://symulkabir.vercel.app",
+            isVisible: true,
+          },
+        },
+      ],
+    },
+  ],
+};
+
+export const DUMMY_STRUCTURED_RESUME2 = {
   header: {
     fullName: { content: "Symul Kabir", isVisible: true },
     headline: { content: "Junior CTO & Full Stack Developer", isVisible: true },
@@ -63,7 +365,11 @@ export const DUMMY_STRUCTURED_RESUME = {
     website: { content: "https://symulkabir.vercel.app", isVisible: true },
     github: { content: "https://symulkabir.vercel.app", isVisible: true },
     dob: { content: "07 May 1999", isVisible: true },
-    picture: { imgContent: "", position: {zoom: 1, x: 0, y: 0 }, isVisible: true },
+    picture: {
+      imgContent: "",
+      position: { zoom: 1, x: 0, y: 0 },
+      isVisible: true,
+    },
   },
   sections: [
     {
@@ -79,8 +385,8 @@ export const DUMMY_STRUCTURED_RESUME = {
             position: {
               zoom: 1,
               x: 0,
-              y: 0
-            }
+              y: 0,
+            },
           },
           title: {
             content: "1 Junior CTO & Full Stack Developer",
@@ -677,13 +983,13 @@ export const DUMMY_STRUCTURED_RESUME = {
             position: {
               zoom: 1,
               x: 0,
-              y: 0
-            }
+              y: 0,
+            },
           },
           title: {
             content: "1 Junior CTO & Full Stack Developer",
             isVisible: true,
-          }, 
+          },
           duration: {
             content: {
               from: "07/2023",
@@ -691,51 +997,115 @@ export const DUMMY_STRUCTURED_RESUME = {
             },
             isVisible: true,
           },
-         
+
           description: {
             content:
               "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
             isVisible: true,
-          }, 
+          },
         },
         {
           title: {
             content: "2 MERN Stack Developer",
             isVisible: true,
-          },  
+          },
           duration: {
             content: {
               from: "07/2023",
               to: "Present",
             },
             isVisible: true,
-          }, 
+          },
           description: {
             content:
               "Developed full-stack web applications and scalable APIs using the MERN stack.",
             isVisible: true,
-          }, 
+          },
         },
         {
           title: {
             content: "3 MERN Stack Developer",
             isVisible: true,
-          }, 
+          },
           duration: {
             content: {
               from: "07/2023",
               to: "Present",
             },
             isVisible: true,
-          }, 
+          },
           description: {
             content:
               "Developed full-stack web applications and scalable APIs using the MERN stack.",
             isVisible: true,
-          }, 
-        }, 
+          },
+        },
+      ],
+    },
+    {
+      column: 1,
+      position: 0,
+      sectionLayout: "LinkCard",
+      sectionTitle: { content: "Find Me Online", isVisible: true },
+      items: [
+        {
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: {
+              zoom: 1,
+              x: 0,
+              y: 0,
+            },
+          },
+          title: {
+            content: "Linkendin",
+            isVisible: true,
+          },
+          link: {
+            content: "https://linkedin.com/saimonpranta",
+            isVisible: true,
+          },
+        },
+        {
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: {
+              zoom: 1,
+              x: 0,
+              y: 0,
+            },
+          },
+          title: {
+            content: "Facebook",
+            isVisible: true,
+          },
+          link: {
+            content: "https://facebook.com/saimonpranta",
+            isVisible: true,
+          },
+        },
+        {
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: {
+              zoom: 1,
+              x: 0,
+              y: 0,
+            },
+          },
+          title: {
+            content: "Github",
+            isVisible: true,
+          },
+          link: {
+            content: "https://github.com/saimonpranta",
+            isVisible: true,
+          },
+        },
       ],
     },
   ],
 };
- 

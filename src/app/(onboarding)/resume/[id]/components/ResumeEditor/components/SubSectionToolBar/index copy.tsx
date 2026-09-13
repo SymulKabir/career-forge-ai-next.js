@@ -13,23 +13,15 @@ import {
 } from "lucide-react";
 import useEditor from "../../hooks/useEditor";
 import { useResumeContext } from "../../../../context/resume-editor-context";
-import { RESUME_FORMAT } from "../../constants/resumeForma";
-import { useResume } from "../../../../hooks";
 
 interface ResumeToolbarProps {
   variant?: "subsection" | "section";
   propertyPath?: string; // Path like "sections.0.items.0"
-  tools?: any;
-  layoutType?: string;
-  format?: string;
 }
 
 export default function ResumeToolbar({
   variant = "subsection",
-  propertyPath,
-  tools,
-  layoutType,
-  format,
+  propertyPath
 }: ResumeToolbarProps) {
   const [activeDropdown, setActiveDropdown] = useState<
     "settings" | "date" | null
@@ -40,13 +32,12 @@ export default function ResumeToolbar({
 
   // Destructure update function or state setter from useEditor hook if available
   const { getValue, handleInputChange } = useEditor();
-  const { addResumeListItem } = useResume();
-  const { resumeData } = useResumeContext();
+  const {resumeData} = useResumeContext()
 
   useEffect(() => {
     if (propertyPath) {
-      const currentValue = getValue(propertyPath);
-      setSectionData({ ...currentValue });
+      const currentValue = getValue(propertyPath)
+      setSectionData({...currentValue});
     }
   }, [propertyPath, resumeData]);
   useEffect(() => {
@@ -61,6 +52,7 @@ export default function ResumeToolbar({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
 
   const months = [
     "Jan",
@@ -80,13 +72,6 @@ export default function ResumeToolbar({
     2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031,
   ];
 
-  const addEntry = () => {
-    const formatData = RESUME_FORMAT[format];
-    const newData = formatData.items[0];
-    console.log("newData 2--->>>", newData);
-    console.log("propertyPath--->>>", propertyPath);
-    addResumeListItem(`${propertyPath}.items`, newData, 1);
-  };
 
   return (
     <div className="section-tools hidden justify-center absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+10px)] z-40 avoid-default">
@@ -94,15 +79,15 @@ export default function ResumeToolbar({
         {/* Responsive Light Glass Toolbar Container */}
         <div className="flex items-center bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-xl px-2 py-1.5 gap-1 text-slate-700 select-none flex-wrap sm:flex-nowrap">
           {/* Primary Action: Add Entry (Only for Subsections) */}
-          {tools?.entry && (
+          {variant === "subsection" && (
             <>
               <button
+                // onClick={onAddEntry}
                 className="group flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold shadow-md shadow-indigo-500/20 transition-all transform active:scale-95 flex-shrink-0"
                 title="Add New Entry"
-                onClick={addEntry}
               >
                 <Plus className="w-3.5 h-3.5 stroke-[3] transition-transform group-hover:rotate-90 duration-300" />
-                <span className="hidden sm:inline">Entry</span>
+                <span className="hidden sm:inline">Add Entry</span>
               </button>
               <div className="w-[1px] h-5 bg-slate-200 mx-0.5 hidden sm:block" />
             </>
@@ -138,22 +123,22 @@ export default function ResumeToolbar({
           )} */}
 
           {/* Date Selector Trigger (Subsection only) */}
-          {/* {variant === "subsection" && ( */}
-          <button
-            onClick={() =>
-              setActiveDropdown(activeDropdown === "date" ? null : "date")
-            }
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
-              activeDropdown === "date"
-                ? "bg-indigo-50 text-indigo-600 border border-indigo-200"
-                : "hover:bg-slate-100 text-slate-600"
-            }`}
-            title="Configure Date Range"
-          >
-            <Calendar className="w-3.5 h-3.5 text-indigo-500" />
-            <span className="hidden md:inline">Timeline</span>
-          </button>
-          {/* )} */}
+          {variant === "subsection" && (
+            <button
+              onClick={() =>
+                setActiveDropdown(activeDropdown === "date" ? null : "date")
+              }
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                activeDropdown === "date"
+                  ? "bg-indigo-50 text-indigo-600 border border-indigo-200"
+                  : "hover:bg-slate-100 text-slate-600"
+              }`}
+              title="Configure Date Range"
+            >
+              <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+              <span className="hidden md:inline">Timeline</span>
+            </button>
+          )}
 
           {/* Settings / Field Toggle Trigger */}
           <button
@@ -203,7 +188,7 @@ export default function ResumeToolbar({
 
             <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
               {Object.entries(sectionData).map(([key, obj], index) => {
-                const isVisible = obj?.isVisible || false;
+                const isVisible = obj?.isVisible || false
 
                 const labelFormatted = key
                   .replace(/([A-Z])/g, " $1")
@@ -221,7 +206,7 @@ export default function ResumeToolbar({
                       datatype="boolean"
                       value={isVisible ? "false" : "true"}
                       onClick={(e) => {
-                        handleInputChange(e);
+                        handleInputChange(e)
                       }}
                       className={`w-10 h-6 flex items-center rounded-full transition-colors p-1 ${
                         isVisible

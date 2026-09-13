@@ -1,8 +1,7 @@
 import React from "react";
 import SubSectionToolBar from "../SubSectionToolBar";
 import { useResumeContext } from "../../../../context/resume-editor-context";
-import { px } from "../../utils/resumeEditor";
-import { useResume } from "../../../../hooks";
+import { px } from "../../utils/resumeEditor"; 
 import InputField from "../InputField";
 import ImgPreview from "../../ImgPreview";
 

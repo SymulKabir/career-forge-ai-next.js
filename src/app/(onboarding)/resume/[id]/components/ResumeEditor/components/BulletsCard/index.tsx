@@ -133,7 +133,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
               key={itemIndex}
               tabIndex={item.positionIndex}
               className="subsection-card sub-section-padding sub-section-divider active-focus"
-            >
+            > 
               <SubSectionToolBar
                 variant="subsection"
                 propertyPath={`${name}.items.${item.positionIndex}`}

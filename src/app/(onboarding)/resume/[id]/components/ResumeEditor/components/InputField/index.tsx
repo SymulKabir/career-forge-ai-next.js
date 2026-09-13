@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import useEditor from "../../hooks/useEditor"
+import useEditor from "../../hooks/useEditor";
+
 // ==========================================
 // REUSABLE EDITABLE TEXT COMPONENT
 // ==========================================
@@ -7,15 +8,18 @@ interface EditableTextProps {
   tag?: any;
   name?: string;
   className?: string;
+  placeholder?: string; // 1. Added placeholder prop
 }
 
 const Index: React.FC<EditableTextProps> = ({
   tag = "span",
   name,
-  className
+  className,
+  placeholder = "Type here...", // Default placeholder text
 }) => {
-  const { getValue } = useEditor()
+  const { getValue } = useEditor();
   const Component = tag as any;
+
   return (
     <>
       <style>
@@ -28,8 +32,9 @@ const Index: React.FC<EditableTextProps> = ({
           transition: background-color 0.2s ease;
           background-color: transparent;
         }
-         .editable-field:hover {
-          // background-color: rgba(37, 99, 235, 0.03);
+        
+        .editable-field:hover {
+          /* background-color: rgba(37, 99, 235, 0.03); */
         }
 
         .editable-field:focus { 
@@ -37,16 +42,24 @@ const Index: React.FC<EditableTextProps> = ({
           border: none !important;
           box-shadow: none !important;
         }
-        
+
+        /* 2. CSS trick for contentEditable placeholder */
+        .editable-field[contenteditable]:empty:before {
+          content: attr(data-placeholder);
+          color: #9ca3af; /* Muted placeholder color */
+          pointer-events: none;
+          display: block; /* Ensures it stays visible on empty block elements */
+        }
         `}
       </style>
       <Component
         className={`editable-field ${className || ""}`}
         name={name}
         contentEditable
-        suppressContentEditableWarning 
+        suppressContentEditableWarning
+        data-placeholder={placeholder} // 3. Pass placeholder string as data attribute
       >
-        {name ? getValue(name) : ""} 
+        {name ? getValue(name) : ""}
       </Component>
     </>
   );
