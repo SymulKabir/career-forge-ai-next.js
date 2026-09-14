@@ -259,11 +259,8 @@ const Index: React.FC<EditableTextProps> = ({
     const nativeEvent = e.nativeEvent as InputEvent;
 
     if (nativeEvent.inputType === "insertParagraph" || nativeEvent.inputType === "insertLineBreak") {
-      console.log("Enter pressed via onInput!");
-      console.log("value ->", value)
       // caretPositionRef.current += 1
     }
-    console.log("caretPositionRef.current -->", caretPositionRef.current)
     handleInput();
     const syntheticTargetEvent = {
       target: {

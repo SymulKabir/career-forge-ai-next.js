@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import useEditor from "../../hooks/useEditor";
 import { useResumeContext } from "../../../../context/resume-editor-context";
-import { RESUME_FORMAT } from "../../constants/resumeForma";
 import { useResume } from "../../../../hooks";
 import { getResumeFormat } from "../../../../utils/resume";
 
@@ -37,10 +36,11 @@ export default function ResumeToolbar({
   const [dateTab, setDateTab] = useState<"from" | "to">("from");
   const [sectionData, setSectionData] = useState<any>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const propertyParts = propertyPath.split(".");
+  const itemIndex = Number(propertyParts.pop())
   // Destructure update function or state setter from useEditor hook if available
-  const { getValue, handleInputChange } = useEditor();
-  const { addResumeListItem, updateResume } = useResume();
+  const { getValue } = useEditor();
+  const { addResumeListItem, updateResume, swapResumeData } = useResume();
   const { resumeData } = useResumeContext();
 
   useEffect(() => {
@@ -81,32 +81,45 @@ export default function ResumeToolbar({
   ];
 
   const addEntry = () => {
-  if (!format || !propertyPath) return;
-console.log('format -->>', format)
-  const formatData = getResumeFormat(`${format}.items.0`);
+    if (!format || !propertyPath) return;
+    const formatData = getResumeFormat(`${format}.items.0`);
 
-  const updateProperty = propertyPath
-    .split(".")
-    .slice(0, 2)
-    .join(".");
-console.log("updateProperty --->>>", updateProperty)
-  const newDataPositionPath = `${updateProperty}.items`;
-
-  console.log("propertyPath:", propertyPath);
-  console.log("updateProperty:", updateProperty);
-  console.log("newDataPositionPath:", newDataPositionPath);
-  console.log("formatData:", formatData);
-
-  addResumeListItem(newDataPositionPath, formatData, 0);
-};
+    const updateProperty = propertyPath
+      .split(".")
+      .slice(0, 2)
+      .join(".");
+    const newDataPositionPath = `${updateProperty}.items`;
+    addResumeListItem(newDataPositionPath, formatData, 0);
+  };
   const hideSection = () => {
-    console.log("hello click hide section");
-    console.log("propertyPath-->>", `${propertyPath}.isVisible`);
     updateResume({
       propertyPath: `${propertyPath}.isVisible`,
       value: false,
     });
   };
+  const handleMove = (mode: string) => {
+    if (!mode) return
+    console.log("test1")
+
+    const toIndex = mode == "up" ? itemIndex - 1 : mode == "down" ? itemIndex + 1 : -1
+    const path = propertyParts.join(".")
+
+
+    if (toIndex < 0 || itemIndex < 0) return
+    console.log("test3")
+    console.log({
+      fromPath: path,
+      fromIndex: itemIndex,
+      toPath: path,
+      toIndex: toIndex,
+    })
+    swapResumeData({
+      fromPath: path,
+      fromIndex: itemIndex,
+      toPath: path,
+      toIndex: toIndex,
+    })
+  }
 
   return (
     <div className="section-tools hidden justify-center absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+10px)] z-40 avoid-default">
@@ -131,20 +144,21 @@ console.log("updateProperty --->>>", updateProperty)
           {/* Position Reordering Group */}
           {tools?.move && (
             <div className="flex items-center bg-slate-100/80 p-0.5 rounded-xl border border-slate-200/60">
-              <button
-                // onClick={onMoveUp}
+              {itemIndex > 0 && <button
+                onClick={() => handleMove("up")}
                 className="p-1.5 hover:bg-white hover:text-indigo-600 rounded-lg text-slate-600 transition-all shadow-sm"
                 title={`Move ${variant === "section" ? "Section" : "Entry"} Up`}
+
               >
                 <ArrowUp className="w-3.5 h-3.5" />
-              </button>
-              <button
-                // onClick={onMoveDown}
+              </button>}
+              {tools.move.maxIndex > itemIndex && <button
+                onClick={() => handleMove("down")}
                 className="p-1.5 hover:bg-white hover:text-indigo-600 rounded-lg text-slate-600 transition-all shadow-sm"
                 title={`Move ${variant === "section" ? "Section" : "Entry"} Down`}
               >
                 <ArrowDown className="w-3.5 h-3.5" />
-              </button>
+              </button>}
             </div>
           )}
           {/* Settings / Field Toggle Trigger */}
@@ -152,11 +166,10 @@ console.log("updateProperty --->>>", updateProperty)
             <>
               <button
                 onClick={tools.picture.action}
-                className={`p-2 rounded-xl transition-all ${
-                  activeDropdown === "settings"
-                    ? "bg-violet-50 text-violet-600 border border-violet-200"
-                    : "hover:bg-slate-100 text-slate-600 hover:text-violet-600"
-                }`}
+                className={`p-2 rounded-xl transition-all ${activeDropdown === "settings"
+                  ? "bg-violet-50 text-violet-600 border border-violet-200"
+                  : "hover:bg-slate-100 text-slate-600 hover:text-violet-600"
+                  }`}
                 title="Toggle Element Visibility"
               >
                 <Camera className="w-4 h-4" />
@@ -183,11 +196,10 @@ console.log("updateProperty --->>>", updateProperty)
               onClick={() =>
                 setActiveDropdown(activeDropdown === "date" ? null : "date")
               }
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
-                activeDropdown === "date"
-                  ? "bg-indigo-50 text-indigo-600 border border-indigo-200"
-                  : "hover:bg-slate-100 text-slate-600"
-              }`}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${activeDropdown === "date"
+                ? "bg-indigo-50 text-indigo-600 border border-indigo-200"
+                : "hover:bg-slate-100 text-slate-600"
+                }`}
               title="Configure Date Range"
             >
               <Calendar className="w-3.5 h-3.5 text-indigo-500" />
@@ -205,11 +217,10 @@ console.log("updateProperty --->>>", updateProperty)
                     activeDropdown === "settings" ? null : "settings",
                   )
                 }
-                className={`p-2 rounded-xl transition-all ${
-                  activeDropdown === "settings"
-                    ? "bg-violet-50 text-violet-600 border border-violet-200"
-                    : "hover:bg-slate-100 text-slate-600 hover:text-violet-600"
-                }`}
+                className={`p-2 rounded-xl transition-all ${activeDropdown === "settings"
+                  ? "bg-violet-50 text-violet-600 border border-violet-200"
+                  : "hover:bg-slate-100 text-slate-600 hover:text-violet-600"
+                  }`}
                 title="Toggle Element Visibility"
               >
                 <Settings className="w-4 h-4" />
@@ -226,11 +237,10 @@ console.log("updateProperty --->>>", updateProperty)
                     activeDropdown === "display" ? null : "display",
                   )
                 }
-                className={`p-2 rounded-xl transition-all ${
-                  activeDropdown === "display"
-                    ? "bg-violet-50 text-violet-600 border border-violet-200"
-                    : "hover:bg-slate-100 text-slate-600 hover:text-violet-600"
-                }`}
+                className={`p-2 rounded-xl transition-all ${activeDropdown === "display"
+                  ? "bg-violet-50 text-violet-600 border border-violet-200"
+                  : "hover:bg-slate-100 text-slate-600 hover:text-violet-600"
+                  }`}
                 title="Section Content Visibility"
                 aria-label="Section Content Visibility"
                 aria-expanded={activeDropdown === "display"}
@@ -286,16 +296,14 @@ console.log("updateProperty --->>>", updateProperty)
                       datatype="boolean"
                       value={item.active ? "false" : "true"}
                       onClick={() => item.action({ ...item })}
-                      className={`w-10 h-6 flex items-center rounded-full transition-colors p-1 ${
-                        item?.active
-                          ? "bg-gradient-to-r from-indigo-600 to-violet-600 shadow-sm shadow-indigo-500/20"
-                          : "bg-slate-200 border border-slate-300"
-                      }`}
+                      className={`w-10 h-6 flex items-center rounded-full transition-colors p-1 ${item?.active
+                        ? "bg-gradient-to-r from-indigo-600 to-violet-600 shadow-sm shadow-indigo-500/20"
+                        : "bg-slate-200 border border-slate-300"
+                        }`}
                     >
                       <div
-                        className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform ${
-                          item?.active ? "translate-x-4" : "translate-x-0"
-                        }`}
+                        className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform ${item?.active ? "translate-x-4" : "translate-x-0"
+                          }`}
                       />
                     </button>
                   </div>
@@ -336,16 +344,14 @@ console.log("updateProperty --->>>", updateProperty)
                       datatype="boolean"
                       value={item.active ? "false" : "true"}
                       onClick={() => item.action({ ...item })}
-                      className={`w-10 h-6 flex items-center rounded-full transition-colors p-1 ${
-                        item?.active
-                          ? "bg-gradient-to-r from-indigo-600 to-violet-600 shadow-sm shadow-indigo-500/20"
-                          : "bg-slate-200 border border-slate-300"
-                      }`}
+                      className={`w-10 h-6 flex items-center rounded-full transition-colors p-1 ${item?.active
+                        ? "bg-gradient-to-r from-indigo-600 to-violet-600 shadow-sm shadow-indigo-500/20"
+                        : "bg-slate-200 border border-slate-300"
+                        }`}
                     >
                       <div
-                        className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform ${
-                          item?.active ? "translate-x-4" : "translate-x-0"
-                        }`}
+                        className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform ${item?.active ? "translate-x-4" : "translate-x-0"
+                          }`}
                       />
                     </button>
                   </div>
@@ -363,21 +369,19 @@ console.log("updateProperty --->>>", updateProperty)
             <div className="grid grid-cols-2 bg-slate-100 p-1 rounded-xl mb-4 text-xs font-semibold border border-slate-200/60">
               <button
                 onClick={() => setDateTab("from")}
-                className={`py-1.5 rounded-lg transition-all ${
-                  dateTab === "from"
-                    ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-sm"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
+                className={`py-1.5 rounded-lg transition-all ${dateTab === "from"
+                  ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-sm"
+                  : "text-slate-500 hover:text-slate-800"
+                  }`}
               >
                 Start Date
               </button>
               <button
                 onClick={() => setDateTab("to")}
-                className={`py-1.5 rounded-lg transition-all ${
-                  dateTab === "to"
-                    ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-sm"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
+                className={`py-1.5 rounded-lg transition-all ${dateTab === "to"
+                  ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-sm"
+                  : "text-slate-500 hover:text-slate-800"
+                  }`}
               >
                 End Date
               </button>
@@ -403,11 +407,10 @@ console.log("updateProperty --->>>", updateProperty)
                           [dateTab === "from" ? "fromYear" : "toYear"]: yr,
                         })
                       }
-                      className={`py-2 text-xs font-semibold rounded-xl border transition-all ${
-                        isSelected
-                          ? "bg-indigo-50 border-indigo-500 text-indigo-700 shadow-sm"
-                          : "bg-slate-50/50 border-slate-200 hover:bg-slate-100 text-slate-700"
-                      }`}
+                      className={`py-2 text-xs font-semibold rounded-xl border transition-all ${isSelected
+                        ? "bg-indigo-50 border-indigo-500 text-indigo-700 shadow-sm"
+                        : "bg-slate-50/50 border-slate-200 hover:bg-slate-100 text-slate-700"
+                        }`}
                     >
                       {yr}
                     </button>
@@ -436,11 +439,10 @@ console.log("updateProperty --->>>", updateProperty)
                           [dateTab === "from" ? "fromMonth" : "toMonth"]: m,
                         })
                       }
-                      className={`py-2 text-xs font-semibold rounded-xl border transition-all ${
-                        isSelected
-                          ? "bg-indigo-50 border-indigo-500 text-indigo-700 shadow-sm"
-                          : "bg-slate-50/50 border-slate-200 hover:bg-slate-100 text-slate-700"
-                      }`}
+                      className={`py-2 text-xs font-semibold rounded-xl border transition-all ${isSelected
+                        ? "bg-indigo-50 border-indigo-500 text-indigo-700 shadow-sm"
+                        : "bg-slate-50/50 border-slate-200 hover:bg-slate-100 text-slate-700"
+                        }`}
                     >
                       {m}
                     </button>

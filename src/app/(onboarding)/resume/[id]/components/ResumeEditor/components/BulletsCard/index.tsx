@@ -52,7 +52,6 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
     property: string,
   ) => {
     const filePath = `${rootPathName}.${property}.isVisible`;
-    console.log("filePath2 --->>>", filePath);
     return {
       label,
       filePath,
@@ -61,10 +60,6 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
     };
   };
 
-  const formatData = getResumeFormat(data.format);
-  console.log("name--->>>", name);
-  console.log("data --->>>", data);
-  console.log("name888-->>>", formatData);
 
   return (
     <>
@@ -168,7 +163,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
           const toolsConfig = {
             entry: {},
             delete: {},
-            rearrange: {},
+            move: { maxIndex: data?.items?.length ? data?.items?.length - 1 : 0},
             display: {
               dropdownList: [
                 createDisplayItem(rootPathName, "Image", "orgImg"),
@@ -248,74 +243,74 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
                 {/* Metadata */}
                 {(getValue(`${rootPathName}.duration.isVisible`) ||
                   getValue(`${rootPathName}.location.isVisible`)) && (
-                  <div className="metadata-row">
-                    {getValue(`${rootPathName}.duration.isVisible`) && (
-                      <div className="resume-metadata-item">
-                        <div className="date-item">
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          >
-                            <rect x="3" y="4" width="18" height="18" rx="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                          </svg>
-                          <InputField
-                            tag="span"
-                            name={`${rootPathName}.duration.content.from`}
-                            placeholderPath={`${rootPlaceholderPathName}.duration.placeholder.from`}
-                          />
+                    <div className="metadata-row">
+                      {getValue(`${rootPathName}.duration.isVisible`) && (
+                        <div className="resume-metadata-item">
+                          <div className="date-item">
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <rect x="3" y="4" width="18" height="18" rx="2" />
+                              <line x1="16" y1="2" x2="16" y2="6" />
+                              <line x1="8" y1="2" x2="8" y2="6" />
+                              <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                            <InputField
+                              tag="span"
+                              name={`${rootPathName}.duration.content.from`}
+                              placeholderPath={`${rootPlaceholderPathName}.duration.placeholder.from`}
+                            />
+                          </div>
+                          <div className="date-item">
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <rect x="3" y="4" width="18" height="18" rx="2" />
+                              <line x1="16" y1="2" x2="16" y2="6" />
+                              <line x1="8" y1="2" x2="8" y2="6" />
+                              <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                            <InputField
+                              tag="span"
+                              name={`${rootPathName}.duration.content.to`}
+                              placeholderPath={`${rootPlaceholderPathName}.duration.placeholder.to`}
+                            />
+                          </div>
                         </div>
-                        <div className="date-item">
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          >
-                            <rect x="3" y="4" width="18" height="18" rx="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                          </svg>
-                          <InputField
-                            tag="span"
-                            name={`${rootPathName}.duration.content.to`}
-                            placeholderPath={`${rootPlaceholderPathName}.duration.placeholder.to`}
-                          />
-                        </div>
-                      </div>
-                    )}
+                      )}
 
-                    {getValue(`${rootPathName}.location.isVisible`) && (
-                      <div className="resume-metadata-item">
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg>
-                        <InputField
-                          tag="span"
-                          name={`${rootPathName}.location.content`}
-                          placeholderPath={`${rootPlaceholderPathName}.location.placeholder`}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
+                      {getValue(`${rootPathName}.location.isVisible`) && (
+                        <div className="resume-metadata-item">
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          >
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                            <circle cx="12" cy="10" r="3" />
+                          </svg>
+                          <InputField
+                            tag="span"
+                            name={`${rootPathName}.location.content`}
+                            placeholderPath={`${rootPlaceholderPathName}.location.placeholder`}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                 {/* Website Link */}
                 {getValue(`${rootPathName}.link.isVisible`) && (

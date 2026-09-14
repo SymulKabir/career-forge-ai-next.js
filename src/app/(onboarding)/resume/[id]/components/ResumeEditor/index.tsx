@@ -58,8 +58,6 @@ const Index = () => {
         }
       }
 
-      console.log("pages--->>>>", pages);
-
       setLayoutResumeData((state: any) => {
         return { ...state, pages: pages };
       });
@@ -154,8 +152,6 @@ const PageMaker = ({
   const addEntry = () => {
     const formatData = RESUME_FORMAT[format];
     const newData = formatData.items[0];
-    console.log("newData 2--->>>", newData);
-    console.log("propertyPath--->>>", propertyPath);
     addResumeListItem(`${propertyPath}.items`, newData, 0);
   };
   const [toolsConfig, setToolsConfig] = useState({
@@ -252,9 +248,6 @@ const PageMaker = ({
                 <div key={columnIndex} className="body-item">
                   {column.map((section: any, index: number) => {
                     const name = `sections.${section.positionIndex}`;
-                    console.log("index--->>>", index);
-                    console.log("section--->>>", section);
-                    console.log("name224 ---->>>", name);
                     if (!section.isVisible) return null;
                     return (
                       <div

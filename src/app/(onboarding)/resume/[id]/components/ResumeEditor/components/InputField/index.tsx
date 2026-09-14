@@ -21,8 +21,6 @@ const Index: React.FC<EditableTextProps> = ({
   const { getValue } = useEditor();
   const Component = tag as any;
   const placeholder = placeholderPath ? getResumeFormat(placeholderPath) || "Typing here..." : "Typing here..."
-console.log("placeholderPath --->>>", placeholderPath)
-console.log("placeholder --->>>", placeholder)
   return (
     <>
       <style>

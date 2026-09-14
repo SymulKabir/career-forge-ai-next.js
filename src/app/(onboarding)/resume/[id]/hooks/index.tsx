@@ -103,9 +103,8 @@ export const useResume = () => {
     };
     setResumeData((prevData: any) => updateNestedState(prevData, keys, value));
   };
-  const addResumeListItem = (pathLocation:string, newData:any, targetIndex:number | null = null) => {
+  const addResumeListItem = (pathLocation: string, newData: any, targetIndex: number | null = null) => {
     if (!pathLocation) return;
-
     const keys = pathLocation.split(".");
 
     // Helper to immutably navigate and update nested arrays/objects
@@ -137,11 +136,10 @@ export const useResume = () => {
 
     setResumeData((prevData) => {
       const listUpdateData = insertIntoNestedArray(prevData, keys, newData);
-      console.log("listUpdateData==>>", listUpdateData);
       return { ...addPositionIndex(listUpdateData) };
     });
   };
-   const getSettingValue = (name: string): any => {
+  const getSettingValue = (name: string): any => {
     if (!name) return "";
 
     const keys = name.split(".");
@@ -162,9 +160,6 @@ export const useResume = () => {
     propertyPath: string;
     value: any;
   }) => {
-    console.log("Hell77 click")
-    console.log("propertyPath-->>", propertyPath)
-    console.log("value-->>", value)
     if (!propertyPath) return;
 
     const keys = propertyPath.split(".");
@@ -188,9 +183,194 @@ export const useResume = () => {
       updateNestedState(prevSetting, keys, value),
     );
   };
+  const swapResumeData = ({
+  fromPath,
+  fromIndex,
+  toPath,
+  toIndex,
+}: {
+  fromPath: string;
+  fromIndex: number;
+  toPath: string;
+  toIndex: number;
+}) => {
+  if (!fromPath || !toPath) return;
 
-  console.log("resumeData --->>>", resumeData);
+  console.log(
+    "=================START RESUME MOVE==============",
+  );
 
+  const getNestedValue = (
+    obj: any,
+    path: string,
+  ): any => {
+    if (!path) return obj;
+
+    return path.split(".").reduce(
+      (current, key) => {
+        if (
+          current === null ||
+          current === undefined
+        ) {
+          return undefined;
+        }
+
+        return current[key];
+      },
+      obj,
+    );
+  };
+
+  const updateNestedValue = (
+    obj: any,
+    pathKeys: string[],
+    updater: (value: any) => any,
+  ): any => {
+    if (pathKeys.length === 0) {
+      return updater(obj);
+    }
+
+    const [head, ...tail] = pathKeys;
+
+    const copy = Array.isArray(obj)
+      ? [...obj]
+      : { ...(obj || {}) };
+
+    copy[head] = updateNestedValue(
+      copy[head],
+      tail,
+      updater,
+    );
+
+    return copy;
+  };
+
+  setResumeData((prevData: any) => {
+    const fromArray = getNestedValue(
+      prevData,
+      fromPath,
+    );
+
+    const toArray = getNestedValue(
+      prevData,
+      toPath,
+    );
+
+    // -----------------------------
+    // Validate source
+    // -----------------------------
+
+    if (!Array.isArray(fromArray)) {
+      console.error(
+        `Source is not an array: ${fromPath}`,
+      );
+
+      return prevData;
+    }
+
+    // -----------------------------
+    // Validate target
+    // -----------------------------
+
+    if (!Array.isArray(toArray)) {
+      console.error(
+        `Target is not an array: ${toPath}`,
+      );
+
+      return prevData;
+    }
+
+    // -----------------------------
+    // Validate indexes
+    // -----------------------------
+
+    if (
+      fromIndex < 0 ||
+      fromIndex >= fromArray.length
+    ) {
+      console.error(
+        `Invalid fromIndex: ${fromIndex}`,
+      );
+
+      return prevData;
+    }
+
+    if (
+      toIndex < 0 ||
+      toIndex >= toArray.length
+    ) {
+      console.error(
+        `Invalid toIndex: ${toIndex}`,
+      );
+
+      return prevData;
+    }
+
+    // =================================================
+    // SAME ARRAY
+    // =================================================
+
+    if (fromPath === toPath) {
+      const result = updateNestedValue(
+        prevData,
+        fromPath.split("."),
+        (array: any[]) => {
+          const newArray = [...array];
+
+          // Swap values
+          const temp = newArray[fromIndex];
+
+          newArray[fromIndex] =
+            newArray[toIndex];
+
+          newArray[toIndex] = temp;
+
+          return newArray;
+        },
+      );
+
+      // Recalculate positionIndex
+      return addPositionIndex(result);
+    }
+
+    // =================================================
+    // DIFFERENT ARRAYS
+    // =================================================
+
+    const sourceItem = fromArray[fromIndex];
+    const targetItem = toArray[toIndex];
+
+    // Replace source position with target item
+    let result = updateNestedValue(
+      prevData,
+      fromPath.split("."),
+      (array: any[]) => {
+        const newArray = [...array];
+
+        newArray[fromIndex] = targetItem;
+
+        return newArray;
+      },
+    );
+
+    // Replace target position with source item
+    result = updateNestedValue(
+      result,
+      toPath.split("."),
+      (array: any[]) => {
+        const newArray = [...array];
+
+        newArray[toIndex] = sourceItem;
+
+        return newArray;
+      },
+    );
+
+    // Recalculate positionIndex
+    return addPositionIndex(result);
+  });
+};
+console.log("resumeData--->>", resumeData)
   return {
     getResumeValue,
     handleResumeChange,
@@ -198,8 +378,8 @@ export const useResume = () => {
     handleToolbarChange,
     updateResume,
     addResumeListItem,
-    getSettingValue
+    getSettingValue,
+    swapResumeData
   };
 };
 
- 
