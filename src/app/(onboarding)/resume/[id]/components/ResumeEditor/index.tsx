@@ -13,6 +13,7 @@ import { px } from "./utils/resumeEditor";
 import ResumeHeader from "./components/ResumeHeader";
 import { useInitResume, useResume } from "../../hooks";
 import { paginateResumeSections } from "./utils";
+import { RESUME_FORMAT } from "./constants/resumeForma";
 
 const Index = () => {
   const {
@@ -120,10 +121,45 @@ const PageMaker = ({
   syncWithProp,
 }: any) => {
   const { setting } = useResumeContext();
-  const { handleSettingChange, getSettingValue } = useResume()
+  const {
+    handleSettingChange,
+    addResumeListItem,
+    updateResume,
+    getSettingValue,
+  } = useResume();
   const metadata = setting?.sections?.metadata;
+  const textTransform = getSettingValue("sections.sectionTitle.textTransform");
+
+  const handleTextTransform = (obj: any) => {
+    // Update actual resume setting
+    handleSettingChange({
+      propertyPath: "sections.sectionTitle.textTransform",
+      value: obj.value,
+    });
+
+    // Update active state
+    setToolsConfig((state) => ({
+      ...state,
+      setting: {
+        ...state.setting,
+        dropdownList: state.setting.dropdownList.map(
+          (item: any, index: number) => ({
+            ...item,
+            active: index === obj.index,
+          }),
+        ),
+      },
+    }));
+  };
+  const addEntry = () => {
+    const formatData = RESUME_FORMAT[format];
+    const newData = formatData.items[0];
+    console.log("newData 2--->>>", newData);
+    console.log("propertyPath--->>>", propertyPath);
+    addResumeListItem(`${propertyPath}.items`, newData, 0);
+  };
   const [toolsConfig, setToolsConfig] = useState({
-    entry: {},
+    entry: {action: addEntry},
     delete: {},
     rearrange: {},
     setting: {
@@ -131,88 +167,31 @@ const PageMaker = ({
         {
           label: "Uppercase",
           value: "uppercase",
-          active: getSettingValue("sections.sectionTitle.textTransform") === "uppercase",
-          action: (obj: any) => {
-            handleSettingChange({
-              propertyPath: "sections.sectionTitle.textTransform",
-              value: obj.value
-            })
-            setToolsConfig((state) => {
-              const setting = state.setting.map((item: any, index: number) => {
-                if (index === obj.index) {
-                  item["active"] = true
-                }
-                return {...item}
-              })
-              return { ...state, setting }
-            })
-          }
+          active: textTransform === "uppercase",
+          action: handleTextTransform,
         },
         {
           label: "Lowercase",
           value: "lowercase",
-          active: getSettingValue("sections.sectionTitle.textTransform") === "lowercase",
-          action: (obj: any) => {
-            handleSettingChange({
-              propertyPath: "sections.sectionTitle.textTransform",
-              value: obj.value
-            })
-            setToolsConfig((state) => {
-              const setting = state.setting.map((item: any, index: number) => {
-                if (index === obj.index) {
-                  item["active"] = true
-                }
-                return {...item}
-              })
-              return { ...state, setting }
-            })
-          }
+          active: textTransform === "lowercase",
+          action: handleTextTransform,
         },
         {
           label: "Capitalize",
           value: "capitalize",
-          active: getSettingValue("sections.sectionTitle.textTransform") === "capitalize",
-          action: (obj: any) => {
-            handleSettingChange({
-              propertyPath: "sections.sectionTitle.textTransform",
-              value: obj.value
-            })
-            setToolsConfig((state) => {
-              const setting = state.setting.map((item: any, index: number) => {
-                if (index === obj.index) {
-                  item["active"] = true
-                }
-                return {...item}
-              })
-              return { ...state, setting }
-            })
-          }
-
+          active: textTransform === "capitalize",
+          action: handleTextTransform,
         },
         {
           label: "None",
           value: "none",
-          active: getSettingValue("sections.sectionTitle.textTransform") === "none",
-          action: (obj: any) => {
-            handleSettingChange({
-              propertyPath: "sections.sectionTitle.textTransform",
-              value: obj.value
-            })
-            setToolsConfig((state) => {
-              const setting = state.setting.map((item: any, index: number) => {
-                if (index === obj.index) {
-                  item["active"] = true
-                }
-                return {...item}
-              })
-              return { ...state, setting }
-            })
-          }
-
+          active: textTransform === "none",
+          action: handleTextTransform,
         },
-      ]
+      ],
     },
   });
+
   return (
     <>
       <style>
@@ -275,8 +254,8 @@ const PageMaker = ({
                     const name = `sections.${section.positionIndex}`;
                     console.log("index--->>>", index);
                     console.log("section--->>>", section);
-                    console.log("name224 ---->>>", name)
-                    if (!section.isVisible) return null
+                    console.log("name224 ---->>>", name);
+                    if (!section.isVisible) return null;
                     return (
                       <div
                         key={pageIndex + columnIndex + index}
@@ -292,12 +271,14 @@ const PageMaker = ({
                         <SubSectionToolBar
                           variant="section"
                           propertyPath={`${name}`}
-                          tools={toolsConfig}
-                          layoutType={section.sectionLayout}
+                          tools={toolsConfig} 
                           format={section.format}
                         />
 
-                        <SectionTitle name={`${name}.sectionTitle.content`} placeholderPath={`${section.format}.sectionTitle.placeholder`} />
+                        <SectionTitle
+                          name={`${name}.sectionTitle.content`}
+                          placeholderPath={`${section.format}.sectionTitle.placeholder`}
+                        />
 
                         {section.sectionLayout === "BulletsCard" && (
                           <BulletsCard

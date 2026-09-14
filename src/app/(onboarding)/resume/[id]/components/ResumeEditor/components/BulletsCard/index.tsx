@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import InputField from "../InputField";
 import TextEditor from "../TextEditor";
 import { useResumeContext } from "../../../../context/resume-editor-context";
@@ -35,12 +35,36 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
   const highlight = textStyles?.highlight;
   const resumeBorder = colors?.border || "#1a202c";
   const gapValue = px(setting?.gap);
-  const rootPlaceholderPathName = `${data.format}.items.0`
+  const rootPlaceholderPathName = `${data.format}.items.0`;
+  const isVisible = (filePath: string) => {
+    return getResumeValue(filePath);
+  };
+  const toggleVisibility = (obj: any) => {
+    updateResume({
+      propertyPath: obj.filePath,
+      value: !obj.active,
+    });
+  };
 
-  const formatData = getResumeFormat(data.format)
-  console.log("name--->>>", name)
-  console.log("data --->>>", data)
-  console.log("name888-->>>", formatData)
+  const createDisplayItem = (
+    rootPathName: string,
+    label: string,
+    property: string,
+  ) => {
+    const filePath = `${rootPathName}.${property}.isVisible`;
+    console.log("filePath2 --->>>", filePath);
+    return {
+      label,
+      filePath,
+      active: isVisible(filePath),
+      action: toggleVisibility,
+    };
+  };
+
+  const formatData = getResumeFormat(data.format);
+  console.log("name--->>>", name);
+  console.log("data --->>>", data);
+  console.log("name888-->>>", formatData);
 
   return (
     <>
@@ -136,10 +160,28 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
 
       <div className="milestone-container">
         {(data?.items || []).map((item: any, itemIndex: number) => {
-          const rootPathName = `${name}.items.${item.positionIndex}`
-          const isVisible = getResumeValue(
+          if (!item.isVisible) return null;
+          const rootPathName = `${name}.items.${item.positionIndex}`;
+          const isImgVisible = getResumeValue(
             `${rootPathName}.orgImg.isVisible`,
           );
+          const toolsConfig = {
+            entry: {},
+            delete: {},
+            rearrange: {},
+            display: {
+              dropdownList: [
+                createDisplayItem(rootPathName, "Image", "orgImg"),
+                createDisplayItem(rootPathName, "Title", "title"),
+                createDisplayItem(rootPathName, "Subtitle", "subtitle"),
+                createDisplayItem(rootPathName, "Link", "link"),
+                createDisplayItem(rootPathName, "Duration", "duration"),
+                createDisplayItem(rootPathName, "Location", "location"),
+                createDisplayItem(rootPathName, "Bullets", "bullets"),
+                createDisplayItem(rootPathName, "Description", "description"),
+              ],
+            },
+          };
           return (
             <div
               key={itemIndex}
@@ -149,8 +191,10 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
               <SubSectionToolBar
                 variant="subsection"
                 propertyPath={rootPathName}
+                tools={toolsConfig}
+                format={data.format}
               />
-              {isVisible && (
+              {isImgVisible && (
                 <div className="organization-logo-box">
                   <ImgPreview
                     rootPath={`${rootPathName}.orgImg`}
@@ -176,163 +220,143 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
                         setting?.sections?.image?.backgroundColor ?? "#f3f4f6",
                       borderColor:
                         setting?.sections?.image?.borderColor ?? "#e5e7eb",
-                      borderWidth:
-                        px(setting?.sections?.image?.borderWidth ?? 1),
-                      padding:
-                        px(setting?.sections?.image?.padding ?? 4),
+                      borderWidth: px(
+                        setting?.sections?.image?.borderWidth ?? 1,
+                      ),
+                      padding: px(setting?.sections?.image?.padding ?? 4),
                     }}
-
                     hide={{ visible: true }}
                   />
                 </div>
               )}
 
               <div className="experience-content">
-                {getValue(
-                  `${rootPathName}.title.isVisible`,
-                ) && (
-                    <SubSectionTitle
-                      name={`${rootPathName}.title.content`}
-                      placeholderPath={`${rootPlaceholderPathName}.title.placeholder`}
+                {getValue(`${rootPathName}.title.isVisible`) && (
+                  <SubSectionTitle
+                    name={`${rootPathName}.title.content`}
+                    placeholderPath={`${rootPlaceholderPathName}.title.placeholder`}
+                  />
+                )}
 
-                    />
-                  )}
-
-                {getValue(
-                  `${rootPathName}.subtitle.isVisible`,
-                ) && (
-                    <OrganizationTitle
-                      name={`${rootPathName}.subtitle.content`}
-                      placeholderPath={`${rootPlaceholderPathName}.subtitle.placeholder`}
-                    />
-                  )}
+                {getValue(`${rootPathName}.subtitle.isVisible`) && (
+                  <OrganizationTitle
+                    name={`${rootPathName}.subtitle.content`}
+                    placeholderPath={`${rootPlaceholderPathName}.subtitle.placeholder`}
+                  />
+                )}
 
                 {/* Metadata */}
-                {(getValue(
-                  `${rootPathName}.duration.isVisible`,
-                ) ||
-                  getValue(
-                    `${rootPathName}.location.isVisible`,
-                  )) && (
-                    <div className="metadata-row">
-                      {getValue(
-                        `${rootPathName}.duration.isVisible`,
-                      ) && (
-                          <div className="resume-metadata-item">
-                            <div className="date-item">
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <rect x="3" y="4" width="18" height="18" rx="2" />
-                                <line x1="16" y1="2" x2="16" y2="6" />
-                                <line x1="8" y1="2" x2="8" y2="6" />
-                                <line x1="3" y1="10" x2="21" y2="10" />
-                              </svg>
-                              <InputField
-                                tag="span"
-                                name={`${rootPathName}.duration.content.from`}
-                                placeholderPath={`${rootPlaceholderPathName}.duration.placeholder.from`}
-                              />
-                            </div>
-                            <div className="date-item">
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <rect x="3" y="4" width="18" height="18" rx="2" />
-                                <line x1="16" y1="2" x2="16" y2="6" />
-                                <line x1="8" y1="2" x2="8" y2="6" />
-                                <line x1="3" y1="10" x2="21" y2="10" />
-                              </svg>
-                              <InputField
-                                tag="span"
-                                name={`${rootPathName}.duration.content.to`}
-                                placeholderPath={`${rootPlaceholderPathName}.duration.placeholder.to`}
-                              />
-                            </div>
-                          </div>
-                        )}
+                {(getValue(`${rootPathName}.duration.isVisible`) ||
+                  getValue(`${rootPathName}.location.isVisible`)) && (
+                  <div className="metadata-row">
+                    {getValue(`${rootPathName}.duration.isVisible`) && (
+                      <div className="resume-metadata-item">
+                        <div className="date-item">
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          >
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                          </svg>
+                          <InputField
+                            tag="span"
+                            name={`${rootPathName}.duration.content.from`}
+                            placeholderPath={`${rootPlaceholderPathName}.duration.placeholder.from`}
+                          />
+                        </div>
+                        <div className="date-item">
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          >
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                          </svg>
+                          <InputField
+                            tag="span"
+                            name={`${rootPathName}.duration.content.to`}
+                            placeholderPath={`${rootPlaceholderPathName}.duration.placeholder.to`}
+                          />
+                        </div>
+                      </div>
+                    )}
 
-                      {getValue(
-                        `${rootPathName}.location.isVisible`,
-                      ) && (
-                          <div className="resume-metadata-item">
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                              <circle cx="12" cy="10" r="3" />
-                            </svg>
-                            <InputField
-                              tag="span"
-                              name={`${rootPathName}.location.content`}
-                              placeholderPath={`${rootPlaceholderPathName}.location.placeholder`}
-                            />
-                          </div>
-                        )}
-                    </div>
-                  )}
-
-                {/* Website Link */}
-                {getValue(
-                  `${rootPathName}.link.isVisible`,
-                ) && (
-                    <div>
-                      <span className="resume-link-text">
+                    {getValue(`${rootPathName}.location.isVisible`) && (
+                      <div className="resume-metadata-item">
                         <svg
-                          width="12"
-                          height="12"
+                          width="14"
+                          height="14"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth="2"
                         >
-                          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                          <circle cx="12" cy="10" r="3" />
                         </svg>
                         <InputField
                           tag="span"
-                          name={`${rootPathName}.link.content`}
-                          placeholderPath={`${rootPlaceholderPathName}.link.placeholder`}
+                          name={`${rootPathName}.location.content`}
+                          placeholderPath={`${rootPlaceholderPathName}.location.placeholder`}
                         />
-                      </span>
-                    </div>
-                  )}
+                      </div>
+                    )}
+                  </div>
+                )}
 
-                {getValue(
-                  `${rootPathName}.description.isVisible`,
-                ) && (
-                    <TextEditor
-                      name={`${rootPathName}.description.content`}
-                      mode="description"
-                      syncWithProp={syncWithProp}
-                      placeholderPath={`${rootPlaceholderPathName}.description.placeholder`}
-                    />
-                  )}
-                {getValue(
-                  `${rootPathName}.bullets.isVisible`,
-                ) && (
-                    <TextEditor
-                      name={`${rootPathName}.bullets.content`}
-                      mode="list"
-                      syncWithProp={syncWithProp}
-                      placeholderPath={`${rootPlaceholderPathName}.bullets.placeholder`}
-                    />
-                  )}
+                {/* Website Link */}
+                {getValue(`${rootPathName}.link.isVisible`) && (
+                  <div>
+                    <span className="resume-link-text">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                      </svg>
+                      <InputField
+                        tag="span"
+                        name={`${rootPathName}.link.content`}
+                        placeholderPath={`${rootPlaceholderPathName}.link.placeholder`}
+                      />
+                    </span>
+                  </div>
+                )}
+
+                {getValue(`${rootPathName}.description.isVisible`) && (
+                  <TextEditor
+                    name={`${rootPathName}.description.content`}
+                    mode="description"
+                    syncWithProp={syncWithProp}
+                    placeholderPath={`${rootPlaceholderPathName}.description.placeholder`}
+                  />
+                )}
+                {getValue(`${rootPathName}.bullets.isVisible`) && (
+                  <TextEditor
+                    name={`${rootPathName}.bullets.content`}
+                    mode="list"
+                    syncWithProp={syncWithProp}
+                    placeholderPath={`${rootPlaceholderPathName}.bullets.placeholder`}
+                  />
+                )}
               </div>
             </div>
           );

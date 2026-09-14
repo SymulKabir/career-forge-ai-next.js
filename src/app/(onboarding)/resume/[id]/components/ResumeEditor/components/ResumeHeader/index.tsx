@@ -1,13 +1,98 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import SubSectionToolBar from "../SubSectionToolBar";
 import { useResumeContext } from "../../../../context/resume-editor-context";
-import { px } from "../../utils/resumeEditor"; 
+import { px } from "../../utils/resumeEditor";
 import InputField from "../InputField";
 import ImgPreview from "../../ImgPreview";
+import { useResume } from "../../../../hooks";
 
 const Index: React.FC = () => {
-  const { setting, resumeData } = useResumeContext(); 
+  const { setting, resumeData } = useResumeContext();
+  const { updateResume, getResumeValue } = useResume();
+  let fileInputRef = useRef<HTMLInputElement>(null);
+  const isVisible = (filePath: string) => {
+    return getResumeValue(filePath);
+  };
+  const toggleVisibility = (obj: any) => {
+    updateResume({
+      propertyPath: obj.filePath,
+      value: !obj.active,
+    });
 
+    // Update active state
+    setToolsConfig((state) => ({
+      ...state,
+      display: {
+        ...state.display,
+        dropdownList: state.display.dropdownList.map(
+          (item: any, index: number) => ({
+            ...item,
+            active: index === obj.index ? !obj.active : item.active,
+          }),
+        ),
+      },
+    }));
+  };
+
+  const [toolsConfig, setToolsConfig] = useState({
+    picture: {
+      action: () => {
+        fileInputRef?.current?.click();
+      },
+    },
+    display: {
+      dropdownList: [
+        {
+          label: "Photo",
+          filePath: "header.picture.isVisible",
+          active: isVisible("header.picture.isVisible"),
+          action: toggleVisibility,
+        },
+        {
+          label: "Title",
+          filePath: "header.headline.isVisible",
+          active: isVisible("header.headline.isVisible"),
+          action: toggleVisibility,
+        },
+        {
+          label: "Date of Birth",
+          filePath: "header.dob.isVisible",
+          active: isVisible("header.dob.isVisible"),
+          action: toggleVisibility,
+        },
+        {
+          label: "Location",
+          filePath: "header.location.isVisible",
+          active: isVisible("header.location.isVisible"),
+          action: toggleVisibility,
+        },
+        {
+          label: "Email",
+          filePath: "header.email.isVisible",
+          active: isVisible("header.email.isVisible"),
+          action: toggleVisibility,
+        },
+        {
+          label: "Phone",
+          filePath: "header.phone.isVisible",
+          active: isVisible("header.phone.isVisible"),
+          action: toggleVisibility,
+        },
+        {
+          label: "website",
+          filePath: "header.website.isVisible",
+          active: isVisible("header.website.isVisible"),
+          action: toggleVisibility,
+        },
+        {
+          label: "Github",
+          filePath: "header.github.isVisible",
+          active: isVisible("header.github.isVisible"),
+          action: toggleVisibility,
+        },
+      ],
+    },
+  });
   const config = {
     layout: setting?.header?.layout,
     background: setting?.header?.background,
@@ -126,7 +211,11 @@ const Index: React.FC = () => {
         className={`resume-header layout-${config.layout} active-focus`}
         tabIndex={0}
       >
-        <SubSectionToolBar variant="subsection" propertyPath="header" />
+        <SubSectionToolBar
+          variant="subsection"
+          propertyPath="header"
+          tools={toolsConfig}
+        />
 
         <div className="header-content-wrapper">
           <div className="header-text-block">
@@ -196,6 +285,7 @@ const Index: React.FC = () => {
                   ? px(config.imageRadius)
                   : config.imageRadius,
             }}
+            fileInputRef={fileInputRef}
           />
         </div>
       </header>

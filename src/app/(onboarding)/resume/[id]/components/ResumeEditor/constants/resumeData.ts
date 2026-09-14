@@ -80,6 +80,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       sectionTitle: { content: "Professional Experience", isVisible: true },
       items: [
         {
+          isVisible: true,
           orgImg: {
             imgContent: "",
             isVisible: true,
@@ -126,6 +127,7 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
         },
         {
+          isVisible: true,
           orgImg: {
             imgContent: "",
             isVisible: true,
@@ -181,6 +183,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       sectionTitle: { content: "Summary", isVisible: true },
       items: [
         {
+          isVisible: true,
           description: {
             content:
               "Driven Full Stack Software Engineer and technical lead with deep expertise in modern web frameworks, cloud containerization, and artificial intelligence integration. Adept at transforming complex business requirements into high-performing, secure, and scalable software solutions.",
@@ -198,6 +201,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       sectionTitle: { content: "Technical Skills", isVisible: true },
       items: [
         {
+          isVisible: true,
           title: {
             content: "Frontend & Web",
             isVisible: true,
@@ -215,6 +219,7 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
         },
         {
+          isVisible: true,
           title: {
             content: "Backend & Databases",
             isVisible: true,
@@ -233,6 +238,7 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
         },
         {
+          isVisible: true,
           title: {
             content: "AI & Cloud DevOps",
             isVisible: true,
@@ -260,6 +266,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       sectionTitle: { content: "Education & Qualifications", isVisible: true },
       items: [
         {
+          isVisible: true,
           orgImg: {
             imgContent: "",
             isVisible: true,
@@ -283,6 +290,7 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
         },
         {
+          isVisible: true,
           title: {
             content: "Bachelor of Science",
             isVisible: true,
@@ -311,6 +319,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       sectionTitle: { content: "Find Me Online", isVisible: true },
       items: [
         {
+          isVisible: true,
           orgImg: {
             imgContent: "",
             isVisible: true,
@@ -326,6 +335,7 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
         },
         {
+          isVisible: true,
           orgImg: {
             imgContent: "",
             isVisible: true,
@@ -341,6 +351,7 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
         },
         {
+          isVisible: true,
           orgImg: {
             imgContent: "",
             isVisible: true,

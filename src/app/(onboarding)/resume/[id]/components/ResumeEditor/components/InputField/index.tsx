@@ -9,18 +9,18 @@ interface EditableTextProps {
   tag?: any;
   name?: string;
   className?: string;
-  placeholderPath?: string; 
+  placeholderPath?: string | null; 
 }
 
 const Index: React.FC<EditableTextProps> = ({
   tag = "span",
   name,
   className,
-  placeholderPath 
+  placeholderPath=null
 }) => {
   const { getValue } = useEditor();
   const Component = tag as any;
-  const placeholder = getResumeFormat(placeholderPath) || "Typing here..."
+  const placeholder = placeholderPath ? getResumeFormat(placeholderPath) || "Typing here..." : "Typing here..."
 console.log("placeholderPath --->>>", placeholderPath)
 console.log("placeholder --->>>", placeholder)
   return (

@@ -27,6 +27,7 @@ export const RESUME_FORMAT = {
     },
   },
   professionalExperience: {
+    isVisible: true,
     column: 0,
     position: 0,
     sectionLayout: "BulletsCard",
@@ -37,6 +38,7 @@ export const RESUME_FORMAT = {
     },
     items: [
       {
+        isVisible: true,
         orgImg: {
           imgContent: "",
           isVisible: true,
@@ -84,12 +86,14 @@ export const RESUME_FORMAT = {
     ],
   },
   summary: {
+    isVisible: true,
     column: 0,
     position: 1,
     sectionLayout: "DescriptionCard",
     sectionTitle: { content: "", placeholder: "Summary", isVisible: true },
     items: [
       {
+        isVisible: true,
         description: {
           content: "",
           placeholder: "Write a short summary about yourself...",
@@ -99,12 +103,14 @@ export const RESUME_FORMAT = {
     ],
   },
   skills: {
+    isVisible: true,
     column: 1,
     position: 0,
     sectionLayout: "TagCard",
     sectionTitle: { content: "", placeholder: "Skills", isVisible: true },
     items: [
       {
+        isVisible: true,
         title: {
           content: "",
           placeholder: "Skill Category (e.g. Frontend)",
@@ -119,12 +125,14 @@ export const RESUME_FORMAT = {
     ],
   },
   education: {
+    isVisible: true,
     column: 1,
     position: 1,
     sectionLayout: "BadgeTitleCard",
     sectionTitle: { content: "", placeholder: "Education", isVisible: true },
     items: [
       {
+        isVisible: true,
         orgImg: {
           imgContent: "",
           isVisible: true,
@@ -152,6 +160,7 @@ export const RESUME_FORMAT = {
     ],
   },
   socialLinks: {
+    isVisible: true,
     column: 1,
     position: 2,
     sectionLayout: "LinkCard",
@@ -162,6 +171,7 @@ export const RESUME_FORMAT = {
     },
     items: [
       {
+        isVisible: true,
         orgImg: {
           imgContent: "",
           isVisible: true,
