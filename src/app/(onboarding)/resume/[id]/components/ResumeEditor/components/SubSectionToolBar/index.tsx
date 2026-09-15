@@ -89,8 +89,6 @@ export default function ResumeToolbar({
     addResumeListItem(newDataPositionPath, formatData, 0);
   };
   const hideSection = () => {
-    console.log("HideSection ---->>>>>")
-    console.log("propertyPath ---->>>", propertyPath) 
     updateResume({
       propertyPath: `${propertyPath}.isVisible`,
       value: false,
@@ -116,9 +114,7 @@ export default function ResumeToolbar({
   return (
     <div className="section-tools hidden justify-center absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+10px)] z-40 avoid-default">
       <div className="relative inline-block font-sans" ref={dropdownRef}>
-        {/* Responsive Light Glass Toolbar Container */}
         <div className="flex items-center bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-xl px-2 py-1.5 gap-1 text-slate-700 select-none flex-wrap sm:flex-nowrap">
-          {/* Primary Action: Add Entry (Only for Subsections) */}
           {tools?.entry && (
             <>
               <button

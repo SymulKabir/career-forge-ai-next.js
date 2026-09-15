@@ -14,6 +14,7 @@ import ResumeHeader from "./components/ResumeHeader";
 import { useInitResume, useResume } from "../../hooks";
 import { paginateResumeSections } from "./utils";
 import { RESUME_FORMAT } from "./constants/resumeForma";
+import SectionGallery from "./components/SectionGallery" 
 
 const Index = () => {
   const {
@@ -318,6 +319,11 @@ const PageMaker = ({
           </div>
         </div>
       </div>
+      <SectionGallery
+        isOpen={true}
+        onClose={() => {}}
+        onSelectSection={() => {}}
+      />
     </>
   );
 };

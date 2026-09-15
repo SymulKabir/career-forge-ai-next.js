@@ -149,8 +149,8 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
           left: 0;
           width: 100%;
           height: 100%;
-          min-width: 100px;
-          min-height: 100px;
+          // min-width: 100px;
+          // min-height: 100px;
           background: rgba(0, 0, 0, 0.5);
           display: flex;
           align-items: center;
@@ -158,8 +158,7 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
           gap: 12px;
           opacity: 0;
           transition: opacity 0.2s ease-in-out; 
-          color: #FFF;
-          // border-radius: ${styles.radius};
+          color: #FFF; 
         }
 
         .preview-img-container:hover .image-hover-actions {
