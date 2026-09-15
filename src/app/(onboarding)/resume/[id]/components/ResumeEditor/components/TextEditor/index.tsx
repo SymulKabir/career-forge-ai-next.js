@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import {
   RotateCcw,
   RotateCw,
@@ -17,13 +23,15 @@ import {
 } from "lucide-react";
 import useEditor from "../../hooks/useEditor";
 import { getResumeFormat } from "../../../../utils/resume";
+import { useResume } from "../../../../hooks";
+import { debounce } from "../../../../utils/debounce";
 
 interface EditableTextProps {
   name?: string;
   className?: string;
   mode?: "free" | "description" | "list";
   syncWithProp?: boolean; // Controls if it should force update when external data changes
-  placeholderPath?:string;
+  placeholderPath?: string;
 }
 
 const Index: React.FC<EditableTextProps> = ({
@@ -49,13 +57,32 @@ const Index: React.FC<EditableTextProps> = ({
   });
 
   const { getValue, handleInputChange } = useEditor();
-  const placeholder = getResumeFormat(placeholderPath) || "Type here..."
+  const { updateResume } = useResume();
+  const placeholder = getResumeFormat(placeholderPath) || "Type here...";
 
+  const debouncedUpdateResume = useRef(
+    debounce((propertyPath: string, value: string) => {
+      console.log("Saving:", {
+        propertyPath,
+        value,
+      });
+
+      updateResume({
+        propertyPath,
+        value,
+      });
+    }, 500),
+  ).current;
+  useEffect(() => {
+    return () => {
+      debouncedUpdateResume.cancel();
+    };
+  }, [debouncedUpdateResume]);
   // Control default value assignment & conditional re-rendering update
-  useLayoutEffect(() => { 
+  useLayoutEffect(() => {
     if (editorRef.current && name) {
       const externalValue = getValue(name) || "";
-      
+
       if (syncWithProp) {
         // If sync is true, update DOM whenever external value changes
         if (editorRef.current.innerHTML !== externalValue) {
@@ -225,46 +252,40 @@ const Index: React.FC<EditableTextProps> = ({
     group.allowedModes.includes(mode),
   );
 
-
-
-
   const handleEditorChange = (e: React.FormEvent<HTMLDivElement>) => {
     const currentTarget = e.currentTarget;
     const name = currentTarget.dataset.name;
     const value = currentTarget.innerHTML;
+
     handleInput();
 
-    if (!name || !handleInputChange) {
+    if (!name) {
       return;
     }
 
-    const syntheticTargetEvent = {
-        target: {
-          name: name,
-          value: value,
-          innerHTML: value,
-          getAttribute: (attr: string) => currentTarget.getAttribute(attr),
-        },
-        currentTarget: {
-          name: name,
-          value: value,
-          innerHTML: value,
-          dataset: { name },
-          getAttribute: (attr: string) => currentTarget.getAttribute(attr),
-        },
-      };
-
-      handleInputChange(
-        syntheticTargetEvent as unknown as React.FormEvent<HTMLDivElement>,
-      );
+    updateResume({
+      propertyPath: name,
+      value: value,
+    });
   };
 
   return (
     <>
-      <div className="flex justify-center font-sans">
-        <div className="w-full flex flex-col relative group">
+      <div className="flex w-full justify-center font-sans ">
+        <div className="w-[100%] flex flex-col relative group  ">
           {/* Top Toolbar */}
-          <div className="hidden group-focus-within:flex print:hidden bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-xl items-center gap-1.5 p-1.5 absolute w-max max-w-full left-1/2 -translate-x-1/2 bottom-[calc(100%+12px)] z-50 shadow-xl shadow-slate-200/50 overflow-x-auto whitespace-nowrap scrollbar-none transition-all duration-200 animate-in fade-in slide-in-from-bottom-2 avoid-default">
+          <div
+            className={`
+              hidden group-focus-within:flex 
+              print:hidden bg-white/90 backdrop-blur-md border 
+              border-slate-200/80 rounded-xl items-center gap-1.5 p-1.5 
+              absolute w-max max-w-full 
+              left-1/2 -translate-x-1/2
+              top-[calc(100%+5px)] z-50 shadow-xl shadow-slate-200/50 
+              overflow-x-auto whitespace-nowrap scrollbar-none 
+              transition-all duration-200 animate-in fade-in 
+              slide-in-from-bottom-2 avoid-default`}
+          >
             {activeGroups.map((group, groupIdx) => (
               <React.Fragment key={group.id}>
                 {groupIdx > 0 && (
@@ -301,7 +322,7 @@ const Index: React.FC<EditableTextProps> = ({
             data-name={name}
             data-placeholder={placeholder}
             datatype="htmlEditor"
-            className={`editor-content h-max min-h-[5px] text-[15px] leading-[1.6] text-[#2d3748] outline-none overflow-y-auto ${className || ""}`}
+            className={`editor-content !w-[100%] h-max min-h-[5px] text-[15px] leading-[1.6] text-[#2d3748] outline-none overflow-y-auto ${className || ""}`}
             contentEditable
             onInput={handleEditorChange}
             onBlur={handleBlur}

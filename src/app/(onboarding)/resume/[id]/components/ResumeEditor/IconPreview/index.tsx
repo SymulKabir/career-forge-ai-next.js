@@ -89,7 +89,7 @@ const IconPreview: React.FC<IconPreviewProps> = ({
    */
 
   const iconNamePath =
-    `${rootPath}.iconName`;
+    `${rootPath}.iconContent`;
 
   /*
    * =========================================

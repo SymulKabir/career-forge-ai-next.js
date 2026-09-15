@@ -107,20 +107,21 @@ export const RESUME_FORMAT = {
     column: 1,
     position: 0,
     sectionLayout: "TagCard",
+    tagStyle: "full-border-style", 
     sectionTitle: { content: "", placeholder: "Skills", isVisible: true },
     items: [
       {
         isVisible: true,
         title: {
           content: "",
-          placeholder: "Skill Category (e.g. Frontend)",
+          placeholder: "Skill Category",
           isVisible: true,
         },
         lists: {
-          content: [],
-          placeholder: ["React", "TypeScript", "Tailwind"],
+          content: [""],
+          placeholder: ["Add Skill"],
           isVisible: true,
-        },
+        }, 
       },
     ],
   },
@@ -172,8 +173,8 @@ export const RESUME_FORMAT = {
     items: [
       {
         isVisible: true,
-        orgImg: {
-          imgContent: "",
+        orgIcon: {
+          iconContent: "",
           isVisible: true,
           position: { zoom: 1, x: 0, y: 0 },
         },

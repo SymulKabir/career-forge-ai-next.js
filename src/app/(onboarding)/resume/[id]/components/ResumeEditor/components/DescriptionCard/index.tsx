@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import TextEditor from "../TextEditor";
-import { useResumeContext } from "../../../../context/resume-editor-context"; 
+import { useResumeContext } from "../../../../context/resume-editor-context";
 import SubSectionToolBar from "../SubSectionToolBar";
 import useEditor from "../../hooks/useEditor";
+import { useResume } from "../../../../hooks";
 
 interface ExperienceProps {
   data?: any;
-  name?: any; 
-  syncWithProp?: any; 
+  name?: any;
+  syncWithProp?: any;
 }
 
 const px = (value?: number | string) => {
@@ -19,20 +20,42 @@ const px = (value?: number | string) => {
   return `${value}px`;
 };
 
-const Index: React.FC<ExperienceProps> = ({
-  data,
-  name,
-  syncWithProp,
-}) => {
+const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
   const { font, textStyles, colors } = setting || {};
   const sectionTitle = textStyles?.sectionTitle;
   const body = textStyles?.body;
   const metadata = textStyles?.metadata;
-  const highlight = textStyles?.highlight; 
-  const resumeBorder = colors?.border || "#1a202c"; 
+  const highlight = textStyles?.highlight;
+  const resumeBorder = colors?.border || "#1a202c";
   const gapValue = px(setting?.gap);
+  const { getResumeValue, updateResume } = useResume();
+  const rootPlaceholderPathName = `${data.format}.items.0`;
+
+  const isVisible = (filePath: string) => {
+    return getResumeValue(filePath);
+  };
+
+  const toggleVisibility = (obj: any) => {
+    updateResume({
+      propertyPath: obj.filePath,
+      value: !obj.active,
+    });
+  };
+  const createDisplayItem = (
+    rootPathName: string,
+    label: string,
+    property: string,
+  ) => {
+    const filePath = `${rootPathName}.${property}.isVisible`;
+    return {
+      label,
+      filePath,
+      active: isVisible(filePath),
+      action: toggleVisibility,
+    };
+  };
 
   return (
     <>
@@ -106,29 +129,48 @@ const Index: React.FC<ExperienceProps> = ({
          
       `}</style>
 
-      <div
-        className="milestone-container " 
-      > 
-
-        {(data?.items || []).map((item: any, itemIndex: number) => (
-          <div
-            key={itemIndex}
-            tabIndex={item.positionIndex}
-            className="subsection-card sub-section-padding active-focus"
-          >
-            <SubSectionToolBar
-              variant="subsection"
-              propertyPath={`${name}.items.${item.positionIndex}`}
-            />
-            {getValue(`${name}.items.${item.positionIndex}.description.isVisible`) && (
-              <TextEditor
-                name={`${name}.items.${item.positionIndex}.description.content`}
-                mode="description"
-                syncWithProp={syncWithProp}
+      <div className="milestone-container">
+        {(data?.items || []).map((item: any, itemIndex: number) => {
+          if (!item.isVisible) return null;
+          const rootPathName = `${name}.items.${item.positionIndex}`;
+          const toolsConfig = {
+            entry: {},
+            duration: {},
+            delete: {},
+            move: {
+              maxIndex: data?.items?.length ? data?.items?.length - 1 : 0,
+            },
+            display: {
+              dropdownList: [
+                createDisplayItem(rootPathName, "Description", "description"),
+              ],
+            },
+          };
+          return (
+            <div
+              key={itemIndex}
+              tabIndex={item.positionIndex}
+              className="subsection-card sub-section-padding active-focus"
+            >
+              <SubSectionToolBar
+                variant="subsection"
+                propertyPath={rootPathName}
+                tools={toolsConfig}
+                format={data.format}
               />
-            )}
-          </div>
-        ))}
+              {getValue(
+                `${name}.items.${item.positionIndex}.description.isVisible`,
+              ) && (
+                <TextEditor
+                  name={`${rootPathName}.description.content`}
+                  mode="description"
+                  syncWithProp={syncWithProp}
+                  placeholderPath={`${rootPlaceholderPathName}.bullets.placeholder`}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
     </>
   );

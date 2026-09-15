@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import InputField from "../InputField";
+import TagInputField from "../TagInputField";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import { useResume } from "../../../../hooks/index";
 import SubSectionTitle from "../SubSectionTitle";
@@ -24,13 +24,47 @@ const px = (value?: number | string) => {
 const SkillsCard: React.FC<SkillsProps> = ({ data, name, syncWithProp }) => {
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
-  const { getResumeValue } = useResume();
+  const { getResumeValue, updateResume } = useResume();
   const { textStyles, colors } = setting || {};
   const sectionTitle = textStyles?.sectionTitle;
-  const body = textStyles?.body;
   const resumeBorder = colors?.border || "#1a202c";
-  const chipBackground = colors?.companyLogoBackground || "#edf2f7";
   const gapValue = px(setting?.gap);
+  const isVisible = (filePath: string) => {
+    return getResumeValue(filePath);
+  };
+  const toggleVisibility = (obj: any) => {
+    updateResume({
+      propertyPath: obj.filePath,
+      value: !obj.active,
+    });
+  };
+
+  const createDisplayItem = (
+    rootPathName: string,
+    label: string,
+    property: string,
+  ) => {
+    const filePath = `${rootPathName}.${property}.isVisible`;
+    return {
+      label,
+      filePath,
+      active: isVisible(filePath),
+      action: toggleVisibility,
+    };
+  };
+
+  const isActiveStyle = (styleName: string) => {
+    if (!data.tagStyle) {
+      return styleName === "full-border-style";
+    }
+    return data.tagStyle === styleName;
+  };
+  const makeStyleAction = (obj: any) => {
+    updateResume({
+      propertyPath: `${name}.tagStyle`,
+      value: obj.value,
+    });
+  };
 
   return (
     <>
@@ -122,34 +156,98 @@ const SkillsCard: React.FC<SkillsProps> = ({ data, name, syncWithProp }) => {
 
       <div className="skills-container">
         {(data?.items || []).map((item: any, itemIndex: number) => {
-          const itemPath = `${name}.items.${item.positionIndex ?? itemIndex}`;
-          const isTitleVisible = getValue(`${itemPath}.title.isVisible`);
-          const listContent = getResumeValue(`${itemPath}.lists.content`) || [];
+          if (!item.isVisible) return null;
+          const rootPathName = `${name}.items.${item.positionIndex}`;
+          const rootPlaceholderPathName = `${data.format}.items.0`;
+          const isTitleVisible = getValue(`${rootPathName}.title.isVisible`);
+          const isListVisible = getValue(`${rootPathName}.lists.isVisible`);
+          const listContent =
+            getResumeValue(`${rootPathName}.lists.content`) || [];
+          const toolsConfig = {
+            entry: {},
+            duration: {},
+            delete: {},
+            move: {
+              maxIndex: data?.items?.length ? data?.items?.length - 1 : 0,
+            },
+            display: {
+              dropdownList: [
+                createDisplayItem(rootPathName, "Title", "title"),
+                createDisplayItem(rootPathName, "Lists", "lists"),
+              ],
+            },
+            setting: {
+              dropdownList: [
+                {
+                  header: "Tags Style",
+                },
+                {
+                  label: "Full Border",
+                  value: "full-border-style",
+                  active: isActiveStyle("full-border-style"),
+                  action: makeStyleAction,
+                },
+                {
+                  label: "Bottom Border Style",
+                  value: "bottom-border-style",
+                  active: isActiveStyle("bottom-border-style"),
+                  action: makeStyleAction,
+                },
+                {
+                  label: "List Style",
+                  value: "list-style",
+                  active: isActiveStyle("list-style"),
+                  action: makeStyleAction,
+                },
+                {
+                  label: "Bullet Style",
+                  value: "bullet-style",
+                  active: isActiveStyle("bullet-style"),
+                  action: makeStyleAction,
+                },
+              ],
+            },
+          };
+
           return (
             <div
               key={itemIndex}
               tabIndex={item.positionIndex ?? itemIndex}
               className="skill-group-card sub-section-padding sub-section-divider active-focus"
             >
-              <SubSectionToolBar variant="subsection" propertyPath={itemPath} />
-
+              <SubSectionToolBar
+                variant="subsection"
+                propertyPath={rootPathName}
+                tools={toolsConfig}
+                format={data.format}
+              />
               {isTitleVisible && (
                 <div className="skill-title-wrapper">
-                  <SubSectionTitle name={`${itemPath}.title.content`} />
+                  <SubSectionTitle 
+                  name={`${rootPathName}.title.content`} 
+                   placeholderPath={`${rootPlaceholderPathName}.title.placeholder`}
+                  />
                 </div>
               )}
 
-              <div className="list-input-container full-border-style">
-                {listContent.map((_, skillIdx: number) => {
-                  return (
-                    <InputField
-                      tag="p"
-                      name={`${itemPath}.lists.content.${skillIdx}`}
-                      className="item"
-                    />
-                  );
-                })}
-              </div>
+              {isListVisible && (
+                <div
+                  className={`list-input-container ${data.tagStyle || "full-border-style"}`}
+                >
+                  {" "}
+                  {/* full-border-style, bottom-border-style, list-style, bullet-style */}
+                  {listContent.map((_, skillIdx: number) => {
+                    return (
+                      <TagInputField
+                        tag="p"
+                        name={`${rootPathName}.lists.content.${skillIdx}`}
+                        placeholderPath={`${rootPlaceholderPathName}.lists.placeholder.${skillIdx}`}
+                        className="item"
+                      />
+                    );
+                  })}
+                </div>
+              )}
             </div>
           );
         })}

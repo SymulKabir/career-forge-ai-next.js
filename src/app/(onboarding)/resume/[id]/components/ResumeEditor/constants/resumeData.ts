@@ -100,7 +100,7 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
           duration: {
             content: {
-              from: "07/2023",
+              from: "Jul 2023",
               to: "Present",
             },
             isVisible: true,
@@ -147,8 +147,8 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
           duration: {
             content: {
-              from: "01/2022",
-              to: "06/2023",
+              from: "Jan 2022",
+              to: "Jun 2023",
             },
             isVisible: true,
           },
@@ -178,7 +178,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       column: 0,
       position: 1,
       isVisible: true,
-      sectionLayout: "summary",
+      sectionLayout: "DescriptionCard",
       format:"professionalExperience",
       sectionTitle: { content: "Summary", isVisible: true },
       items: [
@@ -197,6 +197,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       position: 0,
       isVisible: true,
       sectionLayout: "TagCard",
+      tagStyle: "full-border-style", // full-border-style, bottom-border-style, list-style, bullet-style
       format:"skills",
       sectionTitle: { content: "Technical Skills", isVisible: true },
       items: [
@@ -267,8 +268,8 @@ export const DUMMY_STRUCTURED_RESUME = {
       items: [
         {
           isVisible: true,
-          orgImg: {
-            imgContent: "",
+          orgIcon: {
+            iconContent: "",
             isVisible: true,
             position: { zoom: 1, x: 0, y: 0 },
           },
@@ -278,8 +279,8 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
           duration: {
             content: {
-              from: "2021",
-              to: "2022",
+              from: "Jan 2021",
+              to: "Jan 2022",
             },
             isVisible: true,
           },
@@ -297,8 +298,8 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
           duration: {
             content: {
-              from: "2017",
-              to: "2021",
+              from: "May 2017",
+              to: "May 2021",
             },
             isVisible: true,
           },
@@ -320,8 +321,8 @@ export const DUMMY_STRUCTURED_RESUME = {
       items: [
         {
           isVisible: true,
-          orgImg: {
-            imgContent: "",
+          orgIcon: {
+            iconContent: "",
             isVisible: true,
             position: { zoom: 1, x: 0, y: 0 },
           },
@@ -336,8 +337,8 @@ export const DUMMY_STRUCTURED_RESUME = {
         },
         {
           isVisible: true,
-          orgImg: {
-            imgContent: "",
+          orgIcon: {
+            iconContent: "",
             isVisible: true,
             position: { zoom: 1, x: 0, y: 0 },
           },
@@ -352,8 +353,8 @@ export const DUMMY_STRUCTURED_RESUME = {
         },
         {
           isVisible: true,
-          orgImg: {
-            imgContent: "",
+          orgIcon: {
+            iconContent: "",
             isVisible: true,
             position: { zoom: 1, x: 0, y: 0 },
           },
@@ -363,761 +364,6 @@ export const DUMMY_STRUCTURED_RESUME = {
           },
           link: {
             content: "https://symulkabir.vercel.app",
-            isVisible: true,
-          },
-        },
-      ],
-    },
-  ],
-};
-
-export const DUMMY_STRUCTURED_RESUME2 = {
-  header: {
-    fullName: { content: "Symul Kabir", isVisible: true },
-    headline: { content: "Junior CTO & Full Stack Developer", isVisible: true },
-    email: { content: "saimonpranta@gmail.com", isVisible: true },
-    phone: { content: "+8801881476432", isVisible: true },
-    location: { content: "Khilkhet, Dhaka", isVisible: true },
-    website: { content: "https://symulkabir.vercel.app", isVisible: true },
-    github: { content: "https://symulkabir.vercel.app", isVisible: true },
-    dob: { content: "07 May 1999", isVisible: true },
-    picture: {
-      imgContent: "",
-      position: { zoom: 1, x: 0, y: 0 },
-      isVisible: true,
-    },
-  },
-  sections: [
-    {
-      column: 0,
-      position: 0,
-      sectionLayout: "BulletsCard",
-      sectionTitle: { content: "Experience", isVisible: true },
-      items: [
-        {
-          orgImg: {
-            imgContent: "",
-            isVisible: true,
-            position: {
-              zoom: 1,
-              x: 0,
-              y: 0,
-            },
-          },
-          title: {
-            content: "1 Junior CTO & Full Stack Developer",
-            isVisible: true,
-          },
-          subtitle: {
-            content: "Micple Company Ltd",
-            isVisible: true,
-          },
-          link: {
-            content: "https://micple.com/",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          location: {
-            content: "Khilkhet, Dhaka",
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
-            isVisible: true,
-          },
-          bullets: {
-            content: `
-              <ul>
-                <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-                <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-                <li>Design, configure, and maintain Linux-based production servers.</li>
-                <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-                  <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-                <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-                <li>Design, configure, and maintain Linux-based production servers.</li>
-                <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-                  <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-                <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-                <li>Design, configure, and maintain Linux-based production servers.</li>
-              </ul>
-            `,
-            isVisible: true,
-          },
-        },
-        {
-          title: {
-            content: "2 MERN Stack Developer",
-            isVisible: true,
-          },
-          subtitle: {
-            content: "Ameliasoft Ltd",
-            isVisible: true,
-          },
-          link: {
-            content: "https://ameliasoft.com",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          location: {
-            content: "Sector 12, Uttara, Dhaka",
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-          bullets: {
-            content: `
-    <ul>
-      <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-      <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-      <li>Design, configure, and maintain Linux-based production servers.</li>
-      <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-    </ul>
-  `,
-            isVisible: true,
-          },
-        },
-        {
-          title: {
-            content: "3 MERN Stack Developer",
-            isVisible: true,
-          },
-          subtitle: {
-            content: "Ameliasoft Ltd",
-            isVisible: true,
-          },
-          link: {
-            content: "https://ameliasoft.com",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          location: {
-            content: "Sector 12, Uttara, Dhaka",
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-          bullets: {
-            content: `
-    <ul>
-      <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-      <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-      <li>Design, configure, and maintain Linux-based production servers.</li>
-      <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-    </ul>
-  `,
-            isVisible: true,
-          },
-        },
-        {
-          title: {
-            content: "4 MERN Stack Developer",
-            isVisible: true,
-          },
-          subtitle: {
-            content: "Ameliasoft Ltd",
-            isVisible: true,
-          },
-          link: {
-            content: "https://ameliasoft.com",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          location: {
-            content: "Sector 12, Uttara, Dhaka",
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-          bullets: {
-            content: `
-    <ul>
-      <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-      <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-      <li>Design, configure, and maintain Linux-based production servers.</li>
-      <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-    </ul>
-  `,
-            isVisible: true,
-          },
-        },
-      ],
-    },
-    {
-      column: 0,
-      sectionLayout: "DescriptionCard",
-      sectionTitle: { content: "Summary", isVisible: true },
-      items: [
-        {
-          description: {
-            content:
-              "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
-            isVisible: true,
-          },
-        },
-        {
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-        },
-      ],
-    },
-    {
-      column: 0,
-      sectionLayout: "DescriptionCard",
-      sectionTitle: { content: "Summary", isVisible: true },
-      items: [
-        {
-          description: {
-            content:
-              "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
-            isVisible: true,
-          },
-        },
-        {
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-        },
-      ],
-    },
-    {
-      column: 1,
-      sectionLayout: "BulletsCard",
-      sectionTitle: { content: "Experience", isVisible: true },
-      items: [
-        {
-          title: {
-            content: "Junior CTO & Full Stack Developer",
-            isVisible: true,
-          },
-          subtitle: {
-            content: "Micple Company Ltd",
-            isVisible: true,
-          },
-          link: {
-            content: "https://micple.com/",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          location: {
-            content: "Khilkhet, Dhaka",
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
-            isVisible: true,
-          },
-          bullets: {
-            content: `
-      <ul>
-        <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-        <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-        <li>Design, configure, and maintain Linux-based production servers.</li>
-        <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-      </ul>
-    `,
-            isVisible: true,
-          },
-        },
-        {
-          title: {
-            content: "MERN Stack Developer",
-            isVisible: true,
-          },
-          subtitle: {
-            content: "Ameliasoft Ltd",
-            isVisible: true,
-          },
-          link: {
-            content: "https://ameliasoft.com",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          location: {
-            content: "Sector 12, Uttara, Dhaka",
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-          bullets: {
-            content: `
-      <ul>
-        <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-        <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-        <li>Design, configure, and maintain Linux-based production servers.</li>
-        <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-      </ul>
-    `,
-            isVisible: true,
-          },
-        },
-      ],
-    },
-    {
-      column: 0,
-      sectionLayout: "BulletsCard",
-      sectionTitle: { content: "Experience 44", isVisible: true },
-      items: [
-        {
-          title: {
-            content: "Junior CTO & Full Stack Developer",
-            isVisible: true,
-          },
-          subtitle: {
-            content: "Micple Company Ltd",
-            isVisible: true,
-          },
-          link: {
-            content: "https://micple.com/",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          location: {
-            content: "Khilkhet, Dhaka",
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
-            isVisible: true,
-          },
-          bullets: {
-            content: `
-      <ul>
-        <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-        <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-        <li>Design, configure, and maintain Linux-based production servers.</li>
-        <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-      </ul>
-    `,
-            isVisible: true,
-          },
-        },
-        {
-          title: {
-            content: "MERN Stack Developer",
-            isVisible: true,
-          },
-          subtitle: {
-            content: "Ameliasoft Ltd",
-            isVisible: true,
-          },
-          link: {
-            content: "https://ameliasoft.com",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          location: {
-            content: "Sector 12, Uttara, Dhaka",
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-          bullets: {
-            content: `
-      <ul>
-        <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-        <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-        <li>Design, configure, and maintain Linux-based production servers.</li>
-        <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-      </ul>
-    `,
-            isVisible: true,
-          },
-        },
-      ],
-    },
-    {
-      column: 1,
-      sectionLayout: "DescriptionCard",
-      sectionTitle: { content: "Summary", isVisible: true },
-      items: [
-        {
-          description: {
-            content:
-              "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
-            isVisible: true,
-          },
-        },
-        {
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-        },
-      ],
-    },
-    {
-      column: 0,
-      sectionLayout: "DescriptionCard",
-      sectionTitle: { content: "Summary", isVisible: true },
-      items: [
-        {
-          description: {
-            content:
-              "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
-            isVisible: true,
-          },
-        },
-        {
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-        },
-      ],
-    },
-    {
-      column: 1,
-      sectionLayout: "BulletsCard",
-      sectionTitle: { content: "Experience", isVisible: true },
-      items: [
-        {
-          title: {
-            content: "Junior CTO & Full Stack Developer",
-            isVisible: true,
-          },
-          subtitle: {
-            content: "Micple Company Ltd",
-            isVisible: true,
-          },
-          link: {
-            content: "https://micple.com/",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          location: {
-            content: "Khilkhet, Dhaka",
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
-            isVisible: true,
-          },
-          bullets: {
-            content: `
-      <ul>
-        <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-        <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-        <li>Design, configure, and maintain Linux-based production servers.</li>
-        <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-      </ul>
-    `,
-            isVisible: true,
-          },
-        },
-        {
-          title: {
-            content: "MERN Stack Developer",
-            isVisible: true,
-          },
-          subtitle: {
-            content: "Ameliasoft Ltd",
-            isVisible: true,
-          },
-          link: {
-            content: "https://ameliasoft.com",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          location: {
-            content: "Sector 12, Uttara, Dhaka",
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-          bullets: {
-            content: `
-      <ul>
-        <li>Lead the development and technical direction of production web applications across frontend, backend, and infrastructure.</li>
-        <li>Develop scalable applications using React.js, Micro Frontend, Flask, FastAPI, Express.js, and MongoDB.</li>
-        <li>Design, configure, and maintain Linux-based production servers.</li>
-        <li>Manage application deployment pipelines and production releases using Docker and CI/CD.</li>
-      </ul>
-    `,
-            isVisible: true,
-          },
-        },
-      ],
-    },
-    {
-      column: 1,
-      sectionLayout: "TagCard",
-      sectionTitle: { content: "Skills", isVisible: true },
-      items: [
-        {
-          title: {
-            content: "AI & Machine Learning",
-            isVisible: true,
-          },
-          lists: {
-            content: [
-              "LangChain",
-              "RAG",
-              "LLM Integration",
-              "Agentic AI",
-              "OpenCV",
-              "Face Recognition",
-            ],
-            isVisible: true,
-          },
-        },
-        {
-          title: {
-            content: "DevOps & Cloud",
-            isVisible: true,
-          },
-          lists: {
-            content: [
-              "Docker",
-              "Kubernetes",
-              "Jenkins",
-              "Terraform",
-              "Ansible",
-              "AWS",
-              "Nginx",
-            ],
-            isVisible: true,
-          },
-        },
-        {
-          title: {
-            content: "Backend",
-            isVisible: true,
-          },
-          lists: {
-            content: [
-              "Node.js",
-              "Express.js",
-              "FastAPI",
-              "Flask",
-              "ASP.NET Core",
-              "Microservices",
-            ],
-            isVisible: true,
-          },
-        },
-      ],
-    },
-    {
-      column: 0,
-      position: 0,
-      sectionLayout: "BadgeTitleCard",
-      sectionTitle: { content: "BadgeTitleCard Data", isVisible: true },
-      items: [
-        {
-          orgImg: {
-            imgContent: "",
-            isVisible: true,
-            position: {
-              zoom: 1,
-              x: 0,
-              y: 0,
-            },
-          },
-          title: {
-            content: "1 Junior CTO & Full Stack Developer",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-
-          description: {
-            content:
-              "Lead the technical strategy and execution of modern web applications, scaling infrastructure, and mentoring cross-functional engineering teams.",
-            isVisible: true,
-          },
-        },
-        {
-          title: {
-            content: "2 MERN Stack Developer",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-        },
-        {
-          title: {
-            content: "3 MERN Stack Developer",
-            isVisible: true,
-          },
-          duration: {
-            content: {
-              from: "07/2023",
-              to: "Present",
-            },
-            isVisible: true,
-          },
-          description: {
-            content:
-              "Developed full-stack web applications and scalable APIs using the MERN stack.",
-            isVisible: true,
-          },
-        },
-      ],
-    },
-    {
-      column: 1,
-      position: 0,
-      sectionLayout: "LinkCard",
-      sectionTitle: { content: "Find Me Online", isVisible: true },
-      items: [
-        {
-          orgImg: {
-            imgContent: "",
-            isVisible: true,
-            position: {
-              zoom: 1,
-              x: 0,
-              y: 0,
-            },
-          },
-          title: {
-            content: "Linkendin",
-            isVisible: true,
-          },
-          link: {
-            content: "https://linkedin.com/saimonpranta",
-            isVisible: true,
-          },
-        },
-        {
-          orgImg: {
-            imgContent: "",
-            isVisible: true,
-            position: {
-              zoom: 1,
-              x: 0,
-              y: 0,
-            },
-          },
-          title: {
-            content: "Facebook",
-            isVisible: true,
-          },
-          link: {
-            content: "https://facebook.com/saimonpranta",
-            isVisible: true,
-          },
-        },
-        {
-          orgImg: {
-            imgContent: "",
-            isVisible: true,
-            position: {
-              zoom: 1,
-              x: 0,
-              y: 0,
-            },
-          },
-          title: {
-            content: "Github",
-            isVisible: true,
-          },
-          link: {
-            content: "https://github.com/saimonpranta",
             isVisible: true,
           },
         },

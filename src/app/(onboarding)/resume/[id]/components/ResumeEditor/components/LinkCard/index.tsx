@@ -26,16 +26,38 @@ const px = (value?: number | string) => {
 const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
-  const { getResumeValue } = useResume();
+  const { getResumeValue, updateResume } = useResume();
   const { textStyles, colors } = setting || {};
   const sectionTitle = textStyles?.sectionTitle;
+  const rootPlaceholderPathName = `${data.format}.items.0`;
   const body = textStyles?.body;
-  const metadata = textStyles?.metadata;
   const highlight = textStyles?.highlight;
   const resumeBorder = colors?.border || "#1a202c";
-  const logoBackground = colors?.companyLogoBackground || "#edf2f7";
   const gapValue = px(setting?.gap);
 
+  const isVisible = (filePath: string) => {
+    return getResumeValue(filePath);
+  };
+  const toggleVisibility = (obj: any) => {
+    updateResume({
+      propertyPath: obj.filePath,
+      value: !obj.active,
+    });
+  };
+
+  const createDisplayItem = (
+    rootPathName: string,
+    label: string,
+    property: string,
+  ) => {
+    const filePath = `${rootPathName}.${property}.isVisible`;
+    return {
+      label,
+      filePath,
+      active: isVisible(filePath),
+      action: toggleVisibility,
+    };
+  };
 
   return (
     <>
@@ -126,9 +148,26 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
 
       <div className="badge-title-container">
         {(data?.items || []).map((item: any, itemIndex: number) => {
-          const isVisible = getResumeValue(
-            `${name}.items.${item.positionIndex}.orgImg.isVisible`,
+          if (!item.isVisible) return null;
+          const rootPathName = `${name}.items.${item.positionIndex}`;
+          const isIconVisible = getResumeValue(
+            `${rootPathName}.orgIcon.isVisible`,
           );
+          const toolsConfig = {
+            entry: {},
+            duration: {},
+            delete: {},
+            move: {
+              maxIndex: data?.items?.length ? data?.items?.length - 1 : 0,
+            },
+            display: {
+              dropdownList: [
+                createDisplayItem(rootPathName, "Icon", "orgIcon"),
+                createDisplayItem(rootPathName, "Title", "title"),
+                createDisplayItem(rootPathName, "Link", "link"),
+              ],
+            },
+          };
           return (
             <div
               key={itemIndex}
@@ -137,47 +176,55 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
             >
               <SubSectionToolBar
                 variant="subsection"
-                propertyPath={`${name}.items.${item.positionIndex}`}
+                propertyPath={`${rootPathName}`}
               />
-              {/* {isVisible && ( */}
-              <div className="subtitle-icon-box">
-                <IconPreview
-                  rootPath={`${name}.items.${item.positionIndex}.orgImg`}
-                />
-              </div>
-              {/* )} */}
+              <SubSectionToolBar
+                variant="subsection"
+                propertyPath={rootPathName}
+                tools={toolsConfig}
+                format={data.format}
+              />
+              {isIconVisible && (
+                <div className="subtitle-icon-box">
+                  <IconPreview
+                    rootPath={`${rootPathName}.orgIcon`}
+                  />
+                </div>
+              )}
 
               <div className="experience-content">
                 {getValue(
-                  `${name}.items.${item.positionIndex}.title.isVisible`,
+                  `${rootPathName}.title.isVisible`,
                 ) && (
-                    <SubSectionTitle
-                      name={`${name}.items.${item.positionIndex}.title.content`}
-                    />
-                  )}
+                  <SubSectionTitle
+                    name={`${rootPathName}.title.content`}
+                    placeholderPath={`${rootPlaceholderPathName}.title.placeholder`}
+                  />
+                )}
 
-
-                 {getValue(
-                  `${name}.items.${item.positionIndex}.link.isVisible`,
-                ) && (
-                    <div>
-                      <span className="resume-link-text">
-                        <InputField
-                          tag="span"
-                          name={`${name}.items.${item.positionIndex}.link.content`}
-                        />
-                      </span>
-                    </div>
-                  )}
                 {getValue(
-                  `${name}.items.${item.positionIndex}.description.isVisible`,
+                  `${rootPathName}.link.isVisible`,
                 ) && (
-                    <TextEditor
-                      name={`${name}.items.${item.positionIndex}.description.content`}
-                      mode="description"
-                      syncWithProp={syncWithProp}
-                    />
-                  )}
+                  <div>
+                    <span className="resume-link-text">
+                      <InputField
+                        tag="span"
+                        name={`${rootPathName}.link.content`}
+                        placeholderPath={`${rootPlaceholderPathName}.link.placeholder`}
+                      />
+                    </span>
+                  </div>
+                )}
+                {getValue(
+                  `${rootPathName}.description.isVisible`,
+                ) && (
+                  <TextEditor
+                    name={`${rootPathName}.description.content`}
+                    placeholderPath={`${rootPlaceholderPathName}.description.placeholder`}
+                    mode="description"
+                    syncWithProp={syncWithProp}
+                  />
+                )}
               </div>
             </div>
           );

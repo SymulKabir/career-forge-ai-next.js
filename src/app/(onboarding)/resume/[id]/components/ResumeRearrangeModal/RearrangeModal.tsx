@@ -153,7 +153,7 @@ const RearrangeModal = ({
     <>
       <div
         id="rearrangeModal"
-        className="absolute inset-0 top-0 z-[100] flex items-center justify-center bg-slate-950/55 backdrop-blur-sm"
+        className="absolute inset-0 top-0 z-[100] flex items-center justify-center bg-slate-950/55 backdrop-blur-sm hidden"
       >
         <div
           className="
