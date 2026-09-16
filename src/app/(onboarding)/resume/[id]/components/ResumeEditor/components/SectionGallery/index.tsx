@@ -2,7 +2,9 @@
 
 import React from "react";
 import { X, Plus } from "lucide-react";
- 
+import { useResumeContext } from "../../../../context/resume-editor-context";
+import { useResume, useResumeConfig } from "../../../../hooks";
+import { getResumeFormat } from "../../../../utils/resume";
 
 interface SectionOption {
   title: string;
@@ -12,73 +14,75 @@ interface SectionOption {
 }
 
 const SECTION_OPTIONS: SectionOption[] = [
-  { 
-    title: "Custom", 
-    format: "custom", 
-    sectionLayout: "DescriptionCard", 
-    image: "/dump/custom-title.png" 
+  {
+    title: "Custom",
+    format: "professionalExperience",
+    sectionLayout: "DescriptionCard",
+    image: "/dump/custom-title.png",
   },
-  { 
-    title: "Additional Experience", 
-    format: "experience", 
-    sectionLayout: "BulletsCard", 
-    image: "/dump/additional-experience.png" 
+  {
+    title: "Additional Experience",
+    format: "professionalExperience",
+    sectionLayout: "BulletsCard",
+    image: "/dump/additional-experience.png",
   },
-  { 
-    title: "Publications", 
-    format: "publications", 
-    sectionLayout: "BulletsCard", 
-    image: "dump/additional-publications.png" 
+  {
+    title: "Publications",
+    format: "DescriptionCard",
+    sectionLayout: "BulletsCard",
+    image: "/dump/additional-publications.png",
   },
-  { 
-    title: "Certifications", 
-    format: "certifications", 
-    sectionLayout: "BadgeTitleCard", 
-    image: "/dump/certifications.png" 
+  {
+    title: "Certifications",
+    format: "LinkCard",
+    sectionLayout: "BadgeTitleCard",
+    image: "/dump/certifications.png",
   },
-  { 
-    title: "Interests", 
-    format: "interests", 
-    sectionLayout: "TagCard", 
-    image: "/dump/interests.png" 
+  {
+    title: "Interests",
+    format: "interests",
+    sectionLayout: "TagCard",
+    image: "/dump/interests.png",
   },
-  { 
-    title: "Key Achievements", 
-    format: "awards", 
-    sectionLayout: "BadgeTitleCard", 
-    image: "/dump/key-achievements.png"
+  {
+    title: "Key Achievements",
+    format: "BadgeTitleCard",
+    sectionLayout: "BadgeTitleCard",
+    image: "/dump/key-achievements.png",
   },
-  { 
-    title: "Projects", 
-    format: "projects", 
-    sectionLayout: "BulletsCard", 
-    image: "/dump/project.png" 
+  {
+    title: "Experiences",
+    format: "TagCard",
+    sectionLayout: "BulletsCard",
+    image: "/dump/project.png",
   },
 ];
 
-interface AddSectionModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSelectSection: (section: SectionOption) => void;
-  existingSections?: string[];
-}
+export default function AddSectionModal() {
+  const { addSectionConfig } = useResumeContext();
+  const { closeAddSectionModal } = useResumeConfig();
+  const {addResumeListItem} = useResume()
 
-export default function AddSectionModal({
-  isOpen,
-  onClose,
-  onSelectSection,
-  existingSections = [],
-}: AddSectionModalProps) {
-  if (!isOpen) return null;
+  if (!addSectionConfig.isModalOpen) return null;
+ 
+  const onSelectSection = (format:string) => {
+    console.log("click on select section-->>")
+    if (!format || !addSectionConfig.newSectionPosition) return;
+    const formatData = getResumeFormat(`${format}.items.0`);
+    console.log("formatData-->>", formatData)
 
+    const updateProperty = addSectionConfig.newSectionPosition.split(".").slice(0, 2).join(".");
+    const newDataPositionPath = `${updateProperty}.items`;
+    console.log("newDataPositionPath-->>", newDataPositionPath)
+
+    addResumeListItem(newDataPositionPath, formatData, 0);
+  };
   // Filter out sections that are already added to prevent duplicates
-  const availableOptions = SECTION_OPTIONS.filter(
-    (opt) => !existingSections.includes(opt.title)
-  );
+  const availableOptions = SECTION_OPTIONS;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div 
+      <div
         className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-white rounded-3xl shadow-[0_30px_90px_rgba(15,23,42,0.25)] border border-slate-100 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
@@ -93,7 +97,7 @@ export default function AddSectionModal({
             </p>
           </div>
           <button
-            onClick={onClose}
+            onClick={closeAddSectionModal}
             className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-all"
             aria-label="Close modal"
           >
@@ -113,16 +117,16 @@ export default function AddSectionModal({
                 <div
                   key={idx}
                   onClick={() => {
-                    onSelectSection(section);
-                    onClose();
+                    onSelectSection(section.format);
+                    closeAddSectionModal();
                   }}
                   className="group relative flex flex-col bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm hover:shadow-xl hover:border-indigo-500/50 transition-all duration-300 cursor-pointer overflow-hidden"
                 >
                   {/* Thumbnail Preview Image Area */}
                   <div className="relative w-full h-32 bg-slate-100/70 rounded-xl border border-slate-100 flex items-center justify-center p-2 mb-4 group-hover:bg-indigo-50/20 transition-colors overflow-hidden">
-                    <img 
-                      src={section.image} 
-                      alt={section.title} 
+                    <img
+                      src={section.image}
+                      alt={section.title}
                       className="w-full h-full object-cover rounded-lg shadow-xs group-hover:scale-105 transition-transform duration-300"
                     />
 
