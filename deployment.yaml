@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: career-forge-ai
+  labels:
+    app: career-forge-ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: career-forge-ai
+  template:
+    metadata:
+      labels:
+        app: career-forge-ai
+    spec:
+      containers:
+        - name: career-forge-ai
+          image: saimonpranta@gmail.com/career-forge-ai:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: career-forge-ai
+spec:
+  selector:
+    app: career-forge-ai
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP
