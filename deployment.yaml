@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: career-forge-ai
-          image: saimonpranta@gmail.com/career-forge-ai:latest
+          image: saimonpranta/career-forge-ai:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
