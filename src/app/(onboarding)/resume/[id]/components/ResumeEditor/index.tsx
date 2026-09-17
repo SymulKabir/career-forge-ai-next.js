@@ -74,6 +74,7 @@ const Index = () => {
           "--container-height": `calc(100vh - ${RESUME_CONSTANTS.headerHeight}px - ${RESUME_CONSTANTS.toolBarHeight}px)`,
           "--section-gap": `${setting.sectionGap}px`,
           "--page-height": `${setting.resumePageHeight}px`,
+          "--page-width": `${setting.resumePageWidth}px`,
           "--font-family": setting.font.family,
         } as React.CSSProperties
       }
@@ -224,7 +225,7 @@ const PageMaker = ({
       </style>
       <div
         key={pageIndex}
-        className={`page  `}
+        className={`page  ${sectionRefs ? "display-page" : ""}`}
         style={
           {
             paddingLeft: `${setting.margin.x}px`,

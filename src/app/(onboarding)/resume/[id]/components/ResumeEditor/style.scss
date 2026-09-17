@@ -37,9 +37,9 @@
 
       background-color: #fff;
       border: 1px solid #dcdbe0;
-      transition: background-color 0.3s ease;
-      width: 940px;
+      transition: background-color 0.3s ease; 
       height: var(--page-height);
+      width: var(--page-width);
       font-family: var(--font-family);
       position: relative; 
 

@@ -61,21 +61,19 @@ const SECTION_OPTIONS: SectionOption[] = [
 export default function AddSectionModal() {
   const { addSectionConfig } = useResumeContext();
   const { closeAddSectionModal } = useResumeConfig();
-  const {addResumeListItem} = useResume()
+  const { addResumeListItem } = useResume();
 
   if (!addSectionConfig.isModalOpen) return null;
- 
-  const onSelectSection = (format:string) => {
-    console.log("click on select section-->>")
+
+  const onSelectSection = (format: string) => {
+    console.log("click on select section-->>");
     if (!format || !addSectionConfig.newSectionPosition) return;
-    const formatData = getResumeFormat(`${format}.items.0`);
-    console.log("formatData-->>", formatData)
+    const formatData = getResumeFormat(format);
+    console.log("formatData-->>", formatData);
+    formatData["column"] = addSectionConfig.column;
+    const [path, index] = addSectionConfig.newSectionPosition.split(".");
 
-    const updateProperty = addSectionConfig.newSectionPosition.split(".").slice(0, 2).join(".");
-    const newDataPositionPath = `${updateProperty}.items`;
-    console.log("newDataPositionPath-->>", newDataPositionPath)
-
-    addResumeListItem(newDataPositionPath, formatData, 0);
+    addResumeListItem(path, formatData, Number(index) + 1);
   };
   // Filter out sections that are already added to prevent duplicates
   const availableOptions = SECTION_OPTIONS;

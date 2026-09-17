@@ -1,6 +1,7 @@
 export const RESUME_SETTING = {
   // resumePageHeight: 2700,
-  resumePageHeight: 1500,
+  resumePageHeight: 1330,
+  resumePageWidth: 940,
   margin: {
     x: 30,
     y: 50,

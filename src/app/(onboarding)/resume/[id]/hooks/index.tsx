@@ -348,12 +348,19 @@ export const useResume = () => {
 export const useResumeConfig = () => {
   const { setAddSectionConfig } = useResumeContext();
 
-  const openAddSectionModal = (valuePath: string) => {
+  const openAddSectionModal = ({
+    propertyPath,
+    column,
+  }: {
+    propertyPath: string;
+    column: number;
+  }) => {
     setAddSectionConfig((state: any) => {
       return {
         ...state,
         isModalOpen: true,
-        newSectionPosition: valuePath,
+        newSectionPosition: propertyPath,
+        column: column,
       };
     });
   };

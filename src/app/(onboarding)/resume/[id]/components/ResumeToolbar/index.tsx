@@ -22,7 +22,7 @@ const Index = () => {
   } = useDrag({ activeTool, setActiveTool });
   const { handleToolClick } = useBtnClick({ activeTool, setActiveTool });
 
-  const handleDownloadVectorPdf = async () => {
+  const handleDownloadVectorPdf2 = async () => {
     const resumeElement = document.querySelector(".resume-editor");
 
     if (!resumeElement) {
@@ -119,7 +119,71 @@ const Index = () => {
     a.remove();
     window.URL.revokeObjectURL(url);
   };
+  const handleDownloadVectorPdf = async () => {
+    const resumeElement = document.querySelector(".resume-editor");
 
+    if (!resumeElement) {
+      console.error("Resume element not found");
+      return;
+    }
+
+    let cssText = "";
+
+    for (const styleSheet of Array.from(document.styleSheets)) {
+      try {
+        if (styleSheet.cssRules) {
+          cssText += Array.from(styleSheet.cssRules)
+            .map((rule) => rule.cssText)
+            .join("\n");
+        }
+      } catch (error) {
+        console.warn("Unable to read stylesheet:", styleSheet.href);
+      }
+    }
+
+    // Get every resume page
+    const pages = Array.from(resumeElement.querySelectorAll(".display-page"));
+
+    if (!pages.length) {
+      console.error("No resume pages found");
+      return;
+    }
+
+    // Convert every page into standalone HTML
+    const pageContents = pages.map((page, index) => ({
+      pageNumber: index + 1,
+      html: page.outerHTML,
+    }));
+
+    const response = await fetch("/api/generate-pdf", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cssText,
+        pages: pageContents,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to generate PDF");
+    }
+
+    const blob = await response.blob();
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "resume.pdf";
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
+  };
 
   return (
     <header className="sticky top-[65px] z-40 w-full border-b border-slate-200/70 bg-white/90 backdrop-blur-xl">

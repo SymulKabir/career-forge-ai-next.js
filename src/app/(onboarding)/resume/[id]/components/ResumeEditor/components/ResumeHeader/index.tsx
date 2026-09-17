@@ -9,7 +9,7 @@ import { useResume } from "../../../../hooks";
 const Index: React.FC = () => {
   const { setting, resumeData } = useResumeContext();
   const { updateResume, getResumeValue } = useResume();
-  let fileInputRef = useRef<HTMLInputElement>(null);
+  let fileInputRef = useRef<HTMLInputElement>(null); 
   const isVisible = (filePath: string) => {
     return getResumeValue(filePath);
   };
@@ -223,6 +223,7 @@ const Index: React.FC = () => {
               <InputField
                 tag="h1"
                 name={"header.fullName.content"}
+                placeholderPath={"header.fullName.placeholder"}
                 className="resume-name"
               />
             )}
@@ -230,6 +231,7 @@ const Index: React.FC = () => {
               <InputField
                 tag="h2"
                 name={"header.headline.content"}
+                placeholderPath={"header.headline.placeholder"}
                 className="resume-title"
               />
             )}
@@ -238,37 +240,61 @@ const Index: React.FC = () => {
               {resumeData.header.phone.isVisible && (
                 <div className="contact-item">
                   <span className="contact-icon">📞</span>
-                  <InputField tag="span" name={"header.phone.content"} />
+                  <InputField
+                    tag="span"
+                    name={"header.phone.content"}
+                    placeholderPath={"header.phone.placeholder"}
+                  />
                 </div>
               )}
               {resumeData.header.email.isVisible && (
                 <div className="contact-item">
                   <span className="contact-icon">✉️</span>
-                  <InputField tag="span" name={"header.email.content"} />
+                  <InputField
+                    tag="span"
+                    name={"header.email.content"}
+                    placeholderPath={"header.email.placeholder"}
+                  />
                 </div>
               )}
               {resumeData.header.website.isVisible && (
                 <div className="contact-item">
                   <span className="contact-icon">🔗</span>
-                  <InputField tag="span" name={"header.website.content"} />
+                  <InputField
+                    tag="span"
+                    name={"header.website.content"}
+                    placeholderPath={"header.website.placeholder"}
+                  />
                 </div>
               )}
               {resumeData.header.github.isVisible && (
                 <div className="contact-item">
                   <span className="contact-icon">🔗</span>
-                  <InputField tag="span" name={"header.github.content"} />
+                  <InputField
+                    tag="span"
+                    name={"header.github.content"}
+                    placeholderPath={"header.github.placeholder"}
+                  />
                 </div>
               )}
               {resumeData.header.location.isVisible && (
                 <div className="contact-item">
                   <span className="contact-icon">📍</span>
-                  <InputField tag="span" name={"header.location.content"} />
+                  <InputField
+                    tag="span"
+                    name={"header.location.content"}
+                    placeholderPath={"header.location.placeholder"}
+                  />
                 </div>
               )}
               {resumeData.header.dob.isVisible && (
                 <div className="contact-item">
                   <span className="contact-icon">📅</span>
-                  <InputField tag="span" name={"header.dob.content"} />
+                  <InputField
+                    tag="span"
+                    name={"header.dob.content"}
+                    placeholderPath={"header.dob.placeholder"}
+                  />
                 </div>
               )}
             </div>

@@ -54,6 +54,98 @@ export interface StructuredResumeData {
 // 2. Dummy Resume Data Object
 // ==========================================
 
+export const DUMMY_STRUCTURED_RESUME2 = {
+  header: {
+    fullName: { content: "", isVisible: true },
+    headline: { content: "", isVisible: true },
+    email: { content: "", isVisible: true },
+    phone: { content: "", isVisible: true },
+    location: { content: "", isVisible: true },
+    website: { content: "", isVisible: true },
+    github: { content: "", isVisible: true },
+    dob: { content: "", isVisible: true },
+    picture: {
+      imgContent: "",
+      position: { zoom: 1, x: 0, y: 0 },
+      isVisible: true,
+    },
+  },
+  sections: [
+    {
+      column: 0,
+      position: 1,
+      isVisible: true,
+      sectionLayout: "DescriptionCard",
+      format: "professionalExperience",
+      sectionTitle: { content: "Summary", isVisible: true },
+      items: [
+        {
+          isVisible: true,
+          description: {
+            content: "",
+            isVisible: true,
+          },
+        },
+      ],
+    },
+    {
+      column: 1,
+      position: 1,
+      isVisible: true,
+      sectionLayout: "BadgeTitleCard",
+      format: "education",
+      sectionTitle: { content: "Education & Qualifications", isVisible: true },
+      items: [
+        {
+          isVisible: true,
+          orgIcon: {
+            iconContent: "",
+            isVisible: true,
+            position: { zoom: 1, x: 0, y: 0 },
+          },
+          title: {
+            content: "",
+            isVisible: true,
+          },
+          duration: {
+            content: {
+              from: "",
+              to: "",
+            },
+            isVisible: true,
+          },
+          description: {
+            content: "",
+            isVisible: true,
+          },
+        },
+        {
+          isVisible: true,
+          orgIcon: {
+            iconContent: "",
+            isVisible: true,
+            position: { zoom: 1, x: 0, y: 0 },
+          },
+          title: {
+            content: "",
+            isVisible: true,
+          },
+          duration: {
+            content: {
+              from: "",
+              to: "",
+            },
+            isVisible: true,
+          },
+          description: {
+            content: "",
+            isVisible: true,
+          },
+        },
+      ],
+    },
+  ],
+};
 export const DUMMY_STRUCTURED_RESUME = {
   header: {
     fullName: { content: "Symul Kabir", isVisible: true },
@@ -76,7 +168,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       position: 0,
       isVisible: true,
       sectionLayout: "BulletsCard",
-      format:"professionalExperience",
+      format: "professionalExperience",
       sectionTitle: { content: "Professional Experience", isVisible: true },
       items: [
         {
@@ -179,7 +271,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       position: 1,
       isVisible: true,
       sectionLayout: "DescriptionCard",
-      format:"professionalExperience",
+      format: "professionalExperience",
       sectionTitle: { content: "Summary", isVisible: true },
       items: [
         {
@@ -198,7 +290,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       isVisible: true,
       sectionLayout: "TagCard",
       tagStyle: "full-border-style", // full-border-style, bottom-border-style, list-style, bullet-style
-      format:"skills",
+      format: "skills",
       sectionTitle: { content: "Technical Skills", isVisible: true },
       items: [
         {
@@ -263,7 +355,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       position: 1,
       isVisible: true,
       sectionLayout: "BadgeTitleCard",
-      format:"education",
+      format: "education",
       sectionTitle: { content: "Education & Qualifications", isVisible: true },
       items: [
         {
@@ -316,7 +408,7 @@ export const DUMMY_STRUCTURED_RESUME = {
       position: 2,
       isVisible: true,
       sectionLayout: "LinkCard",
-      format:"socialLinks",
+      format: "socialLinks",
       sectionTitle: { content: "Find Me Online", isVisible: true },
       items: [
         {

@@ -19,7 +19,7 @@ import { getResumeFormat } from "../../../../utils/resume";
 
 interface ResumeToolbarProps {
   variant?: "subsection" | "section";
-  propertyPath?: string; // Path like "sections.0.items.0"
+  propertyPath: string; // Path like "sections.0.items.0"
   tools?: any;
   format?: string;
 }
@@ -110,7 +110,7 @@ export default function ResumeToolbar({
       toPath: path,
       toIndex: toIndex,
     });
-  }; 
+  };
   return (
     <>
       <div className="section-tools hidden justify-center absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+10px)] z-40 avoid-default">
@@ -464,7 +464,9 @@ export default function ResumeToolbar({
       {variant === "section" && (
         <div className="section-tools hidden justify-center absolute left-1/2 -translate-x-1/2 top-[calc(100%-10px)] z-40 avoid-default">
           <button
-            onClick={() => openAddSectionModal(propertyParts)}
+            onClick={() => {
+              openAddSectionModal({ propertyPath, column: sectionData.column });
+            }}
             className="group relative inline-flex items-center gap-2 px-2 py-1 bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-700 hover:from-indigo-500 hover:to-violet-600 text-white rounded-2xl text-xs font-semibold shadow-xl shadow-indigo-500/25 border border-indigo-400/30 backdrop-blur-md transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
           >
             {/* Subtle animated light glow sheen */}
