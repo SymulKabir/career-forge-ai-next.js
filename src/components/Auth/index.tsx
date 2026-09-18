@@ -8,7 +8,7 @@ import {
   AuthMode,
 } from "@/src/state/authModal";
 import Logo from "@/src/ui/Logo";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 export default function AuthModal() {
   const [mode, setMode] = useState<AuthMode>("signin");
@@ -32,6 +32,12 @@ export default function AuthModal() {
   const [rememberRegister, setRememberRegister] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: session, status } = useSession();
+
+  console.log("SESSION:", session);
+  console.log("AUTH STATUS:", status);
+  console.log("USER INFO:", session?.user);
+
 
   const switchMode = () => {
     setMode((current) => (current === "signin" ? "signup" : "signin"));
@@ -256,7 +262,10 @@ export default function AuthModal() {
               </button>
 
               {/* FACEBOOK */}
-              <button type="button" className="social-auth-button">
+              <button type="button" className="social-auth-button"
+                onClick={() => signIn("facebook", { callbackUrl: "/" })}
+
+              >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
                   <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.17 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.96h-1.51c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.17 24 18.1 24 12.07Z" />
                 </svg>
@@ -265,7 +274,9 @@ export default function AuthModal() {
               </button>
 
               {/* LINKEDIN */}
-              <button type="button" className="social-auth-button">
+              <button type="button" className="social-auth-button"
+                onClick={() => signIn("linkedin", { callbackUrl: "/" })}
+              >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#0A66C2">
                   <path d="M20.45 20.45h-3.56v-5.58c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.67H9.34V8.98h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.3ZM5.32 7.42a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM3.54 20.45H7.1V8.98H3.54v11.47ZM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0Z" />
                 </svg>
@@ -414,11 +425,10 @@ export default function AuthModal() {
                     {[0, 1, 2, 3].map((index) => (
                       <span
                         key={index}
-                        className={`strength-bar h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                          index < passwordStrength
+                        className={`strength-bar h-1.5 flex-1 rounded-full transition-all duration-300 ${index < passwordStrength
                             ? "bg-violet-500"
                             : "bg-slate-200"
-                        }`}
+                          }`}
                       />
                     ))}
                   </div>
@@ -751,9 +761,8 @@ interface PasswordRequirementProps {
 function PasswordRequirement({ valid, children }: PasswordRequirementProps) {
   return (
     <span
-      className={`password-requirement text-[10px] ${
-        valid ? "text-emerald-500" : "text-slate-400"
-      }`}
+      className={`password-requirement text-[10px] ${valid ? "text-emerald-500" : "text-slate-400"
+        }`}
     >
       <span className="requirement-icon">{valid ? "✓" : "○"}</span> {children}
     </span>

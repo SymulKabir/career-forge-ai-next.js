@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Inter } from "next/font/google";
 import "./globals.css";
+import AuthSessionProvider from "@/src/layout/AuthSessionProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,7 +36,9 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${dmSans.variable} antialiased`}
       >
-        {children}
+        <AuthSessionProvider>
+          {children}
+        </AuthSessionProvider>
       </body>
     </html>
   );
