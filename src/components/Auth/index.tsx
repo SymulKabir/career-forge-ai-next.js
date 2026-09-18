@@ -8,6 +8,7 @@ import {
   AuthMode,
 } from "@/src/state/authModal";
 import Logo from "@/src/ui/Logo";
+import { signIn } from "next-auth/react";
 
 export default function AuthModal() {
   const [mode, setMode] = useState<AuthMode>("signin");
@@ -67,7 +68,7 @@ export default function AuthModal() {
       //     password: loginPassword,
       //     rememberMe: rememberLogin,
       //   }),
-      // }); 
+      // });
     } finally {
       setIsSubmitting(false);
     }
@@ -104,7 +105,6 @@ export default function AuthModal() {
       //     rememberMe: rememberRegister,
       //   }),
       // });
- 
     } finally {
       setIsSubmitting(false);
     }
@@ -154,7 +154,10 @@ export default function AuthModal() {
   };
 
   return (
-    <div id="authModal" className="auth-modal fixed inset-0 z-[100] h-screen w-screen overflow-hidden overscroll-none">
+    <div
+      id="authModal"
+      className="auth-modal fixed inset-0 z-[100] h-screen w-screen overflow-hidden overscroll-none"
+    >
       {/* BACKDROP */}
       <div
         id="authBackdrop"
@@ -202,11 +205,7 @@ export default function AuthModal() {
             {/* BRAND */}
             <div className="text-center pt-2">
               <div className="mx-auto flex items-center justify-center">
-                <Logo
-                  logoSize="w-12 h-12"
-                  iconSize="w-1/2 h-1/1" 
-                  mode="half"
-                />
+                <Logo logoSize="w-12 h-12" iconSize="w-1/2 h-1/1" mode="half" />
               </div>
 
               <h2
@@ -226,7 +225,11 @@ export default function AuthModal() {
             {/* SOCIAL LOGIN */}
             <div className="grid grid-cols-3 gap-3 mt-7">
               {/* GOOGLE */}
-              <button type="button" className="social-auth-button">
+              <button
+                type="button"
+                className="social-auth-button"
+                onClick={() => signIn("google", { callbackUrl: "/" })}
+              >
                 <svg width="18" height="18" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"
