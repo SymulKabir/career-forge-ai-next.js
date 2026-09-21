@@ -1,0 +1,46 @@
+.resume-editor {
+  &.double-column {
+    .resume-main-editor-container {
+      .resume-body {
+        display: grid;
+        grid-template-columns: 1fr 40%;
+        gap: 20px;
+      }
+    }
+  }
+  &.lvy-league {
+    .resume-main-editor-container {
+      .resume-body {
+        display: grid;
+        grid-template-columns: 1fr 40%;
+        gap: 20px;
+      }
+    }
+  }
+  &.elegant {
+    .resume-main-editor-container {
+      .page-inner-container {
+        position: relative;
+        &::after{
+          position: absolute;
+          content: "";
+          height: 100%;
+          width: 300px;
+          background: rgb(34, 64, 92) !important;
+        }
+        .page {
+          .resume-body {
+            display: grid;
+            grid-template-columns: 1fr 40%;
+            gap: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .resume-main-editor-container {
+    .page {
+    }
+  }
+}

@@ -23,6 +23,8 @@ interface ResumeEditorContextValue {
   setLayoutResumeData: (resumeData: typeof any) => void;
   addSectionConfig: typeof any;
   setAddSectionConfig: (resumeData: typeof any) => void;
+  currentTemplate: typeof any;
+  setCurrentTemplate: (resumeData: typeof any) => void;
 }
 
 const ResumeEditorContext = createContext<ResumeEditorContextValue | null>(
@@ -42,13 +44,14 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
   });
   const [addSectionConfig, setAddSectionConfig] = useState({
     isModalOpen: false,
-    newSectionPosition: null
+    newSectionPosition: null,
   });
   const [structuredResumeData, setStructuredResumeData] = useState({});
   const [layoutResumeData, setLayoutResumeData] = useState({
     header: {},
     pages: [],
   });
+  const [currentTemplate, setCurrentTemplate] = useState("elegant");
   return (
     <ResumeEditorContext.Provider
       value={{
@@ -66,6 +69,8 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
         setLayoutResumeData,
         addSectionConfig,
         setAddSectionConfig,
+        currentTemplate,
+        setCurrentTemplate,
       }}
     >
       {children}

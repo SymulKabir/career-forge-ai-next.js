@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useResumeContext } from "../../context/resume-editor-context";
 
 type Template = {
   id: string;
   name: string;
+  template?: string;
   description: string;
   region: "europe" | "global" | "us";
   regionLabel: string;
@@ -18,7 +20,8 @@ type Template = {
 const templates: Template[] = [
   {
     id: "executive-pro",
-    name: "Executive Pro",
+    name: "Double Column",
+    template: 'double-column',
     description: "Clean executive layout",
     region: "europe",
     regionLabel: "Europe",
@@ -30,7 +33,8 @@ const templates: Template[] = [
   },
   {
     id: "minimal",
-    name: "Minimal",
+    name: "Lvy League",
+    template: 'lvy-league',
     description: "Simple and highly readable",
     region: "global",
     regionLabel: "Global",
@@ -41,7 +45,8 @@ const templates: Template[] = [
   },
   {
     id: "american",
-    name: "American Standard",
+    name: "Elegant",
+    template: "elegant",
     description: "Traditional US resume format",
     region: "us",
     regionLabel: "US",
@@ -83,6 +88,7 @@ export default function TemplatesView() {
     useState("executive-pro");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
+  const {currentTemplate, setCurrentTemplate,} = useResumeContext()
 
   const filteredTemplates = templates.filter((template) => {
     const searchMatch =
@@ -234,7 +240,7 @@ export default function TemplatesView() {
       >
         <div className="space-y-4">
           {filteredTemplates.map((template) => {
-            const isSelected = selectedTemplate === template.id;
+            const isSelected = currentTemplate === template.template;
             const isFavorite = favorites.includes(template.id);
 
             return (
@@ -250,6 +256,7 @@ export default function TemplatesView() {
                 data-style={template.style}
                 data-ats={template.ats}
                 data-new={template.isNew}
+                onClick={() => {setCurrentTemplate(template.template)}}
               >
                 {/* Selected */}
 

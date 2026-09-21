@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useState, useRef } from "react";
 import "./style.scss";
+import "./template.scss"
 import { RESUME_CONSTANTS } from "../../constants/resume-utils";
 import BulletsCard from "./components/BulletsCard";
 import DescriptionCard from "./components/DescriptionCard";
@@ -22,6 +23,7 @@ const Index = () => {
     structuredResumeData,
     layoutResumeData,
     setLayoutResumeData,
+    currentTemplate
   } = useResumeContext();
   useInitResume();
   const sectionRefs = useRef({});
@@ -67,49 +69,51 @@ const Index = () => {
   }, [structuredResumeData, setting]);
 
   return (
-    <section
-      className="resume-editor"
-      style={
-        {
-          "--container-height": `calc(100vh - ${RESUME_CONSTANTS.headerHeight}px - ${RESUME_CONSTANTS.toolBarHeight}px)`,
-          "--section-gap": `${setting.sectionGap}px`,
-          "--page-height": `${setting.resumePageHeight}px`,
-          "--page-width": `${setting.resumePageWidth}px`,
-          "--font-family": setting.font.family,
-        } as React.CSSProperties
-      }
-    >
-      <div className="resume-main-editor-container not-visible">
-        {" "}
-        // use 'debugging' class to show the page
-        {structuredResumeData?.columns?.length &&
-          [[...structuredResumeData.columns]].map((columns, pageIndex) => {
+    <>
+      <section
+        className={`resume-editor ${currentTemplate}`}
+        style={
+          {
+            "--container-height": `calc(100vh - ${RESUME_CONSTANTS.headerHeight}px - ${RESUME_CONSTANTS.toolBarHeight}px)`,
+            "--section-gap": `${setting.sectionGap}px`,
+            "--page-height": `${setting.resumePageHeight}px`,
+            "--page-width": `${setting.resumePageWidth}px`,
+            "--font-family": setting.font.family,
+          } as React.CSSProperties
+        }
+      >
+        <div className="resume-main-editor-container not-visible">
+          {" "}
+          // use 'debugging' class to show the page
+          {structuredResumeData?.columns?.length &&
+            [[...structuredResumeData.columns]].map((columns, pageIndex) => {
+              return (
+                <PageMaker
+                  key={pageIndex}
+                  columns={columns}
+                  pageIndex={pageIndex}
+                  sectionRefs={sectionRefs}
+                  headerRef={headerRef}
+                  syncWithProp={true}
+                />
+              );
+            })}
+        </div>
+
+        <div className="resume-main-editor-container">
+          {layoutResumeData?.pages?.map((columns, pageIndex) => {
             return (
               <PageMaker
                 key={pageIndex}
                 columns={columns}
                 pageIndex={pageIndex}
-                sectionRefs={sectionRefs}
-                headerRef={headerRef}
                 syncWithProp={true}
               />
             );
           })}
-      </div>
-
-      <div className="resume-main-editor-container">
-        {layoutResumeData?.pages?.map((columns, pageIndex) => {
-          return (
-            <PageMaker
-              key={pageIndex}
-              columns={columns}
-              pageIndex={pageIndex}
-              syncWithProp={true}
-            />
-          );
-        })}
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 };
 
@@ -201,15 +205,8 @@ const PageMaker = ({
             color: ${metadata?.fontColor ?? "#6b7280"};
             line-height: ${metadata?.lineHeight ?? 1.4};
             letter-spacing: ${px(metadata?.letterSpacing ?? 0)};
-            text-transform: ${metadata?.textTransform ?? "none"};
-            &.gird-2{
-              display: grid;
-              grid-template-columns: 1fr 40%;
-              gap: 20px;
-
-            }
-            .body-item{
-            }
+            text-transform: ${metadata?.textTransform ?? "none"}; 
+           
           }
 
           .resume-body *:not(.avoid-default, .avoid-default *) {
@@ -232,7 +229,6 @@ const PageMaker = ({
             paddingRight: `${setting.margin.x}px`,
             paddingTop: `${setting.margin.y}px`,
             paddingBottom: `${setting.margin.y}px`,
-            background: "#FFFFFF",
             marginBottom: "40px",
             "--page-number": `"----- Page ${pageIndex + 1} -----"`,
           } as React.CSSProperties
@@ -244,7 +240,7 @@ const PageMaker = ({
               <ResumeHeader />
             </div>
           )}
-          <div className="resume-body gird-2">
+          <div className="resume-body"> 
             {columns.map((column: any, columnIndex: number) => {
               return (
                 <div key={columnIndex} className="body-item">
