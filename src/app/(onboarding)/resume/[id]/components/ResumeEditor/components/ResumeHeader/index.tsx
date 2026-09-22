@@ -9,7 +9,7 @@ import { useResume } from "../../../../hooks";
 const Index: React.FC = () => {
   const { setting, resumeData } = useResumeContext();
   const { updateResume, getResumeValue } = useResume();
-  let fileInputRef = useRef<HTMLInputElement>(null); 
+  let fileInputRef = useRef<HTMLInputElement>(null);
   const isVisible = (filePath: string) => {
     return getResumeValue(filePath);
   };
@@ -299,20 +299,22 @@ const Index: React.FC = () => {
               )}
             </div>
           </div>
-          <ImgPreview
-            rootPath="header.picture"
-            placeholder={`
+          <div>
+            <ImgPreview
+              rootPath="header.picture"
+              placeholder={`
               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXTMlUueMhaERNUMQGPftBgPnFK3C6u1-By5TcC7Jo7g&s=10" alt=""/>
               `}
-            styles={{
-              size: px(config.imageSize),
-              radius:
-                typeof config.imageRadius === "number"
-                  ? px(config.imageRadius)
-                  : config.imageRadius,
-            }}
-            fileInputRef={fileInputRef}
-          />
+              styles={{
+                size: px(config.imageSize),
+                radius:
+                  typeof config.imageRadius === "number"
+                    ? px(config.imageRadius)
+                    : config.imageRadius,
+              }}
+              fileInputRef={fileInputRef}
+            />
+          </div>
         </div>
       </header>
     </>

@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState, useRef } from "react";
 import "./style.scss";
-import "./template.scss"
+import "./template.scss";
 import { RESUME_CONSTANTS } from "../../constants/resume-utils";
 import BulletsCard from "./components/BulletsCard";
 import DescriptionCard from "./components/DescriptionCard";
@@ -23,7 +23,7 @@ const Index = () => {
     structuredResumeData,
     layoutResumeData,
     setLayoutResumeData,
-    currentTemplate
+    currentTemplate,
   } = useResumeContext();
   useInitResume();
   const sectionRefs = useRef({});
@@ -223,96 +223,100 @@ const PageMaker = ({
       <div
         key={pageIndex}
         className={`page  ${sectionRefs ? "display-page" : ""}`}
-        style={
-          {
-            paddingLeft: `${setting.margin.x}px`,
-            paddingRight: `${setting.margin.x}px`,
-            paddingTop: `${setting.margin.y}px`,
-            paddingBottom: `${setting.margin.y}px`,
-            marginBottom: "40px",
-            "--page-number": `"----- Page ${pageIndex + 1} -----"`,
-          } as React.CSSProperties
-        }
       >
-        <div className="page-inner-container">
-          {pageIndex === 0 && (
-            <div ref={headerRef}>
-              <ResumeHeader />
+        <div
+          className="page-inner-wrapper"
+          style={
+            {
+              paddingLeft: `${setting.margin.x}px`,
+              paddingRight: `${setting.margin.x}px`,
+              paddingTop: `${setting.margin.y}px`,
+              paddingBottom: `${setting.margin.y}px`,
+              marginBottom: "40px",
+              "--page-number": `"----- Page ${pageIndex + 1} -----"`,
+            } as React.CSSProperties
+          }
+        >
+          <div className="page-inner-container">
+            {pageIndex === 0 && (
+              <div ref={headerRef}>
+                <ResumeHeader />
+              </div>
+            )}
+            <div className="resume-body">
+              {columns.map((column: any, columnIndex: number) => {
+                return (
+                  <div key={columnIndex} className="body-item">
+                    {column.map((section: any, index: number) => {
+                      const name = `sections.${section.positionIndex}`;
+                      if (!section.isVisible) return null;
+                      return (
+                        <div
+                          key={pageIndex + columnIndex + index}
+                          ref={(el) => {
+                            if (!sectionRefs) return undefined;
+                            sectionRefs.current[columnIndex] ??= {};
+                            if (el) {
+                              sectionRefs.current[columnIndex][index] = el;
+                            }
+                          }}
+                          className="section-container section-styles active-focus"
+                        >
+                          <SubSectionToolBar
+                            variant="section"
+                            propertyPath={`${name}`}
+                            tools={toolsConfig}
+                            format={section.format}
+                          />
+
+                          <SectionTitle
+                            name={`${name}.sectionTitle.content`}
+                            placeholderPath={`${section.format}.sectionTitle.placeholder`}
+                          />
+
+                          {section.sectionLayout === "BulletsCard" && (
+                            <BulletsCard
+                              data={section}
+                              name={name}
+                              syncWithProp={syncWithProp}
+                            />
+                          )}
+
+                          {section.sectionLayout === "DescriptionCard" && (
+                            <DescriptionCard
+                              data={section}
+                              name={name}
+                              syncWithProp={syncWithProp}
+                            />
+                          )}
+                          {section.sectionLayout === "TagCard" && (
+                            <TagCard
+                              data={section}
+                              name={name}
+                              syncWithProp={syncWithProp}
+                            />
+                          )}
+                          {section.sectionLayout === "BadgeTitleCard" && (
+                            <BadgeTitleCard
+                              data={section}
+                              name={name}
+                              syncWithProp={syncWithProp}
+                            />
+                          )}
+                          {section.sectionLayout === "LinkCard" && (
+                            <LinkCard
+                              data={section}
+                              name={name}
+                              syncWithProp={syncWithProp}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
             </div>
-          )}
-          <div className="resume-body"> 
-            {columns.map((column: any, columnIndex: number) => {
-              return (
-                <div key={columnIndex} className="body-item">
-                  {column.map((section: any, index: number) => {
-                    const name = `sections.${section.positionIndex}`;
-                    if (!section.isVisible) return null;
-                    return (
-                      <div
-                        key={pageIndex + columnIndex + index}
-                        ref={(el) => {
-                          if (!sectionRefs) return undefined;
-                          sectionRefs.current[columnIndex] ??= {};
-                          if (el) {
-                            sectionRefs.current[columnIndex][index] = el;
-                          }
-                        }}
-                        className="section-container section-styles active-focus"
-                      >
-                        <SubSectionToolBar
-                          variant="section"
-                          propertyPath={`${name}`}
-                          tools={toolsConfig}
-                          format={section.format}
-                        />
-
-                        <SectionTitle
-                          name={`${name}.sectionTitle.content`}
-                          placeholderPath={`${section.format}.sectionTitle.placeholder`}
-                        />
-
-                        {section.sectionLayout === "BulletsCard" && (
-                          <BulletsCard
-                            data={section}
-                            name={name}
-                            syncWithProp={syncWithProp}
-                          />
-                        )}
-
-                        {section.sectionLayout === "DescriptionCard" && (
-                          <DescriptionCard
-                            data={section}
-                            name={name}
-                            syncWithProp={syncWithProp}
-                          />
-                        )}
-                        {section.sectionLayout === "TagCard" && (
-                          <TagCard
-                            data={section}
-                            name={name}
-                            syncWithProp={syncWithProp}
-                          />
-                        )}
-                        {section.sectionLayout === "BadgeTitleCard" && (
-                          <BadgeTitleCard
-                            data={section}
-                            name={name}
-                            syncWithProp={syncWithProp}
-                          />
-                        )}
-                        {section.sectionLayout === "LinkCard" && (
-                          <LinkCard
-                            data={section}
-                            name={name}
-                            syncWithProp={syncWithProp}
-                          />
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
           </div>
         </div>
       </div>

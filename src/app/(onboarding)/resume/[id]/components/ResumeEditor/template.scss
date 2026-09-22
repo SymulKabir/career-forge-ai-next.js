@@ -1,40 +1,85 @@
 .resume-editor {
+  $small-grid-section-width: 40%;
+
+  @mixin gird-2 {
+    display: grid;
+    grid-template-columns: 1fr $small-grid-section-width;
+    gap: 20px;
+  }
+  @mixin split-layout(
+    $section-width: $small-grid-section-width,
+    $background: rgb(34, 64, 92),
+    $extra-width: 20px
+  ) {
+    z-index: 1;
+    position: relative !important;
+
+    &::after {
+      position: absolute;
+      content: "";
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: calc($section-width + $extra-width);
+      background: $background !important;
+      z-index: -1;
+    }
+  }
   &.double-column {
     .resume-main-editor-container {
-      .resume-body {
-        display: grid;
-        grid-template-columns: 1fr 40%;
-        gap: 20px;
+      .page {
+        .page-inner-wrapper {
+          .page-inner-container {
+            .resume-body {
+              display: grid;
+              grid-template-columns: 1fr 40%;
+              gap: 20px;
+            }
+          }
+        }
       }
     }
   }
   &.lvy-league {
     .resume-main-editor-container {
-      .resume-body {
-        display: grid;
-        grid-template-columns: 1fr 40%;
-        gap: 20px;
+      .page {
+        .page-inner-wrapper {
+          .page-inner-container {
+            .resume-body {
+              display: grid;
+              grid-template-columns: 1fr 40%;
+              gap: 20px;
+            }
+          }
+        }
       }
     }
   }
   &.elegant {
     .resume-main-editor-container {
-      .page-inner-container {
-        position: relative;
-        &::after{
-          position: absolute;
-          content: "";
-          height: 100%;
-          width: 300px;
-          background: rgb(34, 64, 92) !important;
-        }
-        .page {
-          .resume-body {
-            display: grid;
-            grid-template-columns: 1fr 40%;
-            gap: 20px;
+      .page {
+        .page-inner-wrapper {
+          @include split-layout;
+          .page-inner-container {
+            .resume-header {
+              .header-content-wrapper {
+                @include gird-2;
+              }
+            }
+            .resume-body {
+              @include gird-2;
+            }
           }
         }
+      }
+      .page-inner-container {
+        // .page {
+        //   .resume-body {
+        //     display: grid;
+        //     grid-template-columns: 1fr 40%;
+        //     gap: 20px;
+        //   }
+        // }
       }
     }
   }
