@@ -68,6 +68,13 @@
             }
             .resume-body {
               @include gird-2;
+              .body-item{
+                &.item-1{ 
+                  *{
+                    color: #FFF !important;
+                  }
+                }
+              }
             }
           }
         }

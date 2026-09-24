@@ -246,7 +246,7 @@ const PageMaker = ({
             <div className="resume-body">
               {columns.map((column: any, columnIndex: number) => {
                 return (
-                  <div key={columnIndex} className="body-item">
+                  <div key={columnIndex} className={`body-item item-${columnIndex + 1}`}>
                     {column.map((section: any, index: number) => {
                       const name = `sections.${section.positionIndex}`;
                       if (!section.isVisible) return null;

@@ -15,6 +15,7 @@ type Template = {
   ats: boolean;
   isNew: boolean;
   selected?: boolean;
+  setting?: object;
 };
 
 const templates: Template[] = [
@@ -47,6 +48,9 @@ const templates: Template[] = [
     id: "american",
     name: "Elegant",
     template: "elegant",
+    setting: {
+
+    },
     description: "Traditional US resume format",
     region: "us",
     regionLabel: "US",

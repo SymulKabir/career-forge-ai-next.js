@@ -108,11 +108,17 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
   return (
     <>
       <style>{`
-       .preview-img-container {
+        .image-section{
+            display: flex;
+            align-items: start;
+            justify-content: end;
+        }
+        .image-section .preview-img-container {
           position: relative;
+          overflow: hidden;
         }
 
-        .preview-img-container .img-inner-container {
+         .image-section .preview-img-container .img-inner-container {
           flex-shrink: 0;  
           overflow: hidden;
           background-color: #f3f4f6;
@@ -120,7 +126,7 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
           position: relative;
         }
 
-       .preview-img-container .img-inner-container .profile-img {
+        .image-section .preview-img-container .img-inner-container .profile-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
@@ -128,7 +134,7 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
           transform-origin: center center;
         }
 
-        .preview-img-container .img-inner-container .preview-img-placeholder {
+         .image-section .preview-img-container .img-inner-container .preview-img-placeholder {
           width: 100%;
           height: 100%;
           background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
@@ -161,7 +167,7 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
           color: #FFF; 
         }
 
-        .preview-img-container:hover .image-hover-actions {
+        .image-section .preview-img-container:hover .image-hover-actions {
           opacity: 1;
         }
 
@@ -301,9 +307,9 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
       `}</style>
 
       {/* Profile Image Container */}
-      <div className="preview-img-container">
+      <div className="image-section">
         <div
-          className="img-inner-container"
+          className="preview-img-container"
           style={{
             width: styles?.size ?? "40px",
             height: styles?.size ?? "40px",
@@ -314,50 +320,52 @@ const ImgPreview: React.FC<ImgPreviewProps> = ({
             padding: styles?.padding ?? "0px",
           }}
         >
-          {imgContent ? (
-            <img src={imgContent} alt={"image"} className="profile-img" />
-          ) : (
-            <div className="preview-img-placeholder">
-              {placeholder ? (
-                <div dangerouslySetInnerHTML={{ __html: placeholder }} />
-              ) : (
-                <div className="avatar-silhouette" />
-              )}
-            </div>
-          )}
-        </div>
+          <div className="img-inner-container">
+            {imgContent ? (
+              <img src={imgContent} alt={"image"} className="profile-img" />
+            ) : (
+              <div className="preview-img-placeholder">
+                {placeholder ? (
+                  <div dangerouslySetInnerHTML={{ __html: placeholder }} />
+                ) : (
+                  <div className="avatar-silhouette" />
+                )}
+              </div>
+            )}
+          </div>
 
-        <div
-          className="image-hover-actions"
-          style={{
-            borderRadius: styles.radius,
-          }}
-        >
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: "none" }}
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          <button
-            type="button"
-            className="action-btn upload-action-btn"
-            title="Upload Photo"
-            onClick={() => fileInputRef.current?.click()}
+          <div
+            className="image-hover-actions"
+            style={{
+              borderRadius: styles.radius,
+            }}
           >
-            <CloudUpload size={18} />
-          </button>
-          {!hide?.visible && (
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              accept="image/*"
+              onChange={handleFileChange}
+            />
             <button
               type="button"
-              className="action-btn visibility-action-btn"
-              title={isVisible ? "Hide Photo" : "Show Photo"}
-              onClick={togglePictureVisibility}
+              className="action-btn upload-action-btn"
+              title="Upload Photo"
+              onClick={() => fileInputRef.current?.click()}
             >
-              {isVisible ? <Eye size={18} /> : <EyeOff size={18} />}
+              <CloudUpload size={18} />
             </button>
-          )}
+            {!hide?.visible && (
+              <button
+                type="button"
+                className="action-btn visibility-action-btn"
+                title={isVisible ? "Hide Photo" : "Show Photo"}
+                onClick={togglePictureVisibility}
+              >
+                {isVisible ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
