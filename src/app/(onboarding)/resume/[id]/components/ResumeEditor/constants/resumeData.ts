@@ -3,7 +3,7 @@
 // 2. Dummy Resume Data Object
 // ==========================================
 
-export const DUMMY_STRUCTURED_RESUME = {
+export const DUMMY_STRUCTURED_RESUME2 = {
   header: {
     fullName: { content: "", isVisible: true },
     headline: { content: "", isVisible: true },
@@ -95,7 +95,7 @@ export const DUMMY_STRUCTURED_RESUME = {
     },
   ],
 };
-export const DUMMY_STRUCTURED_RESUME2 = {
+export const DUMMY_STRUCTURED_RESUME = {
   header: {
     fullName: { content: "Symul Kabir", isVisible: true },
     headline: { content: "Junior CTO & Full Stack Developer", isVisible: true },

@@ -30,9 +30,9 @@
     }
 
     .page {
-      &:first-of-type {
-        margin-top: 50px;
-      }
+      // &:first-of-type {
+      //   margin-top: 50px;
+      // }
       background-color: #fff;
       border: 1px solid #dcdbe0;
       transition: background-color 0.3s ease;
@@ -40,13 +40,14 @@
       width: var(--page-width);
       font-family: var(--font-family);
       position: relative;
+      margin-top: 70px;
 
       &:not(:first-of-type)::after {
         content: var(--page-number);
 
         position: absolute;
         left: 50%;
-        top: -32px;
+        bottom: calc(100% + 30px);
         transform: translateX(-50%);
 
         width: max-content;

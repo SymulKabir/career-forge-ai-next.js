@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState, useRef } from "react";
 import "./style.scss";
-import "./template.scss";
+// import "./template.scss";
 import { RESUME_CONSTANTS } from "../../constants/resume-utils";
 import BulletsCard from "./components/BulletsCard";
 import DescriptionCard from "./components/DescriptionCard";
@@ -25,6 +25,7 @@ const Index = () => {
     setLayoutResumeData,
     currentTemplate,
   } = useResumeContext();
+  const { getSettingValue } = useResume();
   useInitResume();
   const sectionRefs = useRef({});
   const headerRef = useRef(null);
@@ -37,7 +38,8 @@ const Index = () => {
     const pages: any[][] = [[]];
 
     const state: any = {};
-    const pageHight = setting.resumePageHeight - setting.margin.y * 2;
+    const pageHight =
+      getSettingValue("resumePageHeight") - getSettingValue("margin.y") * 2;
 
     const paginate = () => {
       for (const [rowIndex, row] of structuredResumeData?.columns.entries()) {
@@ -67,7 +69,7 @@ const Index = () => {
     };
     requestAnimationFrame(paginate);
   }, [structuredResumeData, setting]);
-
+  console.log("setting -->>>", setting);
   return (
     <>
       <section
@@ -75,10 +77,10 @@ const Index = () => {
         style={
           {
             "--container-height": `calc(100vh - ${RESUME_CONSTANTS.headerHeight}px - ${RESUME_CONSTANTS.toolBarHeight}px)`,
-            "--section-gap": `${setting.sectionGap}px`,
-            "--page-height": `${setting.resumePageHeight}px`,
-            "--page-width": `${setting.resumePageWidth}px`,
-            "--font-family": setting.font.family,
+            "--section-gap": `${getSettingValue("sectionGap")}px`,
+            "--page-height": `${getSettingValue("resumePageHeight")}px`,
+            "--page-width": `${getSettingValue("resumePageWidth")}px`,
+            "--font-family": getSettingValue("font.family"),
           } as React.CSSProperties
         }
       >
@@ -125,17 +127,11 @@ const PageMaker = ({
   syncWithProp,
 }: any) => {
   const { setting } = useResumeContext();
-  const {
-    handleSettingChange,
-    addResumeListItem,
-    updateResume,
-    getSettingValue,
-  } = useResume();
-  const metadata = setting?.sections?.metadata;
+  const { handleSettingChange, addResumeListItem, getSettingValue } =
+    useResume();
   const textTransform = getSettingValue("sections.sectionTitle.textTransform");
 
   const handleTextTransform = (obj: any) => {
-    // Update actual resume setting
     handleSettingChange({
       propertyPath: "sections.sectionTitle.textTransform",
       value: obj.value,
@@ -199,13 +195,13 @@ const PageMaker = ({
       <style>
         {`
           .resume-body {
-            font-family: ${setting?.font?.family || "Inter, sans-serif"};
-            font-size: ${px(metadata?.fontSize ?? 13)};
-            font-weight: ${metadata?.fontWeight ?? 400};
-            color: ${metadata?.fontColor ?? "#6b7280"};
-            line-height: ${metadata?.lineHeight ?? 1.4};
-            letter-spacing: ${px(metadata?.letterSpacing ?? 0)};
-            text-transform: ${metadata?.textTransform ?? "none"}; 
+            font-family: ${getSettingValue("font.family") || "Inter, sans-serif"};
+            font-size: ${px(getSettingValue("metadata.fontSize") ?? 13)};
+            font-weight: ${getSettingValue("metadata.fontWeight") ?? 400};
+            color: ${getSettingValue("metadata.fontColor") ?? "#6b7280"};
+            line-height: ${getSettingValue("metadata.lineHeight") ?? 1.4};
+            letter-spacing: ${px(getSettingValue("metadata.letterSpacing") ?? 0)};
+            text-transform: ${getSettingValue("metadata.textTransform") ?? "none"}; 
            
           }
 
@@ -223,17 +219,20 @@ const PageMaker = ({
       <div
         key={pageIndex}
         className={`page  ${sectionRefs ? "display-page" : ""}`}
+        style={
+          {
+            "--page-number": `"----- Page ${pageIndex + 1} -----"`,
+          } as React.CSSProperties
+        }
       >
         <div
           className="page-inner-wrapper"
           style={
             {
-              paddingLeft: `${setting.margin.x}px`,
-              paddingRight: `${setting.margin.x}px`,
-              paddingTop: `${setting.margin.y}px`,
-              paddingBottom: `${setting.margin.y}px`,
-              marginBottom: "40px",
-              "--page-number": `"----- Page ${pageIndex + 1} -----"`,
+              paddingLeft: `${getSettingValue("margin.x")}px`,
+              paddingRight: `${getSettingValue("margin.x")}px`,
+              paddingTop: `${getSettingValue("margin.y")}px`,
+              paddingBottom: `${getSettingValue("margin.y")}px`,
             } as React.CSSProperties
           }
         >
@@ -243,12 +242,25 @@ const PageMaker = ({
                 <ResumeHeader />
               </div>
             )}
-            <div className="resume-body">
+            <div
+              className="resume-body"
+              style={{
+                display: "grid",
+                gridTemplateColumns: setting?.sections
+                  .slice(0, setting.gridItem)
+                  .map((section) => `${section.width}%`)
+                  .join(" "),
+              }}
+            >
               {columns.map((column: any, columnIndex: number) => {
                 return (
-                  <div key={columnIndex} className={`body-item item-${columnIndex + 1}`}>
+                  <div
+                    key={columnIndex}
+                    className={`body-item item-${columnIndex + 1}`}
+                  >
                     {column.map((section: any, index: number) => {
                       const name = `sections.${section.positionIndex}`;
+                      const sectionSettingPath = `sections.${columnIndex}`;
                       if (!section.isVisible) return null;
                       return (
                         <div
@@ -271,6 +283,7 @@ const PageMaker = ({
 
                           <SectionTitle
                             name={`${name}.sectionTitle.content`}
+                            sectionSettingPath={sectionSettingPath}
                             placeholderPath={`${section.format}.sectionTitle.placeholder`}
                           />
 
@@ -278,6 +291,7 @@ const PageMaker = ({
                             <BulletsCard
                               data={section}
                               name={name}
+                              sectionSettingPath={sectionSettingPath}
                               syncWithProp={syncWithProp}
                             />
                           )}
@@ -286,6 +300,7 @@ const PageMaker = ({
                             <DescriptionCard
                               data={section}
                               name={name}
+                              sectionSettingPath={sectionSettingPath}
                               syncWithProp={syncWithProp}
                             />
                           )}
@@ -293,6 +308,7 @@ const PageMaker = ({
                             <TagCard
                               data={section}
                               name={name}
+                              sectionSettingPath={sectionSettingPath}
                               syncWithProp={syncWithProp}
                             />
                           )}
@@ -300,6 +316,7 @@ const PageMaker = ({
                             <BadgeTitleCard
                               data={section}
                               name={name}
+                              sectionSettingPath={sectionSettingPath}
                               syncWithProp={syncWithProp}
                             />
                           )}
@@ -307,6 +324,7 @@ const PageMaker = ({
                             <LinkCard
                               data={section}
                               name={name}
+                              sectionSettingPath={sectionSettingPath}
                               syncWithProp={syncWithProp}
                             />
                           )}

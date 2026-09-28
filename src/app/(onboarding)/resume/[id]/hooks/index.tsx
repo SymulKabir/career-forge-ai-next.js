@@ -1,14 +1,34 @@
 import React, { useEffect } from "react";
 import { useResumeContext } from "../context/resume-editor-context";
 import { structuredResume } from "../utils/resume";
-import { addPositionIndex } from "../components/ResumeEditor/utils";
+import {
+  addPositionIndex,
+  formatResumeSetting,
+} from "../components/ResumeEditor/utils";
+import { RESUME_SETTING } from "../components/ResumeEditor/constants/resumeSetting";
+import { TEMPLATES } from "../constants/template";
 
 export const useInitResume = () => {
-  const { resumeData, setStructuredResumeData } = useResumeContext();
+  const { resumeData, setStructuredResumeData, currentTemplate, setSetting } =
+    useResumeContext();
   useEffect(() => {
     if (!Object.keys({ ...(resumeData || {}).length })) return;
     setStructuredResumeData(structuredResume({ ...resumeData }));
   }, [setStructuredResumeData, resumeData]);
+
+  useEffect(() => {
+    if (!currentTemplate) return
+    const template = TEMPLATES[currentTemplate]
+
+    setSetting(
+      formatResumeSetting(
+        {
+          ...RESUME_SETTING,
+        },
+        template
+      ),
+    );
+  }, [currentTemplate]);
 };
 export const useResume = () => {
   const { resumeData, setResumeData, setting, setSetting, setToolBar } =
@@ -200,8 +220,6 @@ export const useResume = () => {
   }) => {
     if (!fromPath || !toPath) return;
 
-    console.log("=================START RESUME MOVE==============");
-
     const getNestedValue = (obj: any, path: string): any => {
       if (!path) return obj;
 
@@ -332,7 +350,6 @@ export const useResume = () => {
       return addPositionIndex(result);
     });
   };
-  console.log("resumeData--->>", resumeData);
   return {
     getResumeValue,
     handleResumeChange,

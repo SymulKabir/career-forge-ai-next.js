@@ -263,7 +263,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
           <div
             className="
-              fixed inset-0 z-[9998]
+              fixed inset-0 z-[9999998]
               bg-slate-900/5
               backdrop-blur-[1px]
             "
@@ -275,7 +275,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
           <div
             className="
               fixed left-1/2 top-1/2
-              z-[9999]
+              z-[9999999]
 
               w-[320px]
               max-w-[calc(100vw-24px)]

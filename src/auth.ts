@@ -29,11 +29,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async signIn({ user, account, profile }) {
-      console.log("========== OAuth SUCCESS ==========");
-      console.log("Provider:", account?.provider);
-      console.log("Provider Account ID:", account?.providerAccountId);
-      console.log("User:", user);
-      console.log("Profile:", profile);
       return true;
 
       // Only process our OAuth providers

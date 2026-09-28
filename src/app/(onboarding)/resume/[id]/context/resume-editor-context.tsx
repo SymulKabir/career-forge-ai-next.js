@@ -6,7 +6,10 @@ import {
   TOOLBAR,
 } from "../components/ResumeEditor/constants/resumeSetting";
 import { DUMMY_STRUCTURED_RESUME } from "../components/ResumeEditor/constants/resumeData";
-import { addPositionIndex } from "../components/ResumeEditor/utils";
+import {
+  addPositionIndex,
+  formatResumeSetting,
+} from "../components/ResumeEditor/utils";
 
 interface ResumeEditorContextValue {
   activeTool: string | null;
@@ -33,9 +36,7 @@ const ResumeEditorContext = createContext<ResumeEditorContextValue | null>(
 
 export function ResumeEditorProvider({ children }: { children: ReactNode }) {
   const [activeTool, setActiveTool] = useState<string | null>(null);
-  const [setting, setSetting] = useState<typeof RESUME_SETTING>({
-    ...RESUME_SETTING,
-  });
+  const [setting, setSetting] = useState({}) 
   const [toolBar, setToolBar] = useState<typeof TOOLBAR>({
     ...TOOLBAR,
   });
@@ -51,7 +52,7 @@ export function ResumeEditorProvider({ children }: { children: ReactNode }) {
     header: {},
     pages: [],
   });
-  const [currentTemplate, setCurrentTemplate] = useState("elegant");
+  const [currentTemplate, setCurrentTemplate] = useState("executive-pro");
   return (
     <ResumeEditorContext.Provider
       value={{

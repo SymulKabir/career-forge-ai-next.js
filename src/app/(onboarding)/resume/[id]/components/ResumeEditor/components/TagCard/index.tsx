@@ -12,6 +12,7 @@ interface SkillsProps {
   data?: any;
   name?: any;
   syncWithProp?: any;
+  sectionSettingPath?: any;
 }
 
 const px = (value?: number | string) => {
@@ -21,14 +22,18 @@ const px = (value?: number | string) => {
   return `${value}px`;
 };
 
-const SkillsCard: React.FC<SkillsProps> = ({ data, name, syncWithProp }) => {
-  const { setting } = useResumeContext();
+const SkillsCard: React.FC<SkillsProps> = ({
+  data,
+  name,
+  sectionSettingPath,
+}) => {
   const { getValue } = useEditor();
-  const { getResumeValue, updateResume } = useResume();
-  const { textStyles, colors } = setting || {};
-  const sectionTitle = textStyles?.sectionTitle;
-  const resumeBorder = colors?.border || "#1a202c";
-  const gapValue = px(setting?.gap);
+  const { getResumeValue, updateResume, getSettingValue } = useResume();
+
+  const sectionStyles = getSettingValue(sectionSettingPath);
+  const subSectionTitleStyles = sectionStyles?.subSectionTitle;
+  const resumeBorderStyles = sectionStyles?.border;
+
   const isVisible = (filePath: string) => {
     return getResumeValue(filePath);
   };
@@ -65,7 +70,6 @@ const SkillsCard: React.FC<SkillsProps> = ({ data, name, syncWithProp }) => {
       value: obj.value,
     });
   };
-
   return (
     <>
       <style>{`
@@ -73,15 +77,15 @@ const SkillsCard: React.FC<SkillsProps> = ({ data, name, syncWithProp }) => {
           .section-header-wrapper {
             padding-bottom: 3px;
             margin-bottom: 5px;
-            border-bottom: 2px solid ${resumeBorder};
+            border-bottom: 2px solid ${resumeBorderStyles};
           }
           .section-header-wrapper h2 {
-            font-size: ${px(sectionTitle?.fontSize)};
-            font-weight: ${sectionTitle?.fontWeight ?? 700};
-            color: ${sectionTitle?.color || "#1a202c"};
-            line-height: ${sectionTitle?.lineHeight ?? 1.2};
-            letter-spacing: ${px(sectionTitle?.letterSpacing)};
-            text-transform: ${sectionTitle?.textTransform || "none"};
+            font-size: ${px(subSectionTitleStyles?.fontSize)};
+            font-weight: ${subSectionTitleStyles?.fontWeight ?? 700};
+            color: ${subSectionTitleStyles?.color || "#1a202c"};
+            line-height: ${subSectionTitleStyles?.lineHeight ?? 1.2};
+            letter-spacing: ${px(subSectionTitleStyles?.letterSpacing)};
+            text-transform: ${subSectionTitleStyles?.textTransform || "none"};
             margin: 0;
             padding: 0;
             display: inline-block;
@@ -90,8 +94,7 @@ const SkillsCard: React.FC<SkillsProps> = ({ data, name, syncWithProp }) => {
           .skill-group-card {
             position: relative; 
             width: 100%;
-            box-sizing: border-box;
-            margin-bottom: ${gapValue};
+            box-sizing: border-box; 
           }
           .skill-title-wrapper {
             margin-bottom: 6px;
@@ -223,9 +226,10 @@ const SkillsCard: React.FC<SkillsProps> = ({ data, name, syncWithProp }) => {
               />
               {isTitleVisible && (
                 <div className="skill-title-wrapper">
-                  <SubSectionTitle 
-                  name={`${rootPathName}.title.content`} 
-                   placeholderPath={`${rootPlaceholderPathName}.title.placeholder`}
+                  <SubSectionTitle
+                    name={`${rootPathName}.title.content`}
+                    placeholderPath={`${rootPlaceholderPathName}.title.placeholder`}
+                    sectionSettingPath={sectionSettingPath}
                   />
                 </div>
               )}

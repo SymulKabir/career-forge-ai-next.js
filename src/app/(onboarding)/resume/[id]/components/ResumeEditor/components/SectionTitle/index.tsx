@@ -1,37 +1,43 @@
 import React from "react";
 import InputField from "../InputField";
-import { useResumeContext } from "../../../../context/resume-editor-context";
 import { px } from "../../utils/resumeEditor";
+import { useResume } from "../../../../hooks";
 
+const Index = ({ name, placeholderPath, sectionSettingPath }: any) => {
+  const { getSettingValue } = useResume();
 
-const Index = ({ name, placeholderPath }:any) => {
-  const { setting } = useResumeContext();
-
-  const sectionTitle = setting?.sections?.sectionTitle;
-  const border = sectionTitle?.border;
+  const sectionSetting = getSettingValue(sectionSettingPath) || {};
+  const sectionTitle = sectionSetting?.sectionTitle; 
+ 
 
   return (
     <>
       <style>
         {`
           .section-header-card {
-            ${border?.enabled && border?.position === "bottom"
-              ? `border-bottom: ${px(border.width)} ${border.style} ${border.color};`
-              : ""}
+            ${
+              sectionTitle?.border?.enabled && sectionTitle?.border?.position === "bottom"
+                ? `border-bottom: ${px(sectionTitle?.border?.width)} ${sectionTitle?.border.style} ${sectionTitle?.border?.color};`
+                : ""
+            }
 
-            ${border?.enabled && border?.position === "top"
-              ? `border-top: ${px(border.width)} ${border.style} ${border.color};`
-              : ""}
+            ${
+              sectionTitle?.border?.enabled && sectionTitle?.border?.position === "top"
+                ? `border-top: ${px(sectionTitle?.border?.width)} ${sectionTitle?.border?.style} ${sectionTitle?.border?.color};`
+                : ""
+            }
 
-            ${border?.enabled && border?.position === "both"
-              ? `
-                border-top: ${px(border.width)} ${border.style} ${border.color};
-                border-bottom: ${px(border.width)} ${border.style} ${border.color};
+            ${
+              sectionTitle?.border?.enabled && sectionTitle?.border?.position === "both"
+                ? `
+                border-top: ${px(sectionTitle?.border?.width)} ${sectionTitle?.border?.style} ${sectionTitle?.border?.color};
+                border-bottom: ${px(sectionTitle?.border?.width)} ${sectionTitle?.border?.style} ${sectionTitle?.border?.color};
               `
-              : ""}
+                : ""
+            }
 
-            border-radius: ${px(border?.radius ?? 0)};
-            padding-bottom: ${px(border?.spacing ?? 0)};
+            border-radius: ${px(sectionTitle?.border?.radius ?? 0)};
+            padding-bottom: ${px(sectionTitle?.border?.spacing ?? 0)};
           }
 
           .section-header-card h2 {

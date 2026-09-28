@@ -2,86 +2,7 @@
 
 import { useState } from "react";
 import { useResumeContext } from "../../context/resume-editor-context";
-
-type Template = {
-  id: string;
-  name: string;
-  template?: string;
-  description: string;
-  region: "europe" | "global" | "us";
-  regionLabel: string;
-  regionEmoji: string;
-  style: "professional" | "creative";
-  ats: boolean;
-  isNew: boolean;
-  selected?: boolean;
-  setting?: object;
-};
-
-const templates: Template[] = [
-  {
-    id: "executive-pro",
-    name: "Double Column",
-    template: 'double-column',
-    description: "Clean executive layout",
-    region: "europe",
-    regionLabel: "Europe",
-    regionEmoji: "🇪🇺",
-    style: "professional",
-    ats: true,
-    isNew: true,
-    selected: true,
-  },
-  {
-    id: "minimal",
-    name: "Lvy League",
-    template: 'lvy-league',
-    description: "Simple and highly readable",
-    region: "global",
-    regionLabel: "Global",
-    regionEmoji: "🌍",
-    style: "professional",
-    ats: true,
-    isNew: false,
-  },
-  {
-    id: "american",
-    name: "Elegant",
-    template: "elegant",
-    setting: {
-
-    },
-    description: "Traditional US resume format",
-    region: "us",
-    regionLabel: "US",
-    regionEmoji: "🇺🇸",
-    style: "professional",
-    ats: true,
-    isNew: false,
-  },
-  {
-    id: "creative-edge",
-    name: "Creative Edge",
-    description: "Modern design for creative roles",
-    region: "global",
-    regionLabel: "Global",
-    regionEmoji: "🌍",
-    style: "creative",
-    ats: false,
-    isNew: true,
-  },
-  {
-    id: "euro-modern",
-    name: "Euro Modern",
-    description: "European-style professional CV",
-    region: "europe",
-    regionLabel: "Europe",
-    regionEmoji: "🇪🇺",
-    style: "professional",
-    ats: true,
-    isNew: false,
-  },
-];
+import { TEMPLATES } from "../../constants/template";
 
 const filters = ["All", "Professional", "ATS Friendly", "Creative"];
 
@@ -92,9 +13,16 @@ export default function TemplatesView() {
     useState("executive-pro");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
-  const {currentTemplate, setCurrentTemplate,} = useResumeContext()
 
-  const filteredTemplates = templates.filter((template) => {
+  const { currentTemplate, setCurrentTemplate } = useResumeContext();
+
+  // Convert object format to array format for rendering/filtering
+  const templateList = Object.entries(TEMPLATES).map(([id, template]) => ({
+    id,
+    ...template,
+  }));
+
+  const filteredTemplates = templateList.filter((template) => {
     const searchMatch =
       template.name.toLowerCase().includes(search.toLowerCase()) ||
       template.description.toLowerCase().includes(search.toLowerCase());
@@ -130,6 +58,12 @@ export default function TemplatesView() {
 
   const handleApplyTemplate = (templateId: string) => {
     setSelectedTemplate(templateId);
+
+    const template = TEMPLATES[templateId];
+
+    if (template) {
+      setCurrentTemplate(template.template);
+    }
   };
 
   return (
@@ -150,7 +84,7 @@ export default function TemplatesView() {
               </h2>
 
               <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[8px] font-bold text-violet-600">
-                24 Templates
+                {templateList.length} Templates
               </span>
             </div>
 
@@ -181,9 +115,7 @@ export default function TemplatesView() {
         {/* SEARCH */}
         {/* ======================================================= */}
 
-        <div
-          className="mt-4 flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 transition focus-within:border-violet-300 focus-within:bg-white focus-within:ring-4 focus-within:ring-violet-50"
-        >
+        <div className="mt-4 flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 transition focus-within:border-violet-300 focus-within:bg-white focus-within:ring-4 focus-within:ring-violet-50">
           <span className="text-xs text-slate-400">⌕</span>
 
           <input
@@ -201,7 +133,6 @@ export default function TemplatesView() {
             className="flex h-7 items-center gap-1 rounded-lg px-2 text-[9px] font-bold text-slate-500 transition hover:bg-white hover:text-violet-600"
           >
             Filters
-
             <span className="text-[8px]">▾</span>
           </button>
         </div>
@@ -260,7 +191,9 @@ export default function TemplatesView() {
                 data-style={template.style}
                 data-ats={template.ats}
                 data-new={template.isNew}
-                onClick={() => {setCurrentTemplate(template.template)}}
+                onClick={() => {
+                  setCurrentTemplate(template.template);
+                }}
               >
                 {/* Selected */}
 
@@ -440,7 +373,10 @@ export default function TemplatesView() {
                   <div className="absolute inset-0 flex items-center justify-center bg-slate-900/0 transition group-hover:bg-slate-900/10">
                     <button
                       type="button"
-                      onClick={() => handleApplyTemplate(template.id)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleApplyTemplate(template.id);
+                      }}
                       className="template-preview-btn rounded-xl bg-white px-4 py-2 text-[9px] font-bold text-slate-700 opacity-0 shadow-lg transition group-hover:opacity-100"
                     >
                       Preview
@@ -467,7 +403,10 @@ export default function TemplatesView() {
                     <button
                       type="button"
                       aria-label={`Favorite ${template.name}`}
-                      onClick={() => toggleFavorite(template.id)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        toggleFavorite(template.id);
+                      }}
                       className={`template-favorite text-sm transition ${
                         isFavorite
                           ? "text-rose-500"
@@ -526,7 +465,10 @@ export default function TemplatesView() {
 
                   <button
                     type="button"
-                    onClick={() => handleApplyTemplate(template.id)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleApplyTemplate(template.id);
+                    }}
                     className={`apply-template mt-3 w-full rounded-xl py-2.5 text-[9px] font-bold transition ${
                       isSelected
                         ? "bg-violet-600 text-white shadow-sm shadow-violet-200 hover:bg-violet-700"
@@ -585,4 +527,4 @@ export default function TemplatesView() {
       </div>
     </div>
   );
-} 
+}

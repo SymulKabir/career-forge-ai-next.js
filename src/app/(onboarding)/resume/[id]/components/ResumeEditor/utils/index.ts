@@ -170,7 +170,22 @@ export const paginateResumeSections = ({
     currentHeight,
   };
 };
+export const formatResumeSetting = (data, template) => {
+  if (!data || !data.sections || !template) return {}
+  const grid = template.grid || 1
+  const section = Array.isArray(data.sections)
+    ? data.sections[0]
+    : data.sections;
 
+  return {
+    ...data,
+    gridItem: grid || 1,
+    sections: Array.from(
+      { length: grid },
+      () => structuredClone(section)
+    ),
+  };
+};
 export const paginateResumeSections2 = ({
   pageHight,
   section,

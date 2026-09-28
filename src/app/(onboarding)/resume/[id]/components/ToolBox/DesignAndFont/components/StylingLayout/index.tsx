@@ -93,7 +93,7 @@ export default function DesignFontPanel() {
             <div className="rounded-lg bg-slate-50 p-2.5 border border-slate-100">
               <SelectField
                 label="Font Family"
-                value={setting.font.family}
+                value={setting?.font?.family}
                 options={[
                   { label: "Rubik", value: "Rubik" },
                   { label: "Inter", value: "Inter" },
@@ -124,7 +124,7 @@ export default function DesignFontPanel() {
                 <p
                   className="text-sm font-medium text-slate-800"
                   style={{
-                    fontFamily: setting.font.family,
+                    fontFamily: setting?.font?.family,
                     lineHeight,
                     letterSpacing: `${letterSpacing}px`,
                   }}

@@ -34,9 +34,6 @@ export default function AuthModal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data: session, status } = useSession();
 
-  console.log("SESSION:", session);
-  console.log("AUTH STATUS:", status);
-  console.log("USER INFO:", session?.user);
 
 
   const switchMode = () => {

@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import TextEditor from "../TextEditor";
-import { useResumeContext } from "../../../../context/resume-editor-context";
 import SubSectionToolBar from "../SubSectionToolBar";
 import useEditor from "../../hooks/useEditor";
 import { useResume } from "../../../../hooks";
@@ -11,6 +10,7 @@ interface ExperienceProps {
   data?: any;
   name?: any;
   syncWithProp?: any;
+  sectionSettingPath?: any;
 }
 
 const px = (value?: number | string) => {
@@ -20,18 +20,20 @@ const px = (value?: number | string) => {
   return `${value}px`;
 };
 
-const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
-  const { setting } = useResumeContext();
-  const { getValue } = useEditor();
-  const { font, textStyles, colors } = setting || {};
-  const sectionTitle = textStyles?.sectionTitle;
-  const body = textStyles?.body;
-  const metadata = textStyles?.metadata;
-  const highlight = textStyles?.highlight;
-  const resumeBorder = colors?.border || "#1a202c";
-  const gapValue = px(setting?.gap);
-  const { getResumeValue, updateResume } = useResume();
+const Index: React.FC<ExperienceProps> = ({
+  data,
+  name,
+  sectionSettingPath,
+  syncWithProp,
+}) => { 
+  const { getValue } = useEditor(); 
+   
+  const { getResumeValue, updateResume, getSettingValue } = useResume();
   const rootPlaceholderPathName = `${data.format}.items.0`;
+  const sectionStyle = getSettingValue(sectionSettingPath);
+  const subSectionTitleStyles = sectionStyle?.subSectionTitle;
+  const metadataStyles = sectionStyle?.metadata;
+  const resumeBorderStyles = sectionStyle.border
 
   const isVisible = (filePath: string) => {
     return getResumeValue(filePath);
@@ -64,14 +66,14 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
             .section-header-wrapper {
               padding-bottom: 3px;
               margin-bottom: 5px;
-              border-bottom: 2px solid ${resumeBorder};
+              border-bottom: 2px solid ${resumeBorderStyles};
               h2{
-              font-size: ${px(sectionTitle?.fontSize)};
-              font-weight: ${sectionTitle?.fontWeight ?? 700};
-              color: ${sectionTitle?.color || "#1a202c"};
-              line-height: ${sectionTitle?.lineHeight ?? 1.2};
-              letter-spacing: ${px(sectionTitle?.letterSpacing)};
-              text-transform: ${sectionTitle?.textTransform || "none"};
+              font-size: ${px(subSectionTitleStyles?.fontSize)};
+              font-weight: ${subSectionTitleStyles?.fontWeight ?? 700};
+              color: ${subSectionTitleStyles?.color || "#1a202c"};
+              line-height: ${subSectionTitleStyles?.lineHeight ?? 1.2};
+              letter-spacing: ${px(subSectionTitleStyles?.letterSpacing)};
+              text-transform: ${subSectionTitleStyles?.textTransform || "none"};
               margin: 0;
               padding: 0;
               display: inline-block;
@@ -83,8 +85,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
               gap: 7px !important;
               position: relative; 
               width: 100%;
-              box-sizing: border-box;
-              gap: ${gapValue};
+              box-sizing: border-box; 
             } 
             .metadata-row {
               display: flex; 
@@ -103,27 +104,18 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp }) => {
             }
 
             .resume-body-text {
-              font-size: ${px(body?.fontSize)};
-              font-weight: ${body?.fontWeight ?? 400};
-              color: ${body?.color || "#4b5563"};
-              line-height: ${body?.lineHeight ?? 1.5};
-              letter-spacing: ${px(body?.letterSpacing)};
+              font-size: ${px(metadataStyles?.fontSize)};
+              font-weight: ${metadataStyles?.fontWeight ?? 400};
+              color: ${metadataStyles?.color || "#4b5563"};
+              line-height: ${metadataStyles?.lineHeight ?? 1.5};
+              letter-spacing: ${px(metadataStyles?.letterSpacing)};
               margin: 0 0 12px 0;
             }
 
             .highlights-list {
               margin: 0;
               padding-left: 18px;
-            }
-
-            .resume-highlight-item {
-              font-size: ${px(highlight?.fontSize)};
-              font-weight: ${highlight?.fontWeight ?? 400};
-              color: ${highlight?.color || "#4b5563"};
-              line-height: ${highlight?.lineHeight ?? 1.5};
-              margin-bottom: 6px;
-
-            }
+            } 
         }
 
          

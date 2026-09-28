@@ -99,20 +99,13 @@ export default function ResumeToolbar({
   };
   const handleMove = (mode: string) => {
     if (!mode) return
-    console.log("test1")
 
     const toIndex = mode == "up" ? itemIndex - 1 : mode == "down" ? itemIndex + 1 : -1
     const path = propertyParts.join(".")
 
 
     if (toIndex < 0 || itemIndex < 0) return
-    console.log("test3")
-    console.log({
-      fromPath: path,
-      fromIndex: itemIndex,
-      toPath: path,
-      toIndex: toIndex,
-    })
+ 
     swapResumeData({
       fromPath: path,
       fromIndex: itemIndex,

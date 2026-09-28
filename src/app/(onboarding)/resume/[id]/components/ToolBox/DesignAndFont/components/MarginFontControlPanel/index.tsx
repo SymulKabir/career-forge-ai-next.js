@@ -5,8 +5,9 @@ import { useResumeContext } from "../../../../../context/resume-editor-context";
 import SelectField from "../SelectField";
 
 const Index = () => {
-  const { handleSettingChange, handleToolbarChange } = useResume();
-  const { setting, setSetting, toolBar } = useResumeContext(); 
+  const { handleSettingChange, handleToolbarChange, getSettingValue } =
+    useResume();
+  const { setting, setSetting, toolBar } = useResumeContext();
   const [lineHeight, setLineHeight] = useState(1);
   const [letterSpacing, setLetterSpacing] = useState(0);
 
@@ -15,7 +16,12 @@ const Index = () => {
       {/* HEADER WITH TOGGLE CONTROL */}
       <button
         type="button"
-        onClick={() => handleToolbarChange({propertyPath: "collapse.marginFont", value: !toolBar.collapse.marginFont})}
+        onClick={() =>
+          handleToolbarChange({
+            propertyPath: "collapse.marginFont",
+            value: !toolBar.collapse.marginFont,
+          })
+        }
         className="flex w-full items-center justify-between border-b border-slate-100 bg-slate-50/50 px-3.5 py-3 text-left transition hover:bg-slate-50"
       >
         <div>
@@ -66,7 +72,7 @@ const Index = () => {
               </span>
 
               <span className="text-[10px] text-slate-400">
-                {setting.margin.y} / {setting.margin.x}
+                {getSettingValue("margin.y")} / {getSettingValue("margin.x")}
               </span>
             </div>
 
@@ -74,11 +80,11 @@ const Index = () => {
               <div className="rounded-lg bg-slate-50 p-2.5 border border-slate-100">
                 <RangeField
                   label="Top / Bottom"
-                  value={setting.margin.y}
+                  value={getSettingValue("margin.y")}
                   min={10}
                   max={80}
                   step={10}
-                  displayValue={`${setting.margin.y}px`}
+                  displayValue={`${getSettingValue("margin.y")}px`}
                   onChange={(value) =>
                     handleSettingChange({
                       propertyPath: "margin.y",
@@ -91,11 +97,11 @@ const Index = () => {
               <div className="rounded-lg bg-slate-50 p-2.5 border border-slate-100">
                 <RangeField
                   label="Left / Right"
-                  value={setting.margin.x}
+                  value={getSettingValue("margin.x")}
                   min={10}
                   max={80}
                   step={10}
-                  displayValue={`${setting.margin.x}px`}
+                  displayValue={`${getSettingValue("margin.x")}px`}
                   onChange={(value) =>
                     handleSettingChange({
                       propertyPath: "margin.x",
@@ -123,7 +129,7 @@ const Index = () => {
 
             <SelectField
               label="Font Family"
-              value={setting.font?.family || "Inter"}
+              value={getSettingValue("font.family") || "Inter"}
               options={[
                 { label: "Rubik", value: "Rubik" },
                 { label: "Inter", value: "Inter" },
@@ -139,7 +145,7 @@ const Index = () => {
                 setSetting({
                   ...setting,
                   font: {
-                    ...setting.font,
+                    ...(getSettingValue("font") || {}),
                     family: value,
                   },
                 })
@@ -155,7 +161,7 @@ const Index = () => {
               <p
                 className="text-sm font-medium text-slate-800"
                 style={{
-                  fontFamily: setting.font?.family,
+                  fontFamily: getSettingValue("font.family"),
                   lineHeight,
                   letterSpacing: `${letterSpacing}px`,
                 }}

@@ -37,12 +37,11 @@ export default function ResumeToolbar({
   const [sectionData, setSectionData] = useState<any>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const propertyParts = propertyPath.split(".");
-  const itemIndex = Number(propertyParts.pop());
-  // Destructure update function or state setter from useEditor hook if available
+  const itemIndex = Number(propertyParts.pop()); 
   const { getValue } = useEditor();
-  const { addResumeListItem, updateResume, swapResumeData } = useResume();
+  const { addResumeListItem, updateResume, swapResumeData, getSettingValue } = useResume();
   const { openAddSectionModal } = useResumeConfig();
-  const { resumeData } = useResumeContext();
+  const { resumeData } = useResumeContext(); 
 
   useEffect(() => {
     if (propertyPath) {

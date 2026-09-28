@@ -66,10 +66,8 @@ export default function AddSectionModal() {
   if (!addSectionConfig.isModalOpen) return null;
 
   const onSelectSection = (format: string) => {
-    console.log("click on select section-->>");
     if (!format || !addSectionConfig.newSectionPosition) return;
     const formatData = getResumeFormat(format);
-    console.log("formatData-->>", formatData);
     formatData["column"] = addSectionConfig.column;
     const [path, index] = addSectionConfig.newSectionPosition.split(".");
 

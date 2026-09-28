@@ -1,24 +1,26 @@
 import React from "react";
 import InputField from "../InputField";
-import { useResumeContext } from "../../../../context/resume-editor-context";
 import { px } from "../../utils/resumeEditor";
+import { useResume } from "../../../../hooks";
 
-const Index = ({ name, placeholderPath }:any) => {
-  const { setting } = useResumeContext();
-
+const Index = ({ name, placeholderPath, sectionSettingPath }: any) => {
+  const { getSettingValue } = useResume();
+  const subSectionTitle = getSettingValue(
+    `${sectionSettingPath}.subSectionTitle`,
+  );
 
   return (
     <>
       <style>
         {`
           .primary-title {
-            font-size: ${px(setting?.sections?.subSectionTitle?.fontSize )};
-            font-weight: ${setting?.sections?.subSectionTitle?.fontWeight};
-            color: ${setting?.sections?.subSectionTitle?.fontColor};
-            line-height: ${setting?.sections?.subSectionTitle?.lineHeight};
-            letter-spacing: ${px(setting?.sections?.subSectionTitle?.letterSpacing )};
-            text-transform: ${setting?.sections?.subSectionTitle?.textTransform};
-            margin: 0 0 ${px(setting?.sections?.subSectionTitle?.gap)} 0;
+            font-size: ${px(subSectionTitle?.fontSize)};
+            font-weight: ${subSectionTitle?.fontWeight};
+            color: ${subSectionTitle?.fontColor};
+            line-height: ${subSectionTitle?.lineHeight};
+            letter-spacing: ${px(subSectionTitle?.letterSpacing)};
+            text-transform: ${subSectionTitle?.textTransform};
+            margin: 0 0 ${px(subSectionTitle?.gap)} 0;
             display: inline-block;
             width: 100%;
           }

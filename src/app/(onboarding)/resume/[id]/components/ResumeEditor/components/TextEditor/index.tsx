@@ -62,10 +62,7 @@ const Index: React.FC<EditableTextProps> = ({
 
   const debouncedUpdateResume = useRef(
     debounce((propertyPath: string, value: string) => {
-      console.log("Saving:", {
-        propertyPath,
-        value,
-      });
+      
 
       updateResume({
         propertyPath,

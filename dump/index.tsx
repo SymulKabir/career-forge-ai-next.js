@@ -166,7 +166,7 @@ const Index = () => {
     let currentPageIndex = 0;
     let currentHeight = 0;
 
-    const pageHight = setting.resumePageHeight - setting.margin.y * 2;
+    const pageHight = setting?.resumePageHeight - setting?.margin?.y * 2;
 
     const paginate = () => {
       for (const [originalIndex, section] of resumeData.sections.entries()) {
@@ -198,7 +198,7 @@ const Index = () => {
           "--container-height": `calc(100vh - ${RESUME_CONSTANTS.headerHeight}px - ${RESUME_CONSTANTS.toolBarHeight}px)`,
           "--section-gap": `${setting.sectionGap}px`,
           "--page-height": `${setting.resumePageHeight}px`,
-          "--font-family": setting.font.family,
+          "--font-family": setting?.font?.family,
         } as React.CSSProperties
       }
     >
@@ -276,10 +276,10 @@ const PageMaker = ({
         className={`page  `}
         style={
           {
-            paddingLeft: `${setting.margin.x}px`,
+            paddingLeft: `${setting?.margin?.x}px`,
             paddingRight: `${setting.margin.x}px`,
-            paddingTop: `${setting.margin.y}px`,
-            paddingBottom: `${setting.margin.y}px`,
+            paddingTop: `${setting?.margin?.y}px`,
+            paddingBottom: `${setting?.margin?.y}px`,
             background: "#FFFFFF",
             marginBottom: "40px",
             "--page-number": `"----- Page ${pageIndex + 1} -----"`,
