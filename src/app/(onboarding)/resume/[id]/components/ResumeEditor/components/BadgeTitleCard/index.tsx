@@ -10,6 +10,7 @@ import SubSectionToolBar from "../SubSectionToolBar";
 import useEditor from "../../hooks/useEditor";
 import IconPreview from "../../IconPreview";
 import DateInputField from "../DateInputField";
+import { sensitizeClassName } from "../../utils";
 
 interface ExperienceProps {
   data?: any;
@@ -34,6 +35,7 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp, sectionSet
   const subSectionTitleStyles = sectionStyles?.subSectionTitle 
   const resumeBorderStyles = sectionStyles?.border 
   const metadataStyles =  sectionStyles?.metadata
+  const sectionClassName = sensitizeClassName(sectionSettingPath);
 
   const createDisplayItem = (
     rootPathName: string,
@@ -60,22 +62,22 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp, sectionSet
   return (
     <>
       <style>{`
-        .badge-title-container {
+        .badge-title-card-container.${sectionClassName} {
             .section-header-wrapper {
               padding-bottom: 3px;
               margin-bottom: 5px;
               border-bottom: 2px solid ${resumeBorderStyles};
               h2{
-              font-size: ${px(subSectionTitleStyles?.fontSize)};
-              font-weight: ${subSectionTitleStyles?.fontWeight ?? 700};
-              color: ${subSectionTitleStyles?.color || "#1a202c"};
-              line-height: ${subSectionTitleStyles?.lineHeight ?? 1.2};
-              letter-spacing: ${px(subSectionTitleStyles?.letterSpacing)};
-              text-transform: ${subSectionTitleStyles?.textTransform || "none"};
-              margin: 0;
-              padding: 0;
-              display: inline-block;
-              width: 100%;
+                font-size: ${px(subSectionTitleStyles?.fontSize)};
+                font-weight: ${subSectionTitleStyles?.fontWeight ?? 700};
+                color: ${subSectionTitleStyles?.color || "#1a202c"};
+                line-height: ${subSectionTitleStyles?.lineHeight ?? 1.2};
+                letter-spacing: ${px(subSectionTitleStyles?.letterSpacing)};
+                text-transform: ${subSectionTitleStyles?.textTransform || "none"};
+                margin: 0;
+                padding: 0;
+                display: inline-block;
+                width: 100%;
               }
             }
             .subsection-card {
@@ -101,40 +103,17 @@ const Index: React.FC<ExperienceProps> = ({ data, name, syncWithProp, sectionSet
               flex-wrap: wrap; 
               gap: 20px;
             } 
-    
-
             .resume-metadata-item {
               display: flex;
               align-items: center;
               gap: 6px; 
             }
-
-            .resume-link-text {
-              display: inline-flex;
-              align-items: center;
-              gap: 4px;
-              cursor: text;
-            }
-
-            .resume-body-text {
-              font-size: ${px(metadataStyles?.fontSize)};
-              font-weight: ${metadataStyles?.fontWeight ?? 400};
-              color: ${metadataStyles?.color || "#4b5563"};
-              line-height: ${metadataStyles?.lineHeight ?? 1.5};
-              letter-spacing: ${px(metadataStyles?.letterSpacing)};
-              margin: 0 0 12px 0;
-            }
-
-            .highlights-list {
-              margin: 0;
-              padding-left: 18px;
-            } 
         }
 
          
       `}</style>
 
-      <div className="badge-title-container">
+      <div className={`badge-title-card-container ${sectionClassName}`}>
         {(data?.items || []).map((item: any, itemIndex: number) => {
           if (!item.isVisible) return null;
           const rootPathName = `${name}.items.${item.positionIndex}`;

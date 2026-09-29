@@ -3,12 +3,12 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import {
   RESUME_SETTING,
+  RESUME_SETTING2,
   TOOLBAR,
 } from "../components/ResumeEditor/constants/resumeSetting";
 import { DUMMY_STRUCTURED_RESUME } from "../components/ResumeEditor/constants/resumeData";
 import {
-  addPositionIndex,
-  formatResumeSetting,
+  addPositionIndex, 
 } from "../components/ResumeEditor/utils";
 
 interface ResumeEditorContextValue {
@@ -36,7 +36,7 @@ const ResumeEditorContext = createContext<ResumeEditorContextValue | null>(
 
 export function ResumeEditorProvider({ children }: { children: ReactNode }) {
   const [activeTool, setActiveTool] = useState<string | null>(null);
-  const [setting, setSetting] = useState({}) 
+  const [setting, setSetting] = useState({...RESUME_SETTING2}) 
   const [toolBar, setToolBar] = useState<typeof TOOLBAR>({
     ...TOOLBAR,
   });

@@ -3,12 +3,12 @@
 import React from "react";
 import InputField from "../InputField";
 import TextEditor from "../TextEditor";
-import { useResumeContext } from "../../../../context/resume-editor-context";
 import { useResume } from "../../../../hooks/index";
 import SubSectionTitle from "../SubSectionTitle";
 import SubSectionToolBar from "../SubSectionToolBar";
 import useEditor from "../../hooks/useEditor";
 import IconPreview from "../../IconPreview";
+import { sensitizeClassName } from "../../utils";
 
 interface ExperienceProps {
   data?: any;
@@ -37,6 +37,7 @@ const Index: React.FC<ExperienceProps> = ({
   const subSectionTitleStyles = sectionStyles?.subSectionTitle;
   const metadataStyles = sectionStyles?.metadata;
   const resumeBorderStyles = sectionStyles?.border;
+  const sectionClassName = sensitizeClassName(sectionSettingPath);
 
   const isVisible = (filePath: string) => {
     return getResumeValue(filePath);
@@ -65,7 +66,7 @@ const Index: React.FC<ExperienceProps> = ({
   return (
     <>
       <style>{`
-        .badge-title-container {
+        .badge-title-container.${sectionClassName} {
             .section-header-wrapper {
               padding-bottom: 3px;
               margin-bottom: 5px;
@@ -100,46 +101,17 @@ const Index: React.FC<ExperienceProps> = ({
             .experience-content {
               flex-grow: 1;
               min-width: 0;
-            }
-            .metadata-row {
-              display: flex; 
-              flex-wrap: wrap; 
-              gap: 20px;
             } 
-    
-
-            .resume-metadata-item {
-              display: flex;
-              align-items: center;
-              gap: 6px; 
-            }
-
             .resume-link-text {
               display: inline-flex;
               align-items: center;
               gap: 4px;
               cursor: text;
             }
-
-            .resume-body-text {
-              font-size: ${px(metadataStyles?.fontSize)};
-              font-weight: ${metadataStyles?.fontWeight ?? 400};
-              color: ${metadataStyles?.color || "#4b5563"};
-              line-height: ${metadataStyles?.lineHeight ?? 1.5};
-              letter-spacing: ${px(metadataStyles?.letterSpacing)};
-              margin: 0 0 12px 0;
-            }
-
-            .highlights-list {
-              margin: 0;
-              padding-left: 18px;
-            }
         }
-
-         
       `}</style>
 
-      <div className="badge-title-container">
+      <div className={`badge-title-container ${sectionClassName}`}>
         {(data?.items || []).map((item: any, itemIndex: number) => {
           if (!item.isVisible) return null;
           const rootPathName = `${name}.items.${item.positionIndex}`;
@@ -166,7 +138,7 @@ const Index: React.FC<ExperienceProps> = ({
               key={itemIndex}
               tabIndex={item.positionIndex}
               className="subsection-card sub-section-padding sub-section-divider active-focus"
-            > 
+            >
               <SubSectionToolBar
                 variant="subsection"
                 propertyPath={rootPathName}

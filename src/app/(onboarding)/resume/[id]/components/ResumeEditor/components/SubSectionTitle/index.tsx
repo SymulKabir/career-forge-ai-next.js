@@ -2,18 +2,20 @@ import React from "react";
 import InputField from "../InputField";
 import { px } from "../../utils/resumeEditor";
 import { useResume } from "../../../../hooks";
+import { sensitizeClassName } from "../../utils";
 
 const Index = ({ name, placeholderPath, sectionSettingPath }: any) => {
   const { getSettingValue } = useResume();
   const subSectionTitle = getSettingValue(
     `${sectionSettingPath}.subSectionTitle`,
   );
+  const sectionClassName = sensitizeClassName(sectionSettingPath);
 
   return (
     <>
       <style>
         {`
-          .primary-title {
+          .primary-title.${sectionClassName} {
             font-size: ${px(subSectionTitle?.fontSize)};
             font-weight: ${subSectionTitle?.fontWeight};
             color: ${subSectionTitle?.fontColor};
@@ -29,7 +31,7 @@ const Index = ({ name, placeholderPath, sectionSettingPath }: any) => {
 
       <InputField
         tag="h3"
-        className="primary-title avoid-default"
+        className={`primary-title avoid-default ${sectionClassName}`}
         name={name}
         placeholderPath={placeholderPath}
       />

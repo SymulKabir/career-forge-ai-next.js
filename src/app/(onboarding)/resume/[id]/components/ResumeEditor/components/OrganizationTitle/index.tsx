@@ -3,18 +3,20 @@ import InputField from "../InputField";
 import { useResumeContext } from "../../../../context/resume-editor-context";
 import { px } from "../../utils/resumeEditor";
 import { useResume } from "../../../../hooks";
+import { sensitizeClassName } from "../../utils";
 
 const Index = ({ name, placeholderPath, sectionSettingPath }: any) => {
   const { getSettingValue } = useResume();
   const organizationTitle = getSettingValue(
     `${sectionSettingPath}.organizationTitle`,
   );
+  const sectionClassName = sensitizeClassName(sectionSettingPath);
 
   return (
     <>
       <style>
         {`
-          .organization-title {
+          .organization-title.${sectionClassName} {
             font-size: ${px(organizationTitle?.fontSize)};
             font-weight: ${organizationTitle?.fontWeight};
             color: ${organizationTitle?.fontColor};
@@ -31,7 +33,7 @@ const Index = ({ name, placeholderPath, sectionSettingPath }: any) => {
 
       <InputField
         tag="h3"
-        className="organization-title avoid-default"
+        className={`organization-title avoid-default ${sectionClassName}`}
         name={name}
         placeholderPath={placeholderPath}
       />

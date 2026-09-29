@@ -216,6 +216,109 @@ export const DUMMY_STRUCTURED_RESUME = {
       ],
     },
     {
+      column: 1,
+      position: 0,
+      isVisible: true,
+      sectionLayout: "BulletsCard",
+      format: "professionalExperience",
+      sectionTitle: { content: "Professional Experience", isVisible: true },
+      items: [
+        {
+          isVisible: true,
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: { zoom: 1, x: 0, y: 0 },
+          },
+          title: {
+            content: "Junior CTO & Full Stack Developer",
+            isVisible: true,
+          },
+          subtitle: {
+            content: "Micple Company Ltd",
+            isVisible: true,
+          },
+          link: {
+            content: "https://micple.com/",
+            isVisible: true,
+          },
+          duration: {
+            content: {
+              from: "Jul 2023",
+              to: "Present",
+            },
+            isVisible: true,
+          },
+          location: {
+            content: "Khilkhet, Dhaka",
+            isVisible: true,
+          },
+          description: {
+            content:
+              "Leading overall technical strategy, architectural decisions, and infrastructure scaling for enterprise-grade web applications.",
+            isVisible: true,
+          },
+          bullets: {
+            content: `
+              <ul>
+                <li>Spearheaded the technical direction and cross-platform architecture of high-availability production web applications.</li>
+                <li>Engineered scalable microservices and full-stack solutions utilizing React.js, Next.js, FastAPI, Express.js, and MongoDB.</li>
+                <li>Architected and managed robust Linux-based production server environments with automated SSL and security hardeners.</li>
+                <li>Optimized deployment lifecycles by designing streamlined Docker containers and continuous integration/continuous deployment (CI/CD) pipelines.</li>
+              </ul>
+            `,
+            isVisible: true,
+          },
+        },
+        {
+          isVisible: true,
+          orgImg: {
+            imgContent: "",
+            isVisible: true,
+            position: { zoom: 1, x: 0, y: 0 },
+          },
+          title: {
+            content: "MERN Stack Developer",
+            isVisible: true,
+          },
+          subtitle: {
+            content: "Ameliasoft Ltd",
+            isVisible: true,
+          },
+          link: {
+            content: "https://ameliasoft.com",
+            isVisible: true,
+          },
+          duration: {
+            content: {
+              from: "Jan 2022",
+              to: "Jun 2023",
+            },
+            isVisible: true,
+          },
+          location: {
+            content: "Uttara, Dhaka",
+            isVisible: true,
+          },
+          description: {
+            content:
+              "Built responsive user interfaces and high-performance backend micro-APIs for digital commerce solutions.",
+            isVisible: true,
+          },
+          bullets: {
+            content: `
+              <ul>
+                <li>Developed modular frontend components with React, TypeScript, and Tailwind CSS ensuring lightning-fast load times.</li>
+                <li>Constructed secure RESTful APIs and optimized complex MongoDB database schemas for high-frequency transactional data.</li>
+                <li>Integrated third-party payment gateways, real-time notification hooks, and secure JWT-based authentication mechanisms.</li>
+              </ul>
+            `,
+            isVisible: true,
+          },
+        },
+      ],
+    },
+    {
       column: 0,
       position: 1,
       isVisible: true,

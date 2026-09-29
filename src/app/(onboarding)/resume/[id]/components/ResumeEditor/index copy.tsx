@@ -11,6 +11,7 @@ import { useResumeContext } from "../../context/resume-editor-context";
 import SubSectionToolBar from "./components/SubSectionToolBar";
 import DefaultStyle from "./components/DefaultStyle";
 import SectionTitle from "./components/SectionTitle";
+import { px } from "./utils/resumeEditor";
 import ResumeHeader from "./components/ResumeHeader";
 import { useInitResume, useResume } from "../../hooks";
 import { paginateResumeSections } from "./utils";
@@ -69,7 +70,7 @@ const Index = () => {
     };
     requestAnimationFrame(paginate);
   }, [structuredResumeData, setting]);
-  console.log("layoutResumeData -->>>", layoutResumeData);
+  console.log("setting -->>>", setting);
   return (
     <>
       <section
@@ -120,7 +121,7 @@ const Index = () => {
 };
 
 const PageMaker = ({
-  columns = [],
+  columns,
   pageIndex,
   sectionRefs,
   headerRef,
@@ -189,9 +190,32 @@ const PageMaker = ({
       ],
     },
   });
-  console.log("setting->", setting);
+
   return (
     <>
+      <style>
+        {`
+          .resume-body {
+            font-family: ${getSettingValue("font.family") || "Inter, sans-serif"};
+            font-size: ${px(getSettingValue("metadata.fontSize") ?? 13)};
+            font-weight: ${getSettingValue("metadata.fontWeight") ?? 400};
+            color: ${getSettingValue("metadata.fontColor") ?? "#6b7280"};
+            line-height: ${getSettingValue("metadata.lineHeight") ?? 1.4};
+            letter-spacing: ${px(getSettingValue("metadata.letterSpacing") ?? 0)};
+            text-transform: ${getSettingValue("metadata.textTransform") ?? "none"}; 
+          }
+
+          .resume-body *:not(.avoid-default, .avoid-default *) {
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
+            line-height: inherit;
+            letter-spacing: inherit;
+            text-transform: inherit;
+          } 
+      `}
+      </style>
       <div
         key={pageIndex}
         className={`page  ${sectionRefs ? "display-page" : ""}`}
@@ -222,20 +246,13 @@ const PageMaker = ({
               className="resume-body"
               style={{
                 display: "grid",
-                gap: `${setting.gridGap}px`,
-                gridTemplateColumns: setting.sections
+                gridTemplateColumns: setting?.sections
                   .slice(0, setting.gridItem)
-                  .map((section) => `${section.width}fr`)
+                  .map((section) => `${section.width}%`)
                   .join(" "),
               }}
             >
               {columns.map((column: any, columnIndex: number) => {
-                console.log("===========START=============");
-                console.log("columns before====>>>>", column);
-                if (!column) {
-                  column = [];
-                }
-                console.log("columns after====>>>>", column);
                 return (
                   <div
                     key={columnIndex}
@@ -248,10 +265,7 @@ const PageMaker = ({
                       if (!section.isVisible) return null;
                       return (
                         <>
-                          <DefaultStyle
-                            sectionClassName={sectionClassName}
-                            sectionSettingPath={sectionSettingPath}
-                          />
+                          <DefaultStyle sectionClassName={sectionClassName} sectionSettingPath={sectionSettingPath} />
                           <div
                             key={pageIndex + columnIndex + index}
                             ref={(el) => {

@@ -12,6 +12,7 @@ import SubSectionToolBar from "../SubSectionToolBar";
 import useEditor from "../../hooks/useEditor";
 import ImgPreview from "../../ImgPreview";
 import { MapPin, Link as LinkIcon } from "lucide-react";
+import { sensitizeClassName } from "../../utils";
 
 interface ExperienceProps {
   data?: any;
@@ -33,15 +34,16 @@ const Index: React.FC<ExperienceProps> = ({
   syncWithProp,
   sectionSettingPath,
 }) => {
-  
   const { setting } = useResumeContext();
   const { getValue } = useEditor();
   const { getResumeValue, updateResume, getSettingValue } = useResume();
   const sectionStyles = getSettingValue(sectionSettingPath);
-  const subSectionTitleStyles = sectionStyles?.subSectionTitle
-  const metadataStyles =  sectionStyles?.metadata
-  const resumeBorderStyles = sectionStyles?.border
+  const subSectionTitleStyles = sectionStyles?.subSectionTitle;
+  const metadataStyles = sectionStyles?.metadata;
+  const resumeBorderStyles = sectionStyles?.border;
   const rootPlaceholderPathName = `${data.format}.items.0`;
+  const sectionClassName = sensitizeClassName(sectionSettingPath);
+
   const isVisible = (filePath: string) => {
     return getResumeValue(filePath);
   };
@@ -69,22 +71,22 @@ const Index: React.FC<ExperienceProps> = ({
   return (
     <>
       <style>{`
-        .milestone-container {
+        .milestone-container.${sectionClassName} {
             .section-header-wrapper {
               padding-bottom: 3px;
               margin-bottom: 5px;
               border-bottom: 2px solid ${resumeBorderStyles};
               h2{
-              font-size: ${px(subSectionTitleStyles?.fontSize)};
-              font-weight: ${subSectionTitleStyles?.fontWeight ?? 700};
-              color: ${subSectionTitleStyles?.color || "#1a202c"};
-              line-height: ${subSectionTitleStyles?.lineHeight ?? 1.2};
-              letter-spacing: ${px(subSectionTitleStyles?.letterSpacing)};
-              text-transform: ${subSectionTitleStyles?.textTransform || "none"};
-              margin: 0;
-              padding: 0;
-              display: inline-block;
-              width: 100%;
+                font-size: ${px(subSectionTitleStyles?.fontSize)};
+                font-weight: ${subSectionTitleStyles?.fontWeight ?? 700};
+                color: ${subSectionTitleStyles?.color || "#1a202c"};
+                line-height: ${subSectionTitleStyles?.lineHeight ?? 1.2};
+                letter-spacing: ${px(subSectionTitleStyles?.letterSpacing)};
+                text-transform: ${subSectionTitleStyles?.textTransform || "none"};
+                margin: 0;
+                padding: 0;
+                display: inline-block;
+                width: 100%;
               }
             }
             .subsection-card {
@@ -110,8 +112,6 @@ const Index: React.FC<ExperienceProps> = ({
               flex-wrap: wrap; 
               gap: 20px;
             } 
-    
-
             .resume-metadata-item {
               display: flex;
               align-items: center;
@@ -135,8 +135,7 @@ const Index: React.FC<ExperienceProps> = ({
               font-weight: ${metadataStyles?.fontWeight ?? 400};
               color: ${metadataStyles?.color || "#4b5563"};
               line-height: ${metadataStyles?.lineHeight ?? 1.5};
-              letter-spacing: ${px(metadataStyles?.letterSpacing)};
-              margin: 0 0 12px 0;
+              letter-spacing: ${px(metadataStyles?.letterSpacing)}; 
             }
 
             .highlights-list {
@@ -148,7 +147,7 @@ const Index: React.FC<ExperienceProps> = ({
          
       `}</style>
 
-      <div className="milestone-container">
+      <div className={`milestone-container ${sectionClassName}`}>
         {(data?.items || []).map((item: any, itemIndex: number) => {
           if (!item.isVisible) return null;
           const rootPathName = `${name}.items.${item.positionIndex}`;

@@ -11,6 +11,11 @@ export const TEMPLATES = {
     isNew: true,
     selected: true,
     grid: 2,
+    setting: {
+      "sections.0.width": 7,
+      "sections.1.width": 3,
+      gridGap: 30,
+    },
   },
 
   minimal: {
@@ -23,13 +28,15 @@ export const TEMPLATES = {
     style: "professional",
     ats: true,
     isNew: false,
-    grid: 2,
+    grid: 1,
+    setting: {
+      "sections.0.width": 1,
+    },
   },
 
   american: {
     name: "Elegant",
     template: "elegant",
-    setting: {},
     description: "Traditional US resume format",
     region: "us",
     regionLabel: "US",
@@ -38,7 +45,11 @@ export const TEMPLATES = {
     ats: true,
     isNew: false,
     grid: 2,
-
+    setting: {
+      "sections.0.width": 3,
+      "sections.1.width": 7,
+      gridGap: 30,
+    },
   },
 
   "creative-edge": {
@@ -51,7 +62,11 @@ export const TEMPLATES = {
     ats: false,
     isNew: true,
     grid: 2,
-
+    setting: {
+      "sections.0.width": 1,
+      "sections.1.width": 1,
+      gridGap: 20,
+    },
   },
 
   "euro-modern": {
@@ -64,6 +79,10 @@ export const TEMPLATES = {
     ats: true,
     isNew: false,
     grid: 2,
-
+    setting: {
+      "sections.0.width": 6,
+      "sections.1.width": 4,
+      gridGap: 20,
+    },
   },
 };

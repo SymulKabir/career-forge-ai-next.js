@@ -2,19 +2,20 @@ import React from "react";
 import InputField from "../InputField";
 import { px } from "../../utils/resumeEditor";
 import { useResume } from "../../../../hooks";
+import { sensitizeClassName } from "../../utils";
 
 const Index = ({ name, placeholderPath, sectionSettingPath }: any) => {
   const { getSettingValue } = useResume();
 
   const sectionSetting = getSettingValue(sectionSettingPath) || {};
   const sectionTitle = sectionSetting?.sectionTitle; 
- 
+   const sectionClassName = sensitizeClassName(sectionSettingPath)
 
   return (
     <>
       <style>
         {`
-          .section-header-card {
+          .section-header-card.${sectionClassName} {
             ${
               sectionTitle?.border?.enabled && sectionTitle?.border?.position === "bottom"
                 ? `border-bottom: ${px(sectionTitle?.border?.width)} ${sectionTitle?.border.style} ${sectionTitle?.border?.color};`
@@ -40,7 +41,7 @@ const Index = ({ name, placeholderPath, sectionSettingPath }: any) => {
             padding-bottom: ${px(sectionTitle?.border?.spacing ?? 0)};
           }
 
-          .section-header-card h2 {
+          .section-header-card.${sectionClassName} h2 {
             font-size: ${px(sectionTitle?.fontSize)};
             font-weight: ${sectionTitle?.fontWeight};
             color: ${sectionTitle?.fontColor};
@@ -56,7 +57,7 @@ const Index = ({ name, placeholderPath, sectionSettingPath }: any) => {
         `}
       </style>
 
-      <div className="section-header-card avoid-default">
+      <div className={`section-header-card avoid-default ${sectionClassName}`}>
         <InputField tag="h2" name={name} placeholderPath={placeholderPath} />
       </div>
     </>

@@ -17,17 +17,20 @@ export const useInitResume = () => {
   }, [setStructuredResumeData, resumeData]);
 
   useEffect(() => {
-    if (!currentTemplate) return
-    const template = TEMPLATES[currentTemplate]
-
-    setSetting(
-      formatResumeSetting(
-        {
-          ...RESUME_SETTING,
-        },
-        template
-      ),
-    );
+    if (!currentTemplate) return;
+    const template = TEMPLATES[currentTemplate];
+if (template) {
+  
+}
+    // setSetting(
+    //   formatResumeSetting(
+    //     {
+    //       ...RESUME_SETTING,
+    //     },
+    //     template,
+    //   ),
+    // );
+    
   }, [currentTemplate]);
 };
 export const useResume = () => {
@@ -350,10 +353,64 @@ export const useResume = () => {
       return addPositionIndex(result);
     });
   };
+  const updateSettingNestedValue = (
+    state: any,
+    pathKeys: string[],
+    value: any,
+  ): any => {
+    if (pathKeys.length === 0) {
+      return value;
+    }
+
+    const [key, ...rest] = pathKeys;
+
+    const isArray = Array.isArray(state);
+    const numericKey = Number(key);
+
+    const actualKey =
+      isArray && Number.isInteger(numericKey) ? numericKey : key;
+
+    const currentValue = state?.[actualKey];
+
+    const nextValue =
+      rest.length === 0
+        ? value
+        : updateSettingNestedValue(
+            currentValue ?? (Number.isInteger(Number(rest[0])) ? [] : {}),
+            rest,
+            value,
+          );
+
+    const copy = isArray ? [...(state ?? [])] : { ...(state ?? {}) };
+
+    copy[actualKey] = nextValue;
+
+    return copy;
+  };
+  const handleMultiSettingChange = (updates: Record<string, any>) => {
+    if (!updates || typeof updates !== "object") {
+      return;
+    }
+
+    setSetting((prevSetting: any) => {
+      let nextSetting = prevSetting;
+
+      Object.entries(updates).forEach(([propertyPath, value]) => {
+        if (!propertyPath) return;
+
+        const keys = propertyPath.split(".");
+
+        nextSetting = updateSettingNestedValue(nextSetting, keys, value);
+      });
+
+      return nextSetting;
+    });
+  };
   return {
     getResumeValue,
     handleResumeChange,
     handleSettingChange,
+    handleMultiSettingChange,
     handleToolbarChange,
     updateResume,
     addResumeListItem,

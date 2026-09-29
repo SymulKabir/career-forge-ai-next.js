@@ -7,6 +7,7 @@ import { useResume } from "../../../../hooks/index";
 import SubSectionTitle from "../SubSectionTitle";
 import SubSectionToolBar from "../SubSectionToolBar";
 import useEditor from "../../hooks/useEditor";
+import { sensitizeClassName } from "../../utils";
 
 interface SkillsProps {
   data?: any;
@@ -33,6 +34,7 @@ const SkillsCard: React.FC<SkillsProps> = ({
   const sectionStyles = getSettingValue(sectionSettingPath);
   const subSectionTitleStyles = sectionStyles?.subSectionTitle;
   const resumeBorderStyles = sectionStyles?.border;
+  const sectionClassName = sensitizeClassName(sectionSettingPath);
 
   const isVisible = (filePath: string) => {
     return getResumeValue(filePath);
@@ -73,7 +75,7 @@ const SkillsCard: React.FC<SkillsProps> = ({
   return (
     <>
       <style>{`
-        .skills-container {
+        .tag-card-container.${sectionClassName} {
           .section-header-wrapper {
             padding-bottom: 3px;
             margin-bottom: 5px;
@@ -157,7 +159,7 @@ const SkillsCard: React.FC<SkillsProps> = ({
         }
       `}</style>
 
-      <div className="skills-container">
+      <div className={`tag-card-container ${sectionClassName}`}>
         {(data?.items || []).map((item: any, itemIndex: number) => {
           if (!item.isVisible) return null;
           const rootPathName = `${name}.items.${item.positionIndex}`;
