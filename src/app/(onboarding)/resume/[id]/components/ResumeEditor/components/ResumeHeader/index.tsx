@@ -6,7 +6,7 @@ import InputField from "../InputField";
 import ImgPreview from "../../ImgPreview";
 import { useResume } from "../../../../hooks";
 
-const Index: React.FC = () => {
+const Index: React.FC = ({ gridStyles }: any) => {
   const { setting, resumeData } = useResumeContext();
   const { updateResume, getResumeValue } = useResume();
   let fileInputRef = useRef<HTMLInputElement>(null);
@@ -217,7 +217,12 @@ const Index: React.FC = () => {
           tools={toolsConfig}
         />
 
-        <div className="header-content-wrapper">
+        <div
+          className="header-content-wrapper"
+          style={{
+            ...gridStyles,
+          }}
+        >
           <div className="header-text-block">
             {resumeData.header.fullName.isVisible && (
               <InputField

@@ -23,6 +23,18 @@ export const addPositionIndex = (data: any) => {
 
   return data;
 };
+export const addResumeColumnIndex = ({ resumeData, layout }: any) => {
+  console.log("layout==>>>", layout);
+  const updateSections = resumeData.sections.map((section: any) => {
+    const column = layout[section.format] || 0;
+    console.log("section.format--->>>", section.format)
+    console.log("layout--->>>", layout)
+    console.log("column--->>>", column)
+    return { ...section, column };
+  });
+
+  return { ...resumeData, sections: updateSections || [] };
+};
 
 export const paginateResumeSections = ({
   pageHight,
@@ -170,26 +182,7 @@ export const paginateResumeSections = ({
     currentHeight,
   };
 };
-export const formatResumeSetting = (data, template) => {
-  if (!data || !data.sections || !template) return {}
-  const grid = template.grid || 1
-  const section = Array.isArray(data.sections)
-    ? data.sections[0]
-    : data.sections;
 
-  return {
-    ...data,
-    gridItem: grid || 1,
-    sections: Array.from(
-      { length: grid },
-      () => structuredClone(section)
-    ),
-  };
+export const sensitizeClassName = (className: any) => {
+  return `${String(className).replace(/\./g, "-").replace(/\s+/g, "-")}`;
 };
-export const sensitizeClassName = (className:any) => {
-  return `${String(className)
-    .replace(/\./g, "-")
-    .replace(/\s+/g, "-")}`;
-}
-
-

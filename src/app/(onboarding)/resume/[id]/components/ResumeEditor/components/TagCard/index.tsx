@@ -2,7 +2,6 @@
 
 import React from "react";
 import TagInputField from "../TagInputField";
-import { useResumeContext } from "../../../../context/resume-editor-context";
 import { useResume } from "../../../../hooks/index";
 import SubSectionTitle from "../SubSectionTitle";
 import SubSectionToolBar from "../SubSectionToolBar";
@@ -245,6 +244,7 @@ const SkillsCard: React.FC<SkillsProps> = ({
                   {listContent.map((_, skillIdx: number) => {
                     return (
                       <TagInputField
+                        key={skillIdx}
                         tag="p"
                         name={`${rootPathName}.lists.content.${skillIdx}`}
                         placeholderPath={`${rootPlaceholderPathName}.lists.placeholder.${skillIdx}`}

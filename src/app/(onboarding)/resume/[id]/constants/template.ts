@@ -1,5 +1,5 @@
 export const TEMPLATES = {
-  "executive-pro": {
+  "double-column": {
     name: "Double Column",
     template: "double-column",
     description: "Clean executive layout",
@@ -12,13 +12,22 @@ export const TEMPLATES = {
     selected: true,
     grid: 2,
     setting: {
-      "sections.0.width": 7,
-      "sections.1.width": 3,
+      "sections.0.width": 6,
+      "sections.1.width": 4,
       gridGap: 30,
+    },
+    layout: {
+      professionalExperience: 0,
+      education: 0,
+      certifications: 0,
+      summary: 1,
+      projects: 1,
+      skills: 1,
+      socialLinks: 1,
     },
   },
 
-  minimal: {
+  "lvy-league": {
     name: "Lvy League",
     template: "lvy-league",
     description: "Simple and highly readable",
@@ -32,9 +41,18 @@ export const TEMPLATES = {
     setting: {
       "sections.0.width": 1,
     },
+    layout: {
+      summary: 0,
+      skills: 0,
+      professionalExperience: 0,
+      education: 0,
+      certifications: 0,
+      projects: 0,
+      socialLinks: 0,
+    },
   },
 
-  american: {
+  elegant: {
     name: "Elegant",
     template: "elegant",
     description: "Traditional US resume format",
@@ -50,10 +68,20 @@ export const TEMPLATES = {
       "sections.1.width": 7,
       gridGap: 30,
     },
+    layout: {
+      summary: 0,
+      professionalExperience: 0,
+      projects: 0,
+      socialLinks: 0,
+      education: 1,
+      skills: 1,
+      certifications: 1,
+    },
   },
 
   "creative-edge": {
     name: "Creative Edge",
+    template: "creative-edge",
     description: "Modern design for creative roles",
     region: "global",
     regionLabel: "Global",
@@ -67,10 +95,17 @@ export const TEMPLATES = {
       "sections.1.width": 1,
       gridGap: 20,
     },
+    layout: {
+      professionalExperience: 0,
+      skills: 0,
+      education: 0,
+      socialLinks: 1,
+    },
   },
 
   "euro-modern": {
     name: "Euro Modern",
+    template: "euro-modern",
     description: "European-style professional CV",
     region: "europe",
     regionLabel: "Europe",
@@ -83,6 +118,12 @@ export const TEMPLATES = {
       "sections.0.width": 6,
       "sections.1.width": 4,
       gridGap: 20,
+    },
+    layout: {
+      professionalExperience: 0,
+      skills: 0,
+      education: 1,
+      socialLinks: 0,
     },
   },
 };

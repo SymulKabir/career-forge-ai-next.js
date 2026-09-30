@@ -3,34 +3,47 @@ import { useResumeContext } from "../context/resume-editor-context";
 import { structuredResume } from "../utils/resume";
 import {
   addPositionIndex,
-  formatResumeSetting,
+  addResumeColumnIndex,
 } from "../components/ResumeEditor/utils";
-import { RESUME_SETTING } from "../components/ResumeEditor/constants/resumeSetting";
+import {
+  RESUME_SECTION_SETTING,
+  RESUME_SETTING,
+} from "../components/ResumeEditor/constants/resumeSetting";
 import { TEMPLATES } from "../constants/template";
+import { DUMMY_STRUCTURED_RESUME } from "../components/ResumeEditor/constants/resumeData";
 
 export const useInitResume = () => {
-  const { resumeData, setStructuredResumeData, currentTemplate, setSetting } =
-    useResumeContext();
+  const {
+    resumeData,
+    setStructuredResumeData,
+    currentTemplate,
+    setResumeData,
+  } = useResumeContext();
+  const { handleMultiSettingChange } = useResume();
   useEffect(() => {
-    if (!Object.keys({ ...(resumeData || {}).length })) return;
+    if (
+      !Object.keys({ ...(resumeData || {}).length }) ||
+      !resumeData.sections ||
+      !resumeData.header
+    )
+      return;
     setStructuredResumeData(structuredResume({ ...resumeData }));
   }, [setStructuredResumeData, resumeData]);
 
   useEffect(() => {
     if (!currentTemplate) return;
     const template = TEMPLATES[currentTemplate];
-if (template) {
-  
-}
-    // setSetting(
-    //   formatResumeSetting(
-    //     {
-    //       ...RESUME_SETTING,
-    //     },
-    //     template,
-    //   ),
-    // );
-    
+    if (template && template.setting) {
+      handleMultiSettingChange({ ...template });
+    }
+    if (template.layout) {
+      const resumeWithColumn = addResumeColumnIndex({
+        resumeData: { ...DUMMY_STRUCTURED_RESUME },
+        layout: template.layout,
+      });
+      console.log("resumeWithColumn --->>>", resumeWithColumn);
+      setResumeData({ ...addPositionIndex(resumeWithColumn) });
+    }
   }, [currentTemplate]);
 };
 export const useResume = () => {
@@ -387,24 +400,26 @@ export const useResume = () => {
 
     return copy;
   };
-  const handleMultiSettingChange = (updates: Record<string, any>) => {
+  const handleMultiSettingChange = (templateData: any) => {
+    if (!templateData || !templateData.setting) return;
+    const updates = { ...templateData.setting };
+    const grid = templateData.grid || 1;
     if (!updates || typeof updates !== "object") {
       return;
     }
+    const sections = new Array(grid)
+      .fill({ ...RESUME_SECTION_SETTING })
+      .map((item) => item);
+    let nextSetting = { ...RESUME_SETTING, sections };
 
-    setSetting((prevSetting: any) => {
-      let nextSetting = prevSetting;
+    Object.entries(updates).forEach(([propertyPath, value]) => {
+      if (!propertyPath) return;
 
-      Object.entries(updates).forEach(([propertyPath, value]) => {
-        if (!propertyPath) return;
+      const keys = propertyPath.split(".");
 
-        const keys = propertyPath.split(".");
-
-        nextSetting = updateSettingNestedValue(nextSetting, keys, value);
-      });
-
-      return nextSetting;
+      nextSetting = updateSettingNestedValue(nextSetting, keys, value);
     });
+    setSetting({ ...nextSetting });
   };
   return {
     getResumeValue,

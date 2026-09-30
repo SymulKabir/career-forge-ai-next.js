@@ -69,7 +69,6 @@ const Index = () => {
     };
     requestAnimationFrame(paginate);
   }, [structuredResumeData, setting]);
-  console.log("layoutResumeData -->>>", layoutResumeData);
   return (
     <>
       <section
@@ -189,11 +188,17 @@ const PageMaker = ({
       ],
     },
   });
-  console.log("setting->", setting);
+  const gridStyles = {
+    display: "grid",
+    gap: `${setting.gridGap}px`,
+    gridTemplateColumns: setting.sections
+      .slice(0, setting.gridItem)
+      .map((section) => `${section.width}fr`)
+      .join(" "),
+  };
   return (
-    <>
+    <React.Fragment key={pageIndex}>
       <div
-        key={pageIndex}
         className={`page  ${sectionRefs ? "display-page" : ""}`}
         style={
           {
@@ -215,39 +220,32 @@ const PageMaker = ({
           <div className="page-inner-container">
             {pageIndex === 0 && (
               <div ref={headerRef}>
-                <ResumeHeader />
+                <ResumeHeader gridStyles={gridStyles} />
               </div>
             )}
             <div
               className="resume-body"
               style={{
-                display: "grid",
-                gap: `${setting.gridGap}px`,
-                gridTemplateColumns: setting.sections
-                  .slice(0, setting.gridItem)
-                  .map((section) => `${section.width}fr`)
-                  .join(" "),
+                ...gridStyles,
               }}
             >
-              {columns.map((column: any, columnIndex: number) => {
-                console.log("===========START=============");
-                console.log("columns before====>>>>", column);
+              {Array.from(columns).map((column: any, columnIndex: number) => {
                 if (!column) {
                   column = [];
                 }
-                console.log("columns after====>>>>", column);
                 return (
                   <div
                     key={columnIndex}
                     className={`body-item item-${columnIndex + 1}`}
                   >
-                    {column.map((section: any, index: number) => {
+                    {[...(column || [])].map((section: any, index: number) => {
                       const name = `sections.${section.positionIndex}`;
                       const sectionSettingPath = `sections.${columnIndex}`;
                       const sectionClassName = `section-container-${columnIndex + 1}`;
+
                       if (!section.isVisible) return null;
                       return (
-                        <>
+                        <React.Fragment key={index}>
                           <DefaultStyle
                             sectionClassName={sectionClassName}
                             sectionSettingPath={sectionSettingPath}
@@ -318,7 +316,7 @@ const PageMaker = ({
                               />
                             )}
                           </div>
-                        </>
+                        </React.Fragment>
                       );
                     })}
                   </div>
@@ -329,7 +327,7 @@ const PageMaker = ({
         </div>
       </div>
       <SectionGallery />
-    </>
+    </React.Fragment>
   );
 };
 

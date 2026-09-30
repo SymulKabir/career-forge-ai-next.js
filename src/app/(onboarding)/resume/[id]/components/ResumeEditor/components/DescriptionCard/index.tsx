@@ -33,7 +33,6 @@ const Index: React.FC<ExperienceProps> = ({
   const rootPlaceholderPathName = `${data.format}.items.0`;
   const sectionStyle = getSettingValue(sectionSettingPath);
   const subSectionTitleStyles = sectionStyle?.subSectionTitle;
-  const metadataStyles = sectionStyle?.metadata;
   const resumeBorderStyles = sectionStyle.border
   const sectionClassName = sensitizeClassName(sectionSettingPath);
 
