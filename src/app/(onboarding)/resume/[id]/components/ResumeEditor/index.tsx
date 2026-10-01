@@ -124,8 +124,7 @@ const PageMaker = ({
   sectionRefs,
   headerRef,
   syncWithProp,
-}: any) => {
-  const { setting } = useResumeContext();
+}: any) => { 
   const { handleSettingChange, addResumeListItem, getSettingValue } =
     useResume();
   const textTransform = getSettingValue("sections.sectionTitle.textTransform");
@@ -187,15 +186,8 @@ const PageMaker = ({
         },
       ],
     },
-  });
-  const gridStyles = {
-    display: "grid",
-    gap: `${setting.gridGap}px`,
-    gridTemplateColumns: setting.sections
-      .slice(0, setting.gridItem)
-      .map((section) => `${section.width}fr`)
-      .join(" "),
-  };
+  }); 
+  const sectionStyle = getSettingValue("sectionStyle") || {};
   return (
     <React.Fragment key={pageIndex}>
       <div
@@ -220,13 +212,16 @@ const PageMaker = ({
           <div className="page-inner-container">
             {pageIndex === 0 && (
               <div ref={headerRef}>
-                <ResumeHeader gridStyles={gridStyles} />
+                <ResumeHeader
+                // gridStyles={gridStyles}
+
+                />
               </div>
             )}
             <div
               className="resume-body"
               style={{
-                ...gridStyles,
+                ...sectionStyle,
               }}
             >
               {Array.from(columns).map((column: any, columnIndex: number) => {

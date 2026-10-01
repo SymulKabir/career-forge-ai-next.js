@@ -12,9 +12,16 @@ export const TEMPLATES = {
     selected: true,
     grid: 2,
     setting: {
-      "sections.0.width": 6,
-      "sections.1.width": 4,
-      gridGap: 30,
+      headerStyle: {
+        display: "grid",
+        gridTemplateColumns: "auto max-content",
+        gap: "30px",
+      },
+      sectionStyle: {
+        display: "grid",
+        gridTemplateColumns: "6fr 4fr",
+        gap: "30px",
+      },
     },
     layout: {
       professionalExperience: 0,
@@ -39,7 +46,22 @@ export const TEMPLATES = {
     isNew: false,
     grid: 1,
     setting: {
-      "sections.0.width": 1,
+      headerStyle: {
+        display: "flex",
+        flexDirection: "column-reverse",
+        gap: "10px",
+        alignItems: "center",
+        textAlign: "center",
+        children: {
+          ".contact-info-grid": {
+            justifyContent: "center",
+          },
+        },
+      },
+      sectionStyle: {
+        display: "grid",
+        gridTemplateColumns: "1fr",
+      },
     },
     layout: {
       summary: 0,
@@ -64,9 +86,16 @@ export const TEMPLATES = {
     isNew: false,
     grid: 2,
     setting: {
-      "sections.0.width": 3,
-      "sections.1.width": 7,
-      gridGap: 30,
+      headerStyle: {
+        display: "grid",
+        gridTemplateColumns: "6fr 4fr",
+        gap: "30px",
+      },
+      sectionStyle: {
+        display: "grid",
+        gridTemplateColumns: "6fr 4fr",
+        gap: "30px",
+      },
     },
     layout: {
       summary: 0,
@@ -91,9 +120,16 @@ export const TEMPLATES = {
     isNew: true,
     grid: 2,
     setting: {
-      "sections.0.width": 1,
-      "sections.1.width": 1,
-      gridGap: 20,
+      headerStyle: {
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "30px",
+      },
+      sectionStyle: {
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "30px",
+      },
     },
     layout: {
       professionalExperience: 0,
@@ -115,9 +151,16 @@ export const TEMPLATES = {
     isNew: false,
     grid: 2,
     setting: {
-      "sections.0.width": 6,
-      "sections.1.width": 4,
-      gridGap: 20,
+      headerStyle: {
+        display: "grid",
+        gridTemplateColumns: "6fr 4fr",
+        gap: "30px",
+      },
+      sectionStyle: {
+        display: "grid",
+        gridTemplateColumns: "6fr 4fr",
+        gap: "30px",
+      },
     },
     layout: {
       professionalExperience: 0,

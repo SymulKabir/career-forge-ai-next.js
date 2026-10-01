@@ -1,8 +1,5 @@
-
 export const RESUME_SECTION_SETTING = {
   background: "#FFF",
-  width: 1,
-
   image: {
     enabled: true,
     size: 40,
@@ -91,11 +88,16 @@ export const RESUME_SETTING = {
   sectionGap: 20,
   font: {
     family: "Inter, sans-serif",
+  }, 
+  headerStyle: {
+    display: "grid",
+    gridTemplateColumns: "auto auto",
+    gap: "30px",
   },
-  gridGap: 30,
-  sectionGrid: {
-    gird: "1fr 1fr",
-    gap: "30px"
+  sectionStyle: {
+    display: "grid",
+    gridTemplateColumns: "6fr 4fr",
+    gap: "30px",
   },
   header: {
     layout: "split",

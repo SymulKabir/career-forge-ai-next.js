@@ -6,9 +6,9 @@ import InputField from "../InputField";
 import ImgPreview from "../../ImgPreview";
 import { useResume } from "../../../../hooks";
 
-const Index: React.FC = ({ gridStyles }: any) => {
+const Index: React.FC = () => {
   const { setting, resumeData } = useResumeContext();
-  const { updateResume, getResumeValue } = useResume();
+  const { updateResume, getResumeValue, getSettingValue } = useResume();
   let fileInputRef = useRef<HTMLInputElement>(null);
   const isVisible = (filePath: string) => {
     return getResumeValue(filePath);
@@ -109,6 +109,7 @@ const Index: React.FC = ({ gridStyles }: any) => {
     gap: setting?.header?.gap,
     paddingBottom: setting?.header?.paddingBottom,
   };
+  const headerStyle = getSettingValue("headerStyle") || {};
 
   return (
     <>
@@ -220,7 +221,7 @@ const Index: React.FC = ({ gridStyles }: any) => {
         <div
           className="header-content-wrapper"
           style={{
-            ...gridStyles,
+            ...headerStyle,
           }}
         >
           <div className="header-text-block">
