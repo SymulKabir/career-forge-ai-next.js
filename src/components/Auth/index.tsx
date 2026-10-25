@@ -9,6 +9,7 @@ import {
 } from "@/src/state/authModal";
 import Logo from "@/src/ui/Logo";
 import { signIn, useSession } from "next-auth/react";
+import { config } from "@/src/lib/config";
 
 export default function AuthModal() {
   const [mode, setMode] = useState<AuthMode>("signin");
@@ -33,8 +34,6 @@ export default function AuthModal() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data: session, status } = useSession();
-
-
 
   const switchMode = () => {
     setMode((current) => (current === "signin" ? "signup" : "signin"));
@@ -79,7 +78,7 @@ export default function AuthModal() {
 
   const handleRegisterSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    console.log("Click Submit button-->>>");
     if (!name || !registerEmail || !registerPassword || !confirmPassword) {
       return;
     }
@@ -95,19 +94,20 @@ export default function AuthModal() {
       // Replace this with your Next.js API call.
       //
       // Example:
-      // await fetch("/api/auth/register", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     name,
-      //     email: registerEmail,
-      //     password: registerPassword,
-      //     confirmPassword,
-      //     rememberMe: rememberRegister,
-      //   }),
-      // });
+      const data = await fetch(`${config.BACKEND_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email: registerEmail,
+          password: registerPassword,
+          confirmPassword,
+          rememberMe: rememberRegister,
+        }),
+      });
+      console.log("data ======>>>>>>>>>>", data);
     } finally {
       setIsSubmitting(false);
     }
@@ -259,9 +259,10 @@ export default function AuthModal() {
               </button>
 
               {/* FACEBOOK */}
-              <button type="button" className="social-auth-button"
+              <button
+                type="button"
+                className="social-auth-button"
                 onClick={() => signIn("facebook", { callbackUrl: "/" })}
-
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
                   <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.17 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.96h-1.51c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.17 24 18.1 24 12.07Z" />
@@ -271,7 +272,9 @@ export default function AuthModal() {
               </button>
 
               {/* LINKEDIN */}
-              <button type="button" className="social-auth-button"
+              <button
+                type="button"
+                className="social-auth-button"
                 onClick={() => signIn("linkedin", { callbackUrl: "/" })}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#0A66C2">
@@ -422,10 +425,11 @@ export default function AuthModal() {
                     {[0, 1, 2, 3].map((index) => (
                       <span
                         key={index}
-                        className={`strength-bar h-1.5 flex-1 rounded-full transition-all duration-300 ${index < passwordStrength
+                        className={`strength-bar h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                          index < passwordStrength
                             ? "bg-violet-500"
                             : "bg-slate-200"
-                          }`}
+                        }`}
                       />
                     ))}
                   </div>
@@ -758,8 +762,9 @@ interface PasswordRequirementProps {
 function PasswordRequirement({ valid, children }: PasswordRequirementProps) {
   return (
     <span
-      className={`password-requirement text-[10px] ${valid ? "text-emerald-500" : "text-slate-400"
-        }`}
+      className={`password-requirement text-[10px] ${
+        valid ? "text-emerald-500" : "text-slate-400"
+      }`}
     >
       <span className="requirement-icon">{valid ? "✓" : "○"}</span> {children}
     </span>
